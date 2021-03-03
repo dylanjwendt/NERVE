@@ -32,3 +32,5 @@ async function setupMiddleware () {
     process.exit(1)
   }
 })()
+
+export = app;
