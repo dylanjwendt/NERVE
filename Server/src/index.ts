@@ -1,3 +1,4 @@
+import path from 'path'
 import { createServer } from 'http'
 import Koa from 'koa'
 import serve from 'koa-static'
@@ -14,7 +15,7 @@ async function setupMiddleware () {
   const routes = await getRoutes()
   app.use(routes)
 
-  app.use(serve('../../Client/dist/'))
+  app.use(serve(path.resolve(__dirname, '../../Client/dist/')))
 }
 
 ;(async function () { // async IIFE wrapper instead of promises

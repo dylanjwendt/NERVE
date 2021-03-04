@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "description": "Handles matchmaking and turns over client actions to the engine",
   "main": "index.js",
+  "private": true,
   "scripts": {
     "start": "node build/index.js",
+    "serve": "node build/index.js",
     "test": "jest",
     "coverage": "jest --coverage",
     "build": "tsc",

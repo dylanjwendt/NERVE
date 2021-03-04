@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Code generator to generate code using engine",
   "main": "index.js",
+  "private": true,
   "scripts": {
     "start": "node build/index.js",
     "test": "jest",
