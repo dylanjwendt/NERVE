@@ -1,4 +1,3 @@
-import { Helper } from './helper'
+import Helper from './helper';
 
-const helper = new Helper()
-console.log(helper.getGreeting())
+console.log(Helper.getGreeting());

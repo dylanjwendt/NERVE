@@ -1,5 +1,5 @@
-export class Helper {
-  getGreeting () {
-    return 'Hello World!'
+export default class Helper {
+  static getGreeting() {
+    return 'Hello World!';
   }
 }
