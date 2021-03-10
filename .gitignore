@@ -1,0 +1,4 @@
+# This top level gitignore applies to all four subprojects
+**/node_modules/
+**/build/
+**/coverage/
