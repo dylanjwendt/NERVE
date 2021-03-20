@@ -1,3 +1,5 @@
-import Helper from './helper';
+import Helper, { hi } from './helper';
 
 console.log(Helper.getGreeting());
+
+hi();
