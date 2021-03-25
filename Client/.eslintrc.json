@@ -18,6 +18,7 @@
         "promise"
     ],
     "rules": {
-        "no-console": "off"
+        "no-console": "off",
+        "@typescript-eslint/lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }]
     }
 }

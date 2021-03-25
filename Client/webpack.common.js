@@ -22,8 +22,8 @@ module.exports = {
         loader: 'html-loader'
       },
       {
-        test: /\.(otf|png)$/,
-        loader: 'file-loader'
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
       }
     ]
   },
@@ -50,11 +50,11 @@ module.exports = {
     //     '!site.webmanifest'
     //   ]
     // }),
-    // new CopyWebpackPlugin({
-    //   patterns: [
-    //     { from: './assets/favicon' }
-    //   ]
-    // })
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: './res', to: './res' }
+      ]
+    })
   ],
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.json']
