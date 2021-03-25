@@ -1,11 +1,10 @@
-import * as PIXI from 'pixi.js';
-import { Sprite } from 'pixi.js';
-import clamp from './utils/clamp';
-import sign from './utils/sign';
+import { Texture, Sprite } from 'pixi.js';
+import clamp from '../utils/clamp';
+import sign from '../utils/sign';
 
 const maxSpeed = 4;
 const acceleration = 0.2;
-const deceleration = 0.05;
+const deceleration = 0.04;
 
 export interface DirectionsHeld {
   up?: boolean,
@@ -30,11 +29,11 @@ export default class Player {
     this.vx = 0;
     this.vy = 0;
 
-    this.sprite = new Sprite(PIXI.Texture.from('../res/circle.png'));
+    this.sprite = new Sprite(Texture.from('../../res/circle.png'));
     this.sprite.x = 128 - radius / 2;
     this.sprite.y = 128 - radius / 2;
     this.sprite.scale.set(1.5, 1.5);
-    this.sprite.tint = 0xFF3333;
+    this.sprite.tint = 0xff4d4d;
   }
 
   update() {

@@ -7,11 +7,13 @@ interface FieldLocalization {
 const fieldLocalizations: FieldLocalization = {
   playerX: 'Player X',
   playerY: 'Player Y',
+  fps: 'FPS',
 };
 
 export interface DebugScreenInfo {
   playerX: number,
-  playerY: number
+  playerY: number,
+  fps: number,
 }
 
 export default class DebugScreen {

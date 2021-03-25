@@ -1,8 +1,9 @@
 import './index.less';
 import * as PIXI from 'pixi.js';
-import Player from './player';
+import Player from './entities/player';
 import DebugScreen from './debug-screen';
 import clamp from './utils/clamp';
+import Bullet from './entities/bullet';
 
 console.log('hello from top-level client side JS');
 
@@ -16,15 +17,16 @@ const app = new PIXI.Application({
   resizeTo: window,
 });
 
+const player = new Player();
+app.stage.addChild(player.sprite);
+
+const entities: any[] = [player];
+
 window.addEventListener('resize', () => {
   app.renderer.resize(window.innerWidth, window.innerHeight);
 });
 
-const player = new Player();
-app.stage.addChild(player.sprite);
-
 document.addEventListener('keydown', (e) => {
-  console.log(e.key);
   if (e.key === 'w') {
     player.updateDirection({ up: true });
   } else if (e.key === 'a') {
@@ -37,7 +39,6 @@ document.addEventListener('keydown', (e) => {
 });
 
 document.addEventListener('keyup', (e) => {
-  console.log(e.key);
   if (e.key === 'w') {
     player.updateDirection({ up: false });
   } else if (e.key === 'a') {
@@ -49,9 +50,23 @@ document.addEventListener('keyup', (e) => {
   }
 });
 
+document.addEventListener('mousedown', (e) => {
+  const bullet = new Bullet([player.sprite.x, player.sprite.y], [e.clientX, e.clientY]);
+  app.stage.addChild(bullet.sprite);
+  entities.push(bullet);
+});
+
 app.ticker.start();
 app.ticker.add(() => {
-  player.update();
+  entities.forEach((e, i) => {
+    e.update();
+    if (e === player) { return; }
+    if (e.sprite.x < 0 || e.sprite.y < 0
+      || e.sprite.x > window.innerWidth || e.sprite.y > window.innerHeight) {
+      entities.splice(i, 1);
+      app.stage.removeChild(e.sprite);
+    }
+  });
 
   player.sprite.x = clamp(player.sprite.x, 0, window.innerWidth - player.sprite.width);
   player.sprite.y = clamp(player.sprite.y, 0, window.innerHeight - player.sprite.height);
@@ -59,9 +74,10 @@ app.ticker.add(() => {
   DebugScreen.update({
     playerX: player.sprite.x,
     playerY: player.sprite.y,
+    fps: app.ticker.FPS,
   });
 
-  app.renderer.render(player.sprite);
+  entities.forEach((e) => app.renderer.render(e.sprite));
 });
 
 document.body.appendChild(app.view);
