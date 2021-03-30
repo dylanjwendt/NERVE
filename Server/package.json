@@ -25,7 +25,8 @@
   "dependencies": {
     "@koa/router": "^10.0.0",
     "@tsconfig/node14": "^1.0.0",
-    "colyseus": "^0.14.7",
+    "colyseus": "^0.14.11",
+    "colyseus.js": "^0.14.8",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
     "koa-static": "^5.0.0",
@@ -34,21 +35,24 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.13.9",
+    "@colyseus/schema": "^1.0.16",
     "@shopify/jest-koa-mocks": "^2.3.2",
     "@types/jest": "^26.0.20",
     "@types/koa": "^2.13.0",
+    "@types/koa__router": "^8.0.4",
     "@types/koa-bodyparser": "^4.3.0",
     "@types/koa-static": "^4.0.1",
-    "@types/koa__router": "^8.0.4",
+    "@types/readline-sync": "^1.4.3",
     "@types/supertest": "^2.0.10",
-    "@typescript-eslint/eslint-plugin": "^4.16.1",
-    "@typescript-eslint/parser": "^4.16.1",
+    "@typescript-eslint/eslint-plugin": "^4.19.0",
+    "@typescript-eslint/parser": "^4.19.0",
     "eslint": "^7.21.0",
     "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jest": "^24.1.5",
     "eslint-plugin-promise": "^4.3.1",
     "jest": "^26.6.3",
+    "readline-sync": "^1.4.10",
     "supertest": "^6.1.3"
   }
 }
