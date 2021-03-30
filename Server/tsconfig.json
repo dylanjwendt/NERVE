@@ -1,12 +1,19 @@
 {
-  "extends": "@tsconfig/node14/tsconfig.json",
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "tests/**/*"
-  ],
-  "compilerOptions": {
-    "outDir": "build"
-  }
+    "extends": "@tsconfig/node14/tsconfig.json",
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "tests/**/*"
+    ],
+    "compilerOptions": {
+        "experimentalDecorators": true,
+        "outDir": "build",
+        "module": "commonjs",
+        "target": "es6",
+        "noImplicitAny": true,
+        "allowJs": true,
+        "esModuleInterop": true,
+        "sourceMap": true
+    }
 }

@@ -1,37 +1,14 @@
-import path from 'path';
-import { createServer } from 'http';
-import Koa from 'koa';
-import serve from 'koa-static';
-import { Server } from 'colyseus';
-import getRoutes from './controllers';
+// index.ts (server-side, entrypoint)
 
-const app = new Koa();
+import http from "http";
+import { Server } from "colyseus";
+import { MyRoom } from "./rooms/MyRoom";
 
-const url = 'http://localhost';
-const port = 3000;
-const serverStart = Date.now();
+const gameServer = new Server({
+    server: http.createServer()
+});
 
-async function setupMiddleware() {
-  const routes = await getRoutes();
-  app.use(routes);
+gameServer.define("my_room", MyRoom);
 
-  app.use(serve(path.resolve(__dirname, '../../Client/dist/')));
-}
-
-(async function startServer() { // async IIFE wrapper instead of promises
-  try {
-    await setupMiddleware();
-    const gameServer = new Server({
-      server: createServer(app.callback()),
-    });
-
-    await gameServer.listen(port);
-    console.log(`Server started in ${Date.now() - serverStart}ms and is now running at ${url}:${port}`);
-  } catch (err) {
-    console.log('Failed to start server due to error:');
-    console.log(err);
-    process.exit(1);
-  }
-}());
-
-export = app;
+gameServer.listen(2567);
+console.log("listening on ws://localhost:2567");
