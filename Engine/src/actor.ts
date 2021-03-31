@@ -1,6 +1,6 @@
 import * as postal from 'postal';
 import ActorType from './actorType';
-import Coordinates from './coordinates';
+import EuclideanCoordinates, { Vec2 } from './coordinates';
 
 export default class Actor {
     #type: ActorType;
@@ -9,31 +9,37 @@ export default class Actor {
 
     #id: number;
 
-    #coords: Coordinates;
+    #coords: EuclideanCoordinates;
+
+    #velocity: Vec2;
 
     #interactions: Array<ActorInteraction>;
+
+    #triggerRadius: number;
 
     constructor(id: number, type: ActorType, name: string = '') {
       this.#type = type;
       this.#name = name;
-      this.#coords = new Coordinates();
+      this.#coords = new EuclideanCoordinates();
+      this.#velocity = new Vec2();
       this.#interactions = [];
       this.#id = id;
+      this.#triggerRadius = 1;
     }
 
     setName(name: string) {
       this.#name = name;
     }
 
-    getName() {
+    getName(): string {
       return this.#name;
     }
 
-    setCoords(coords: Coordinates) {
+    setCoords(coords: EuclideanCoordinates) {
       this.#coords = coords;
     }
 
-    getCoords() {
+    getCoords(): EuclideanCoordinates {
       return this.#coords;
     }
 
@@ -41,12 +47,20 @@ export default class Actor {
       this.#type = type;
     }
 
-    getType() {
+    getType(): ActorType {
       return this.#type;
     }
 
     getID() {
       return this.#id;
+    }
+
+    setTriggerRadius(rad: number) {
+      this.#triggerRadius = rad;
+    }
+
+    getTriggerRadius() {
+      return this.#triggerRadius;
     }
 
     addInteraction(interaction: ActorInteraction) {
@@ -61,6 +75,24 @@ export default class Actor {
 
     checkInteractions(other: Actor) {
       this.#interactions.forEach((e) => this.checkInteraction(other, e));
+    }
+
+    moveTimestep(millisec: number) {
+      const delta = millisec / 1000;
+      const deltaPos = new Vec2(this.#velocity.x * delta, this.#velocity.y * delta);
+      this.#coords.addVector(deltaPos);
+    }
+
+    setVelocity(vel: Vec2) {
+      this.#velocity = vel;
+    }
+
+    addVelocity(vel: Vec2) {
+      this.#velocity.add(vel);
+    }
+
+    getVelocity() {
+      return this.#velocity;
     }
 }
 
