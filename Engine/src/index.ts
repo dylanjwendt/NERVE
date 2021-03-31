@@ -34,10 +34,11 @@ term.deactivate()
 */
 
 const engine = new Engine();
-// engine.showData(true);
+engine.showData(true);
 
 const actor: Actor = Engine.newActor(ActorType.default, 'Actor A');
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const actorB: Actor = Engine.newActor(ActorType.default, 'Actor B');
 
 actor.addInteraction(new ActorInteraction(ActorType.default));

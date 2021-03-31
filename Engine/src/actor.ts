@@ -113,6 +113,7 @@ export class ActorInteraction {
     this.#channel.publish('Actor.Interaction.Triggered', {
       ActorA_ID: self.getID(),
       ActorB_ID: other.getID(),
+      Distance: self.getCoords().getDistanceTo(other.getCoords()),
       Message: `${self.getName()} interacted with ${other.getName()}`,
     });
   }
