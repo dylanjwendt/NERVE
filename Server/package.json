@@ -23,6 +23,7 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "@colyseus/command": "^0.1.6",
     "@koa/router": "^10.0.0",
     "@tsconfig/node14": "^1.0.0",
     "colyseus": "^0.14.11",
