@@ -2,8 +2,9 @@ import { INerveClient } from "./nerve-client.interface";
 import { Room } from "colyseus.js";
 import { Client } from "colyseus.js";
 import { SimpleGameState } from "./simple-game-state";
+import { Schema } from "@colyseus/schema";
 
-export class NerveClient implements INerveClient {
+export class NerveClient {
     private room?: Room<SimpleGameState>;
     private colyseusClient?: Client;
 
@@ -19,13 +20,23 @@ export class NerveClient implements INerveClient {
         this.room = await this.colyseusClient.joinOrCreate<SimpleGameState>("mainroom");
         console.log("connected");
     }
-    send(message: string): void {
+    send(messageType: string, message: string): void {
         console.log(`sending message to server: ${message}`);
         if (this.room === undefined) {
             throw new Error("haven't connected to a room yet");
         } 
-        this.room.send("main", message);
+        this.room.send(messageType, message);
     }
+
+    onMessage(messageType: string, callback: (message: any) => void): void {
+        // const fullCallback = (type: string | number | Schema, message: any) => {
+        // callback(message);
+        // };
+        // console.log("nerve client onMessage");
+        // console.log("this.room: ", this.room);
+        this.room?.onMessage(messageType, callback);
+    }
+
     onStateChange(callback: (state: SimpleGameState) => void): void {
         if (this.room !== undefined) {
             this.room.onStateChange(callback);

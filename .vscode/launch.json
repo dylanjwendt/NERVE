@@ -19,6 +19,17 @@
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "name": "debug server prod",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceRoot}/Server/",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run-script", "debug"
+            ],
+            "port": 5858
         }
     ]
 }
