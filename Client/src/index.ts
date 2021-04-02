@@ -5,7 +5,7 @@ import DebugScreen from './debug-screen';
 import { NerveClient } from '../../Server/src/nerve-client';
 import { SimpleGameState } from '../../Server/src/simple-game-state';
 
-(async function () {
+(async function start() {
   console.log('hello from top-level client side JS');
 
   PIXI.utils.sayHello('Hello World!');
@@ -47,6 +47,14 @@ import { SimpleGameState } from '../../Server/src/simple-game-state';
         newSprite.x = e.x;
         newSprite.y = e.y;
         entities.set(e.id, newSprite);
+        app.stage.addChild(newSprite);
+      }
+    });
+
+    entities.forEach((sprite, key) => {
+      if (!entityList.find((e) => e.id === key)) {
+        entities.delete(key);
+        app.stage.removeChild(sprite);
       }
     });
   });
@@ -55,12 +63,17 @@ import { SimpleGameState } from '../../Server/src/simple-game-state';
     playerId = message;
   });
 
+  const keysDown = new Set();
   document.addEventListener('keydown', (e) => {
-    server.send('keydown', JSON.stringify({ player: playerId, key: e.key }));
+    if (!keysDown.has(e.key)) {
+      server.send('keydown', JSON.stringify({ player: playerId, key: e.key }));
+      keysDown.add(e.key);
+    }
   });
 
   document.addEventListener('keyup', (e) => {
     server.send('keyup', JSON.stringify({ player: playerId, key: e.key }));
+    keysDown.delete(e.key);
   });
 
   document.addEventListener('mousedown', (e) => {
