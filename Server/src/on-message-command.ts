@@ -1,6 +1,6 @@
 import { Command } from "@colyseus/command";
 import { SimpleGameState } from "./simple-game-state";
-import { WorldUpdate } from "./world-update";
+import { WorldUpdate } from "./world/world-update";
 
 export class OnMessageCommand extends Command<SimpleGameState, { userInput: string }> {
     private worldUpdate: WorldUpdate;
@@ -16,6 +16,6 @@ export class OnMessageCommand extends Command<SimpleGameState, { userInput: stri
     }
 
     execute({ userInput }): void {
-        this.state.text = this.worldUpdate.update(userInput);
+        // this.state.text = this.worldUpdate.processInput(userInput);
     }
 }

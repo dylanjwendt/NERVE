@@ -12,7 +12,8 @@
     "build": "tsc",
     "prod": "npm run build && npm run start",
     "lint": "eslint --ext .js,.ts ./src ./tests",
-    "lint:fix": "eslint --ext .js,.ts --fix ./src ./tests"
+    "lint:fix": "eslint --ext .js,.ts --fix ./src ./tests",
+    "debug": "tsc && node --nolazy --inspect-brk=5858 build/index.js"
   },
   "keywords": [],
   "contributors": [
