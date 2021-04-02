@@ -4,6 +4,7 @@ import { Sprite, Texture } from 'pixi.js';
 import DebugScreen from './debug-screen';
 import { NerveClient } from '../../Server/src/nerve-client';
 import { SimpleGameState } from '../../Server/src/simple-game-state';
+import Entity from './entity';
 
 (async function start() {
   console.log('hello from top-level client side JS');
@@ -18,7 +19,7 @@ import { SimpleGameState } from '../../Server/src/simple-game-state';
     resizeTo: window,
   });
 
-  const entities = new Map<string, Sprite>();
+  const entities = new Map<string, Entity>();
 
   window.addEventListener('resize', () => {
     app.renderer.resize(window.innerWidth, window.innerHeight);
@@ -34,11 +35,13 @@ import { SimpleGameState } from '../../Server/src/simple-game-state';
     const entityList: any[] = JSON.parse(state.text);
     entityList.forEach((e: any) => {
       if (entities.has(e.id)) {
-        const sprite = entities.get(e.id);
-        if (sprite) {
-          sprite.x = e.x;
-          sprite.y = e.y;
-          entities.set(e.id, sprite);
+        const entity = entities.get(e.id);
+        if (entity) {
+          entity.sprite.x = e.x;
+          entity.sprite.y = e.y;
+          entity.vx = e.vx;
+          entity.vy = e.vy;
+          entities.set(e.id, entity);
         }
       } else {
         const newSprite = new Sprite(Texture.from('../res/circle.png'));
@@ -46,15 +49,15 @@ import { SimpleGameState } from '../../Server/src/simple-game-state';
         newSprite.tint = e.tint;
         newSprite.x = e.x;
         newSprite.y = e.y;
-        entities.set(e.id, newSprite);
+        entities.set(e.id, new Entity(e.vx, e.vy, newSprite));
         app.stage.addChild(newSprite);
       }
     });
 
-    entities.forEach((sprite, key) => {
+    entities.forEach((entity, key) => {
       if (!entityList.find((e) => e.id === key)) {
         entities.delete(key);
-        app.stage.removeChild(sprite);
+        app.stage.removeChild(entity.sprite);
       }
     });
   });
@@ -84,12 +87,16 @@ import { SimpleGameState } from '../../Server/src/simple-game-state';
   app.ticker.add(() => {
     const player = entities.get(playerId);
     DebugScreen.update({
-      playerX: player ? player.x : -1,
-      playerY: player ? player.y : -1,
+      playerX: player ? player.sprite.x : -1,
+      playerY: player ? player.sprite.y : -1,
       fps: app.ticker.FPS,
     });
-    entities.forEach((sprite) => {
-      app.renderer.render(sprite);
+    entities.forEach((entity) => {
+      app.renderer.render(entity.sprite);
     });
+  });
+
+  app.ticker.add(() => {
+    entities.forEach((entity) => entity.update());
   });
 }());
