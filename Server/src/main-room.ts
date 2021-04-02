@@ -10,6 +10,7 @@ export class MainRoom extends Room<SimpleGameState> {
 
     async onCreate(options: any): Promise<void> {
         this.setSimulationInterval((deltaTime) => this.update(deltaTime));
+        this.setPatchRate(1);
         this.setState(new SimpleGameState());
         this.onMessage("*", (client: Client, type: string | number, message: any) => {
             this.worldUpdate.processInput(type as string, message);
@@ -20,8 +21,12 @@ export class MainRoom extends Room<SimpleGameState> {
     }
 
     async onJoin(client: Client, options: any): Promise<void> {
-        const playerId: string = this.worldUpdate.addPlayer();
+        const playerId: string = this.worldUpdate.addPlayer(client.id);
         client.send("getPlayerId", playerId);
+    }
+
+    async onLeave(client: Client): Promise<void> {
+        this.worldUpdate.removePlayer(client.id);
     }
 
     update(deltaTime: number): void {

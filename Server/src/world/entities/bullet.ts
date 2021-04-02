@@ -15,7 +15,7 @@ export default class Bullet implements IEntity {
     height: number;
     
     constructor(pos1: [number, number], pos2: [number, number]) {
-        this.id = crypto.randomBytes(256).toString("hex");
+        this.id = crypto.randomBytes(4).toString("hex");
         const normalization = Math.sqrt((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2);
         this.vx = (pos2[0] - pos1[0]) / normalization;
         this.vy = (pos2[1] - pos1[1]) / normalization;

@@ -31,8 +31,8 @@ export default class Player implements IEntity {
     width: number;
     height: number;
     
-    constructor() {
-        this.id = crypto.randomBytes(256).toString("hex");
+    constructor(id: string) {
+        this.id = id;
         const radius = 16;
         this.vx = 0;
         this.vy = 0;
