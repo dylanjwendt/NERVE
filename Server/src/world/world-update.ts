@@ -2,33 +2,39 @@ import Bullet from "./entities/bullet";
 import { IEntity } from "./entities/entity.interface";
 import Player from "./entities/player";
 import clamp from "./utils/clamp";
+import Engine from '../../../Engine/src/engine'
 
 export class WorldUpdate {
 
     private entities: IEntity[];
     private width: number;
     private height: number;
+    private engine: Engine;
 
     constructor() {
         this.entities = [];
         this.width = 1920;
         this.height = 1080;
+        this.engine = new Engine();
     }
 
     public update(deltaTime: number): string {
-        this.entities.forEach((e, i) => {
-            e.update();
-            if (e instanceof Bullet) {
-                if (e.x < 0 || e.y < 0 || e.x > this.width || e.y > this.height) {
-                    this.entities.splice(i, 1);
-                }
-            }
-            if (e instanceof Player) {
-                e.x = clamp(e.x, 0, this.width - e.width);
-                e.y = clamp(e.y, 0, this.height - e.height);
-            }
-        });
-        return JSON.stringify(this.entities);
+        // this.entities.forEach((e, i) => {
+        //     e.update();
+        //     if (e instanceof Bullet) {
+        //         if (e.x < 0 || e.y < 0 || e.x > this.width || e.y > this.height) {
+        //             this.entities.splice(i, 1);
+        //         }
+        //     }
+        //     if (e instanceof Player) {
+        //         e.x = clamp(e.x, 0, this.width - e.width);
+        //         e.y = clamp(e.y, 0, this.height - e.height);
+        //     }
+        // });
+        // return JSON.stringify(this.entities);
+        this.engine.update(deltaTime);
+        const e = this.engine;
+
     }
 
     public processInput(eventType: string, input: string): string {
@@ -73,25 +79,7 @@ export class WorldUpdate {
         return JSON.stringify(this.entities);
     }
 
-    /**
-     * Creates a new player entity with specified id that the server will automatically update.
-     * @param id Client id
-     * @returns The id of the new player
-     */
-    public addPlayer(id: string): string {
-        const newPlayer = new Player(id);
-        this.entities.push(newPlayer);
-        return newPlayer.id;
+ {
     }
 
-    /**
-     * Finds and removes an entity given an id, if it exists.
-     * @param id id of the entity
-     */
-    public removePlayer(id: string): void {
-        const index = this.entities.findIndex((e) => e.id === id);
-        if (index) {
-            this.entities.splice(index, 1);
-        }
-    }
 }

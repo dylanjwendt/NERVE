@@ -1,5 +1,5 @@
 enum ActorType {
-  default = 'Default',
+  default = "Default",
 }
 
 export default ActorType;

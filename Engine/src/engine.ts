@@ -1,8 +1,8 @@
-import { Vec2 } from './coordinates';
-import ActorType from './actorType';
-import GameLogic from './gameLogic';
-import Terminal from './terminal';
-import World from './world';
+import { Vec2 } from "./coordinates";
+import ActorType from "./actorType";
+import GameLogic from "./gameLogic";
+import Terminal from "./terminal";
+import World from "./world";
 
 export default class Engine {
   #term: Terminal;
@@ -12,45 +12,45 @@ export default class Engine {
   #world: World;
 
   constructor() {
-    this.#term = new Terminal();
-    this.#gameLogic = new GameLogic();
-    this.#world = new World();
-    this.#term.activate();
-    this.#gameLogic.activate();
-    this.#world.activate();
+      this.#term = new Terminal();
+      this.#gameLogic = new GameLogic();
+      this.#world = new World(this.#gameLogic);
+      this.#term.activate();
+      this.#gameLogic.activate();
+      this.#world.activate();
   }
 
-  static getWorldState(): Array<Vec2> {
-    const retArr = new Array<Vec2>();
-    GameLogic.actors.forEach((e) => retArr.push((e.getCoords().toVector())));
-    return retArr;
+  getWorldState(): Array<Vec2> {
+      const retArr = new Array<Vec2>();
+      this.#gameLogic.actors.forEach((e) => retArr.push((e.getCoords().toVector())));
+      return retArr;
   }
 
-  static addActorVel(id: number, vel: Vec2) {
-    World.addActorVel(id, vel);
+  addActorVel(id: number, vel: Vec2) {
+      this.#world.addActorVel(id, vel);
   }
 
-  static setActorVel(id: number, vel: Vec2) {
-    World.setActorVel(id, vel);
+  setActorVel(id: number, vel: Vec2) {
+      this.#world.setActorVel(id, vel);
   }
 
-  static addActorPos(id: number, vel: Vec2) {
-    World.addActorPos(id, vel);
+  addActorPos(id: number, vel: Vec2) {
+      this.#world.addActorPos(id, vel);
   }
 
-  static setActorPos(id: number, vel: Vec2) {
-    World.setActorPos(id, vel);
+  setActorPos(id: number, vel: Vec2) {
+      this.#world.setActorPos(id, vel);
   }
 
-  static newActor(type: ActorType, name: string = '') {
-    return GameLogic.newActor(type, name);
+  newActor(type: ActorType, name = "") {
+      return this.#gameLogic.newActor(type, name);
   }
 
-  moveTimestep(millisec: number) {
-    this.#world.moveTimestep(millisec);
+  update(millisec: number) {
+      this.#world.moveTimestep(millisec);
   }
 
   showData(show: boolean) {
-    this.#term.showData(show);
+      this.#term.showData(show);
   }
 }

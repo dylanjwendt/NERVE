@@ -1,9 +1,9 @@
-import * as postal from 'postal';
+import * as postal from "postal";
 
 enum Status {
-  Error = 'Error',
-  Online = 'Online',
-  Offline = 'Offline',
+  Error = "Error",
+  Online = "Online",
+  Offline = "Offline",
 }
 
 export default class System {
@@ -16,49 +16,49 @@ export default class System {
       protected channel: any;
 
       constructor() {
-        this.#status = Status.Offline;
-        this.sysName = 'UnnamedSystem';
-        this.channel = postal.channel();
-        this.#subs = [];
+          this.#status = Status.Offline;
+          this.sysName = "UnnamedSystem";
+          this.channel = postal.channel();
+          this.#subs = [];
       }
 
       setStatus(newStatus: Status) {
-        this.#status = newStatus;
+          this.#status = newStatus;
       }
 
       getStatus() {
-        return this.#status;
+          return this.#status;
       }
 
       activate() {
-        this.#status = Status.Online;
-        this.channel.publish(`Systems.${this.sysName}.Online`, {
-          sysName: this.sysName,
-          sysStatus: this.#status,
-        });
+          this.#status = Status.Online;
+          this.channel.publish(`Systems.${this.sysName}.Online`, {
+              sysName: this.sysName,
+              sysStatus: this.#status,
+          });
       }
 
       deactivate() {
-        this.#status = Status.Offline;
-        this.channel.publish(`Systems.${this.sysName}.Offline`, {
-          sysName: this.sysName,
-          sysStatus: this.#status,
-        });
-        this.clearSubscriptions();
+          this.#status = Status.Offline;
+          this.channel.publish(`Systems.${this.sysName}.Offline`, {
+              sysName: this.sysName,
+              sysStatus: this.#status,
+          });
+          this.clearSubscriptions();
       }
 
       throwError(thrownStr: string) {
-        this.channel.publish('Error.Thrown', {
-          sysName: this.sysName,
-          errCode: thrownStr,
-        });
+          this.channel.publish("Error.Thrown", {
+              sysName: this.sysName,
+              errCode: thrownStr,
+          });
       }
 
       newSubscription(sub: any) {
-        this.#subs.push(sub);
+          this.#subs.push(sub);
       }
 
       clearSubscriptions() {
-        this.#subs.forEach((e) => e.unsubscribe());
+          this.#subs.forEach((e) => e.unsubscribe());
       }
 }

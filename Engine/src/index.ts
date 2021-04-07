@@ -1,7 +1,7 @@
-import Actor, { ActorInteraction } from './actor';
-import ActorType from './actorType';
-import Engine from './engine';
-import { Vec2 } from './coordinates';
+import Actor, { ActorInteraction } from "./actor";
+import ActorType from "./actorType";
+import Engine from "./engine";
+import { Vec2 } from "./coordinates";
 
 /*
 const channel = postal.channel();
@@ -36,21 +36,21 @@ term.deactivate()
 const engine = new Engine();
 engine.showData(true);
 
-const actor: Actor = Engine.newActor(ActorType.default, 'Actor A');
+const actor: Actor = engine.newActor(ActorType.default, "Actor A");
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const actorB: Actor = Engine.newActor(ActorType.default, 'Actor B');
+const actorB: Actor = engine.newActor(ActorType.default, "Actor B");
 
 actor.addInteraction(new ActorInteraction(ActorType.default));
 
-Engine.setActorPos(0, new Vec2(-1, 0));
-Engine.setActorPos(1, new Vec2(1, 0));
-Engine.setActorVel(0, new Vec2(1, 0));
-Engine.setActorVel(1, new Vec2(-1, 0));
+engine.setActorPos(0, new Vec2(-1, 0));
+engine.setActorPos(1, new Vec2(1, 0));
+engine.setActorVel(0, new Vec2(1, 0));
+engine.setActorVel(1, new Vec2(-1, 0));
 
 for (let i = 100; i <= 2000; i += 100) {
-  setTimeout(() => {
-    engine.moveTimestep(100);
-    console.log(Engine.getWorldState());
-  }, i * 10);
+    setTimeout(() => {
+        engine.update(100);
+        console.log(engine.getWorldState());
+    }, i * 10);
 }

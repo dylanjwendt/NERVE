@@ -10,7 +10,8 @@
         "project": "./tsconfig.eslint.json"
     },
     "extends": [
-        "airbnb-typescript/base",
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
         "plugin:jest/recommended",
         "plugin:promise/recommended"
     ],
@@ -20,8 +21,22 @@
         "promise"
     ],
     "rules": {
-        // Engine should be able to use console
         "no-console": "off",
-        "max-classes-per-file": ["error", 3]
+        "indent": [
+            "error",
+            4
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "double"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ]
     }
 }

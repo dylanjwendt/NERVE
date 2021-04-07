@@ -1,6 +1,6 @@
-import * as postal from 'postal';
-import ActorType from './actorType';
-import EuclideanCoordinates, { Vec2 } from './coordinates';
+import * as postal from "postal";
+import ActorType from "./actorType";
+import EuclideanCoordinates, { Vec2 } from "./coordinates";
 
 export default class Actor {
     #type: ActorType;
@@ -17,82 +17,82 @@ export default class Actor {
 
     #triggerRadius: number;
 
-    constructor(id: number, type: ActorType, name: string = '') {
-      this.#type = type;
-      this.#name = name;
-      this.#coords = new EuclideanCoordinates();
-      this.#velocity = new Vec2();
-      this.#interactions = [];
-      this.#id = id;
-      this.#triggerRadius = 1;
+    constructor(id: number, type: ActorType, name = "") {
+        this.#type = type;
+        this.#name = name;
+        this.#coords = new EuclideanCoordinates();
+        this.#velocity = new Vec2();
+        this.#interactions = [];
+        this.#id = id;
+        this.#triggerRadius = 1;
     }
 
     setName(name: string) {
-      this.#name = name;
+        this.#name = name;
     }
 
     getName(): string {
-      return this.#name;
+        return this.#name;
     }
 
     setCoords(coords: EuclideanCoordinates) {
-      this.#coords = coords;
+        this.#coords = coords;
     }
 
     getCoords(): EuclideanCoordinates {
-      return this.#coords;
+        return this.#coords;
     }
 
     setType(type: ActorType) {
-      this.#type = type;
+        this.#type = type;
     }
 
     getType(): ActorType {
-      return this.#type;
+        return this.#type;
     }
 
     getID() {
-      return this.#id;
+        return this.#id;
     }
 
     setTriggerRadius(rad: number) {
-      this.#triggerRadius = rad;
+        this.#triggerRadius = rad;
     }
 
     getTriggerRadius() {
-      return this.#triggerRadius;
+        return this.#triggerRadius;
     }
 
     addInteraction(interaction: ActorInteraction) {
-      this.#interactions.push(interaction);
+        this.#interactions.push(interaction);
     }
 
     checkInteraction(other: Actor, int: ActorInteraction) {
-      if (other.getType() === int.getOtherType()) {
-        int.trigger(this, other);
-      }
+        if (other.getType() === int.getOtherType()) {
+            int.trigger(this, other);
+        }
     }
 
     checkInteractions(other: Actor) {
-      this.#interactions.forEach((e) => this.checkInteraction(other, e));
+        this.#interactions.forEach((e) => this.checkInteraction(other, e));
     }
 
     moveTimestep(millisec: number) {
-      const delta = millisec / 1000;
-      const deltaPos = new Vec2(this.#velocity.x * delta, this.#velocity.y * delta);
-      this.#coords.addVector(deltaPos);
+        const delta = millisec / 1000;
+        const deltaPos = new Vec2(this.#velocity.x * delta, this.#velocity.y * delta);
+        this.#coords.addVector(deltaPos);
     }
 
     setVelocity(vel: Vec2) {
-      this.#velocity = vel;
+        this.#velocity = vel;
     }
 
     addVelocity(vel: Vec2) {
-      this.#velocity.add(vel);
+        this.#velocity.add(vel);
     }
 
     getVelocity() {
-      return this.#velocity;
+        return this.#velocity;
     }
 }
 
@@ -102,19 +102,19 @@ export class ActorInteraction {
   #channel = postal.channel();
 
   constructor(otherActorType: ActorType) {
-    this.#otherType = otherActorType;
+      this.#otherType = otherActorType;
   }
 
   getOtherType() {
-    return this.#otherType;
+      return this.#otherType;
   }
 
   trigger(self: Actor, other: Actor) {
-    this.#channel.publish('Actor.Interaction.Triggered', {
-      ActorA_ID: self.getID(),
-      ActorB_ID: other.getID(),
-      Distance: self.getCoords().getDistanceTo(other.getCoords()),
-      Message: `${self.getName()} interacted with ${other.getName()}`,
-    });
+      this.#channel.publish("Actor.Interaction.Triggered", {
+          ActorA_ID: self.getID(),
+          ActorB_ID: other.getID(),
+          Distance: self.getCoords().getDistanceTo(other.getCoords()),
+          Message: `${self.getName()} interacted with ${other.getName()}`,
+      });
   }
 }
