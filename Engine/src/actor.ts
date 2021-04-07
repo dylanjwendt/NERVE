@@ -1,10 +1,7 @@
 import * as postal from "postal";
-import ActorType from "./actorType";
 import EuclideanCoordinates, { Vec2 } from "./coordinates";
 
 export default class Actor {
-    #type: ActorType;
-
     #name: string;
 
     #id: number;
@@ -17,17 +14,28 @@ export default class Actor {
 
     #triggerRadius: number;
 
-    constructor(id: number, type: ActorType, name = "") {
-        this.#type = type;
+    #scale: [number, number];
+    
+    #tint: number;
+
+    #width: number;
+
+    #height: number;
+
+    constructor(id: number, name = "") {
         this.#name = name;
         this.#coords = new EuclideanCoordinates();
         this.#velocity = new Vec2();
         this.#interactions = [];
         this.#id = id;
         this.#triggerRadius = 1;
+        this.#scale = [0.5, 0.5];
+        this.#tint = 0x00efff;
+        this.#width = 16;
+        this.#height = 16;
     }
 
-    setName(name: string) {
+    setName(name: string): void {
         this.#name = name;
     }
 
@@ -35,7 +43,7 @@ export default class Actor {
         return this.#name;
     }
 
-    setCoords(coords: EuclideanCoordinates) {
+    setCoords(coords: EuclideanCoordinates): void {
         this.#coords = coords;
     }
 
@@ -43,73 +51,111 @@ export default class Actor {
         return this.#coords;
     }
 
-    setType(type: ActorType) {
-        this.#type = type;
-    }
-
-    getType(): ActorType {
-        return this.#type;
-    }
-
-    getID() {
+    getID(): number {
         return this.#id;
     }
 
-    setTriggerRadius(rad: number) {
+    setTriggerRadius(rad: number): void {
         this.#triggerRadius = rad;
     }
 
-    getTriggerRadius() {
+    getTriggerRadius(): number {
         return this.#triggerRadius;
     }
 
-    addInteraction(interaction: ActorInteraction) {
+    addInteraction(interaction: ActorInteraction): void {
         this.#interactions.push(interaction);
     }
 
-    checkInteraction(other: Actor, int: ActorInteraction) {
-        if (other.getType() === int.getOtherType()) {
+    checkInteraction(other: Actor, int: ActorInteraction): void {
+        if (other instanceof int.getOtherType())
+        {
             int.trigger(this, other);
         }
     }
 
-    checkInteractions(other: Actor) {
-        this.#interactions.forEach((e) => this.checkInteraction(other, e));
+    checkInteractions(other: Actor, dist: number): void {
+        this.#interactions.forEach((e) => {
+            if(dist <= e.getTriggerDist())
+            {
+                this.checkInteraction(other, e);
+            }
+        });
     }
 
-    moveTimestep(millisec: number) {
+    moveTimestep(millisec: number): void {
         const delta = millisec / 1000;
         const deltaPos = new Vec2(this.#velocity.x * delta, this.#velocity.y * delta);
         this.#coords.addVector(deltaPos);
     }
 
-    setVelocity(vel: Vec2) {
+    setVelocity(vel: Vec2): void {
         this.#velocity = vel;
     }
 
-    addVelocity(vel: Vec2) {
+    addVelocity(vel: Vec2): void {
         this.#velocity.add(vel);
     }
 
-    getVelocity() {
+    getVelocity(): Vec2 {
         return this.#velocity;
+    }
+
+    setScale(val: [number, number]): void
+    {
+        this.#scale = val;
+    }
+
+    getScale(): [number, number] {
+        return this.#scale;  
+    }
+
+    setTint(val: number): void {
+        this.#tint = val;
+    }
+
+    getTint(): number {
+        return this.#tint;
+    }
+
+    setWidth(val: number): void {
+        this.#width = val;
+    }
+
+    getWidth(): number {
+        return this.#width;
+    }
+
+    setHeight(val: number): void {
+        this.#height = val;
+    }
+
+    getHeight(): number {
+        return this.#height;
     }
 }
 
 export class ActorInteraction {
-  #otherType: ActorType;
+  #otherType: typeof Actor;
+
+  #triggerDist: number;
 
   #channel = postal.channel();
 
-  constructor(otherActorType: ActorType) {
-      this.#otherType = otherActorType;
+  constructor() {
+      this.#otherType = Actor;
+      this.#triggerDist = 1;
   }
 
   getOtherType() {
       return this.#otherType;
   }
 
-  trigger(self: Actor, other: Actor) {
+  getTriggerDist(): number {
+      return this.#triggerDist;
+  }
+
+  trigger(self: Actor, other: Actor): void {
       this.#channel.publish("Actor.Interaction.Triggered", {
           ActorA_ID: self.getID(),
           ActorB_ID: other.getID(),

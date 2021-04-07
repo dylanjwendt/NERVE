@@ -22,15 +22,15 @@ export default class System {
           this.#subs = [];
       }
 
-      setStatus(newStatus: Status) {
+      setStatus(newStatus: Status): void {
           this.#status = newStatus;
       }
 
-      getStatus() {
+      getStatus(): Status {
           return this.#status;
       }
 
-      activate() {
+      activate(): void {
           this.#status = Status.Online;
           this.channel.publish(`Systems.${this.sysName}.Online`, {
               sysName: this.sysName,
@@ -38,7 +38,7 @@ export default class System {
           });
       }
 
-      deactivate() {
+      deactivate(): void {
           this.#status = Status.Offline;
           this.channel.publish(`Systems.${this.sysName}.Offline`, {
               sysName: this.sysName,
@@ -47,18 +47,18 @@ export default class System {
           this.clearSubscriptions();
       }
 
-      throwError(thrownStr: string) {
+      throwError(thrownStr: string): void {
           this.channel.publish("Error.Thrown", {
               sysName: this.sysName,
               errCode: thrownStr,
           });
       }
 
-      newSubscription(sub: any) {
+      newSubscription(sub: any): void {
           this.#subs.push(sub);
       }
 
-      clearSubscriptions() {
+      clearSubscriptions(): void {
           this.#subs.forEach((e) => e.unsubscribe());
       }
 }

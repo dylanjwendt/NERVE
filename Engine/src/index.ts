@@ -1,5 +1,4 @@
 import Actor, { ActorInteraction } from "./actor";
-import ActorType from "./actorType";
 import Engine from "./engine";
 import { Vec2 } from "./coordinates";
 
@@ -36,17 +35,17 @@ term.deactivate()
 const engine = new Engine();
 engine.showData(true);
 
-const actor: Actor = engine.newActor(ActorType.default, "Actor A");
+const actor: Actor = engine.newActor("Actor A");
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const actorB: Actor = engine.newActor(ActorType.default, "Actor B");
+const actorB: Actor = engine.newActor("Actor B");
 
-actor.addInteraction(new ActorInteraction(ActorType.default));
+actor.addInteraction(new ActorInteraction());
 
-engine.setActorPos(0, new Vec2(-1, 0));
-engine.setActorPos(1, new Vec2(1, 0));
-engine.setActorVel(0, new Vec2(1, 0));
-engine.setActorVel(1, new Vec2(-1, 0));
+engine.setActorPos(actor.getID(), new Vec2(-1, 0));
+engine.setActorPos(actorB.getID(), new Vec2(1, 0));
+engine.setActorVel(actor.getID(), new Vec2(1, 0));
+engine.setActorVel(actorB.getID(), new Vec2(-1, 0));
 
 for (let i = 100; i <= 2000; i += 100) {
     setTimeout(() => {

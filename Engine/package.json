@@ -1,8 +1,8 @@
 {
-  "name": "nerve-editor",
+  "name": "nerve-engine",
   "version": "0.1.0",
   "description": "Code generator to generate code using engine",
-  "main": "index.js",
+  "main": "build/engine.js",
   "private": true,
   "scripts": {
     "start": "node build/index.js",
