@@ -21,6 +21,7 @@
     ],
     "rules": {
         // Engine should be able to use console
-        "no-console": "off"
+        "no-console": "off",
+        "max-classes-per-file": ["error", 3]
     }
 }
