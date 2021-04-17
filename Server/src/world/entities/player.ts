@@ -28,6 +28,7 @@ export default class Player implements IEntity {
         down: false,
         right: false,
     };
+
     width: number;
     height: number;
     

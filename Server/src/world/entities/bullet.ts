@@ -20,7 +20,7 @@ export default class Bullet implements IEntity {
         this.vx = (pos2[0] - pos1[0]) / normalization;
         this.vy = (pos2[1] - pos1[1]) / normalization;
         this.vx *= speed;
-        this.vy *= speed;
+        this.vy *= -speed; // negate because origin in top left
         this.scale = [0.5, 0.5];
         [this.x, this.y] = pos1;
         this.tint = 0xf5ef42;
@@ -30,6 +30,6 @@ export default class Bullet implements IEntity {
     
     update(): void {
         this.x += this.vx;
-        this.y += this.vy;
+        this.y -= this.vy;
     }
 }

@@ -23,10 +23,12 @@ export class MainRoom extends Room<SimpleGameState> {
     async onJoin(client: Client, options: any): Promise<void> {
         const playerId: string = this.worldUpdate.addPlayer(client.id);
         client.send("getPlayerId", playerId);
+        console.log(`[${new Date().toLocaleTimeString()}] Player joined with id ${playerId}`);
     }
 
     async onLeave(client: Client): Promise<void> {
         this.worldUpdate.removePlayer(client.id);
+        console.log(`[${new Date().toLocaleTimeString()}] Player left with id ${client.id}`);
     }
 
     update(deltaTime: number): void {

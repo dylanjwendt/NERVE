@@ -1,5 +1,5 @@
-import Helper from '../src/helper';
+import Helper from "../src/helper";
 
-test('helper does hello world', () => {
-  expect(Helper.getGreeting()).toBe('Hello World!');
+test("helper does hello world", () => {
+    expect(Helper.getGreeting()).toBe("Hello World!");
 });
