@@ -20,7 +20,7 @@ export default class Actor {
         this.#interactions = [];
         this.#id = id;
         this.#triggerRadius = 1;
-        this.#scale = [0.5, 0.5];
+        this.#scale = [1, 1];
         this.#tint = 0x00efff;
         this.#width = 16;
         this.#height = 16;

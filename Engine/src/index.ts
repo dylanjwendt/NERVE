@@ -10,3 +10,5 @@ export { ActorInteraction } from "./actor";
 export { default as InputHandler } from "./input-handler";
 export { default as World } from "./world";
 export { Vec2 } from "./coordinates";
+export { default as GameLogic } from "./game-logic";
+export { default as EuclideanCoordinates } from "./coordinates";

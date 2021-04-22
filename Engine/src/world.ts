@@ -37,9 +37,9 @@ export default class World extends System {
         this.#gameLogic.actors.forEach((actor) => {
             actor.moveTimestep(millisec);
         });
-        this.#gameLogic.actors.forEach((actor) => {
-            this.checkActorProximityTrigger(actor);
-        });
+        // this.#gameLogic.actors.forEach((actor) => {
+        //     this.checkActorProximityTrigger(actor);
+        // });
         this.#gameLogic.actors.forEach((actor) => {
             actor.getVelocity().decel(new Vec2(1,1).mul(millisec/1000));
         });

@@ -15,11 +15,11 @@ export default abstract class Engine {
     inputHandler: InputHandler;
     tickers: Ticker[]
 
-    constructor(getHandler: (a: World) => InputHandler) {
+    constructor(getHandler: (a: World, l: GameLogic) => InputHandler) {
         this.#term = new Terminal();
         this.gameLogic = new GameLogic();
         this.#world = new World(this.gameLogic);
-        this.inputHandler = getHandler(this.#world);
+        this.inputHandler = getHandler(this.#world, this.gameLogic);
         this.#term.activate();
         this.gameLogic.activate();
         this.#world.activate();

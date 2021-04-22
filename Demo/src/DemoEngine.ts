@@ -1,11 +1,11 @@
-import { Engine, World } from "nerve-engine";
+import { Engine, World, GameLogic } from "nerve-engine";
 import DemoInputHandler from "./DemoInputHandler";
 import PlayerActor from "./actors/Player";
 import Player from "./actors/Player";
 
 export default class DemoEngine extends Engine {
     constructor() {
-        super((w: World) => new DemoInputHandler(w));
+        super((w: World, l: GameLogic) => new DemoInputHandler(w, l));
     }
 
     addActor(id: string): void {
