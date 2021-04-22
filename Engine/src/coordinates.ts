@@ -1,12 +1,10 @@
 abstract class Coordinates {
   abstract getDistanceTo(target: Coordinates): number;
-
   abstract getDistanceFromOrigin(): number;
 }
 
 export class Vec2 {
   x: number;
-
   y: number;
 
   constructor(xInit = 0, yInit = 0) {
@@ -40,9 +38,9 @@ export class Vec2 {
       return this;
   }
 
-  mul(val: number): Vec2 {
-      this.x = this.x * val;
-      this.y = this.y * val;
+  mul(x: number, y: number = x): Vec2 {
+      this.x = this.x * x;
+      this.y = this.y * y;
       return this;
   }
 

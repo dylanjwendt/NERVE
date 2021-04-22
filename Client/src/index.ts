@@ -30,8 +30,12 @@ import Entity from './entity';
   const server = new NerveClient();
   let playerId = '';
   await server.connect('ws://localhost:2567');
+  let lastSync = Date.now();
+  let syncRate = 0;
 
   server.onStateChange((state: SimpleGameState) => {
+    syncRate = Date.now() - lastSync;
+    lastSync = Date.now();
     const entityList: any[] = JSON.parse(state.text);
     entityList.forEach((e: any) => {
       if (entities.has(e.id)) {
@@ -90,12 +94,14 @@ import Entity from './entity';
       playerX: player ? player.sprite.x : -1,
       playerY: player ? player.sprite.y : -1,
       fps: app.ticker.FPS,
+      syncRate,
     });
     entities.forEach((entity) => {
       app.renderer.render(entity.sprite);
     });
   });
 
+  // Client side prediction
   app.ticker.add(() => {
     entities.forEach((entity) => entity.update());
   });

@@ -3,7 +3,8 @@
     "Client/",
     "Editor/",
     "Engine/",
-    "Server/"
+    "Server/",
+    "Demo/"
   ],
   "files.eol": "\n",
   "files.exclude": {

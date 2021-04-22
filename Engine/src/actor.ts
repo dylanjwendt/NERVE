@@ -3,26 +3,17 @@ import EuclideanCoordinates, { Vec2 } from "./coordinates";
 
 export default class Actor {
     #name: string;
-
-    #id: number;
-
+    #id: string;
     #coords: EuclideanCoordinates;
-
     #velocity: Vec2;
-
-    #interactions: Array<ActorInteraction>;
-
+    #interactions: ActorInteraction[];
     #triggerRadius: number;
-
     #scale: [number, number];
-    
     #tint: number;
-
     #width: number;
-
     #height: number;
 
-    constructor(id: number, name = "") {
+    constructor(id: string, name = "") {
         this.#name = name;
         this.#coords = new EuclideanCoordinates();
         this.#velocity = new Vec2();
@@ -51,7 +42,7 @@ export default class Actor {
         return this.#coords;
     }
 
-    getID(): number {
+    getID(): string {
         return this.#id;
     }
 
@@ -137,9 +128,7 @@ export default class Actor {
 
 export class ActorInteraction {
   #otherType: typeof Actor;
-
   #triggerDist: number;
-
   #channel = postal.channel();
 
   constructor() {

@@ -1,4 +1,4 @@
-import { IEntity } from "./entity.interface";
+import { IEntity } from "./IEntity";
 import * as crypto from "crypto";
 
 const speed = 4;

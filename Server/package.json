@@ -5,8 +5,8 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "start": "node build/index.js",
-    "serve": "node build/index.js",
+    "start": "node build/Server/src/index.js",
+    "serve": "node build/Server/src/index.js",
     "test": "jest",
     "coverage": "jest --coverage",
     "build": "tsc",

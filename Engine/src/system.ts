@@ -8,11 +8,8 @@ enum Status {
 
 export default class System {
       #status: Status;
-
-      #subs: Array<any>;
-
+      #subs: any[];
       protected sysName: string;
-
       protected channel: any;
 
       constructor() {
