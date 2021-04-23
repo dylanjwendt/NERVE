@@ -30,15 +30,19 @@ import Entity from './entity';
   const server = new NerveClient();
   let playerId = '';
   await server.connect('ws://localhost:2567');
+  let lastSync = Date.now();
+  let syncRate = 0;
 
   server.onStateChange((state: SimpleGameState) => {
+    syncRate = Date.now() - lastSync;
+    lastSync = Date.now();
     const entityList: any[] = JSON.parse(state.text);
     entityList.forEach((e: any) => {
       if (entities.has(e.id)) {
         const entity = entities.get(e.id);
         if (entity) {
-          entity.sprite.x = e.x;
-          entity.sprite.y = e.y;
+          entity.sprite.x = e.x - e.width / 2;
+          entity.sprite.y = e.y - e.height / 2;
           entity.vx = e.vx;
           entity.vy = e.vy;
           entities.set(e.id, entity);
@@ -47,8 +51,8 @@ import Entity from './entity';
         const newSprite = new Sprite(Texture.from('../res/circle.png'));
         newSprite.scale.set(e.scale[0], e.scale[1]);
         newSprite.tint = e.tint;
-        newSprite.x = e.x;
-        newSprite.y = e.y;
+        newSprite.x = e.x - e.width / 2;
+        newSprite.y = e.y - e.height / 2;
         entities.set(e.id, new Entity(e.vx, e.vy, newSprite));
         app.stage.addChild(newSprite);
       }
@@ -90,12 +94,14 @@ import Entity from './entity';
       playerX: player ? player.sprite.x : -1,
       playerY: player ? player.sprite.y : -1,
       fps: app.ticker.FPS,
+      syncRate,
     });
     entities.forEach((entity) => {
       app.renderer.render(entity.sprite);
     });
   });
 
+  // Client side prediction
   app.ticker.add(() => {
     entities.forEach((entity) => entity.update());
   });

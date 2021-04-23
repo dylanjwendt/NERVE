@@ -1,7 +1,7 @@
 {
-  "name": "nerve-engine",
+  "name": "nerve-demo",
   "version": "0.1.0",
-  "description": "NERVE engine handles all game logic",
+  "description": "Demo NERVE game",
   "main": "build/index.js",
   "private": true,
   "scripts": {
@@ -36,6 +36,7 @@
     "typescript": "^4.2.2"
   },
   "dependencies": {
-    "postal": "^2.0.5"
+    "postal": "^2.0.5",
+    "nerve-engine": "^0.1.0"
   }
 }

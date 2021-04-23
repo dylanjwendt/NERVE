@@ -20,6 +20,7 @@ export class NerveClient {
         this.room = await this.colyseusClient.joinOrCreate<SimpleGameState>("mainroom");
         console.log("connected");
     }
+
     send(messageType: string, message: string): void {
         console.log(`sending message to server: ${message}`);
         if (this.room === undefined) {
@@ -42,6 +43,7 @@ export class NerveClient {
             this.room.onStateChange(callback);
         }
     }
+
     leave(consented: boolean): void {
         throw new Error("Method not implemented.");
     }
