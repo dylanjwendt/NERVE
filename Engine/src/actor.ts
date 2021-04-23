@@ -7,7 +7,6 @@ export default class Actor {
     #coords: EuclideanCoordinates;
     #velocity: Vec2;
     #interactions: ActorInteraction[];
-    #triggerRadius: number;
     #scale: [number, number];
     #tint: number;
     #width: number;
@@ -19,7 +18,6 @@ export default class Actor {
         this.#velocity = new Vec2();
         this.#interactions = [];
         this.#id = id;
-        this.#triggerRadius = 40;
         this.#scale = [1, 1];
         this.#tint = 0x00efff;
         this.#width = 16;
@@ -46,28 +44,13 @@ export default class Actor {
         return this.#id;
     }
 
-    setTriggerRadius(rad: number): void {
-        this.#triggerRadius = rad;
-    }
-
-    getTriggerRadius(): number {
-        return this.#triggerRadius;
-    }
-
     addInteraction(interaction: ActorInteraction): void {
         this.#interactions.push(interaction);
     }
 
-    checkInteraction(other: Actor, int: ActorInteraction): void {
-        // if (other instanceof int.getOtherType())
-        // {
-        int.trigger(this, other);
-        // }
-    }
-
     checkInteractions(other: Actor, dist: number): void {
         this.#interactions.forEach((e) => {
-            if(dist <= this.getTriggerRadius())
+            if(dist <= e.getTriggerDist())
             {
                 e.trigger(this, other);
             }
@@ -127,15 +110,17 @@ export default class Actor {
 }
 
 export class ActorInteraction {
-  #otherType: typeof Actor;
+  //#otherType: typeof Actor;
   #channel = postal.channel();
+  #triggerDist: number;
 
   constructor() {
-      this.#otherType = Actor;
+      //this.#otherType = Actor;
+      this.#triggerDist = 40;
   }
 
-  getOtherType() {
-      return this.#otherType;
+  getTriggerDist(): number {
+      return this.#triggerDist;
   }
 
   trigger(self: Actor, other: Actor): void {
