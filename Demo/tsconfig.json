@@ -8,6 +8,7 @@
   ],
   "compilerOptions": {
     "outDir": "build",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "declaration": true
   }
 }

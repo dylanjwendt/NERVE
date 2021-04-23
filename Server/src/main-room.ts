@@ -1,7 +1,7 @@
 import { Dispatcher } from "@colyseus/command";
 import { Room, Client } from "colyseus";
 import { SimpleGameState } from "./simple-game-state";
-import DemoEngine from "../../Demo/src/DemoEngine";
+import { DemoEngine } from "nerve-demo";
 
 export class MainRoom extends Room<SimpleGameState> {
     dispatcher = new Dispatcher(this);
