@@ -109,9 +109,8 @@ export default class Actor {
     }
 }
 
-export class ActorInteraction {
+export abstract class ActorInteraction {
   //#otherType: typeof Actor;
-  #channel = postal.channel();
   #triggerDist: number;
 
   constructor() {
@@ -123,12 +122,18 @@ export class ActorInteraction {
       return this.#triggerDist;
   }
 
-  trigger(self: Actor, other: Actor): void {
-      this.#channel.publish("Actor.Interaction.Triggered", {
-          ActorA_ID: self.getID(),
-          ActorB_ID: other.getID(),
-          Distance: self.getCoords().getDistanceTo(other.getCoords()),
-          Message: `${self.getName()} interacted with ${other.getName()}`,
-      });
-  }
+  abstract trigger(self: Actor, other: Actor): void;
+}
+
+export class DefaultInteraction extends ActorInteraction {
+    #channel = postal.channel();
+    
+    trigger(self: Actor, other: Actor): void {
+        this.#channel.publish("Actor.Interaction.Triggered", {
+            ActorA_ID: self.getID(),
+            ActorB_ID: other.getID(),
+            Distance: self.getCoords().getDistanceTo(other.getCoords()),
+            Message: `${self.getName()} interacted with ${other.getName()}`,
+        });
+    }
 }
