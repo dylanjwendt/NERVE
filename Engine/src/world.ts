@@ -36,10 +36,13 @@ export default class World extends System {
     moveTimestep(millisec: number): void {
         this.#gameLogic.actors.forEach((actor) => {
             actor.moveTimestep(millisec);
+            if(actor.getCoords().getDistanceFromOrigin() > 4000) {
+                this.#gameLogic.removeActor(actor.getID());
+            }
         });
-        // this.#gameLogic.actors.forEach((actor) => {
-        //     this.checkActorProximityTrigger(actor);
-        // });
+        this.#gameLogic.actors.forEach((actor) => {
+            this.checkActorProximityTrigger(actor);
+        });
         this.#gameLogic.actors.forEach((actor) => {
             actor.getVelocity().decel(new Vec2(1,1).mul(millisec/1000));
         });
@@ -49,6 +52,7 @@ export default class World extends System {
         this.#gameLogic.actors.forEach((target) => {
             if(actor.getID() != target.getID()) {
                 const dist = actor.getCoords().getDistanceTo(target.getCoords());
+                if (dist > 100) return;
                 this.#channel.publish("Actor.Interaction.Possible", {
                     ActorA_ID: actor.getID(),
                     ActorB_ID: target.getID(),

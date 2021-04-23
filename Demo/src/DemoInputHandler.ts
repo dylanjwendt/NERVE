@@ -54,10 +54,8 @@ export default class DemoInputHandler extends InputHandler {
         const player = this.logic.actors.get(actorId);
         if (!player) return;
         const pcoords = player.getCoords().toVector();
-        pcoords.x += player.getWidth() / 2 - 8; // magic 8
-        pcoords.y += player.getHeight() / 2 - 8;
-        const bullet = new Bullet(id, [pcoords!.x, pcoords!.y], pos);
-        this.logic.addNewActor(id, bullet);
+        const bullet = new Bullet(id, player as Player, [pcoords!.x, pcoords!.y], pos);
+        this.logic.addActor(id, bullet);
     }
 
     handleMouseUpInput(actorId: string, pos: [number, number]): void {

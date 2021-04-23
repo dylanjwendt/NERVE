@@ -19,7 +19,7 @@ export default class Actor {
         this.#velocity = new Vec2();
         this.#interactions = [];
         this.#id = id;
-        this.#triggerRadius = 1;
+        this.#triggerRadius = 40;
         this.#scale = [1, 1];
         this.#tint = 0x00efff;
         this.#width = 16;
@@ -59,17 +59,17 @@ export default class Actor {
     }
 
     checkInteraction(other: Actor, int: ActorInteraction): void {
-        if (other instanceof int.getOtherType())
-        {
-            int.trigger(this, other);
-        }
+        // if (other instanceof int.getOtherType())
+        // {
+        int.trigger(this, other);
+        // }
     }
 
     checkInteractions(other: Actor, dist: number): void {
         this.#interactions.forEach((e) => {
-            if(dist <= e.getTriggerDist())
+            if(dist <= this.getTriggerRadius())
             {
-                this.checkInteraction(other, e);
+                e.trigger(this, other);
             }
         });
     }
@@ -128,20 +128,14 @@ export default class Actor {
 
 export class ActorInteraction {
   #otherType: typeof Actor;
-  #triggerDist: number;
   #channel = postal.channel();
 
   constructor() {
       this.#otherType = Actor;
-      this.#triggerDist = 1;
   }
 
   getOtherType() {
       return this.#otherType;
-  }
-
-  getTriggerDist(): number {
-      return this.#triggerDist;
   }
 
   trigger(self: Actor, other: Actor): void {

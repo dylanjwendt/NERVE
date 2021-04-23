@@ -41,8 +41,8 @@ import Entity from './entity';
       if (entities.has(e.id)) {
         const entity = entities.get(e.id);
         if (entity) {
-          entity.sprite.x = e.x;
-          entity.sprite.y = e.y;
+          entity.sprite.x = e.x - e.width / 2;
+          entity.sprite.y = e.y - e.height / 2;
           entity.vx = e.vx;
           entity.vy = e.vy;
           entities.set(e.id, entity);
@@ -51,8 +51,8 @@ import Entity from './entity';
         const newSprite = new Sprite(Texture.from('../res/circle.png'));
         newSprite.scale.set(e.scale[0], e.scale[1]);
         newSprite.tint = e.tint;
-        newSprite.x = e.x;
-        newSprite.y = e.y;
+        newSprite.x = e.x - e.width / 2;
+        newSprite.y = e.y - e.height / 2;
         entities.set(e.id, new Entity(e.vx, e.vy, newSprite));
         app.stage.addChild(newSprite);
       }

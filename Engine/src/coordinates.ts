@@ -61,6 +61,14 @@ export class Vec2 {
       }
       return this;
   }
+
+  normalize(): Vec2 {
+      return this.mul(1 / this.magnitude());
+  }
+
+  magnitude(): number {
+      return Math.sqrt(this.x ** 2 + this.y ** 2);
+  }
 }
 
 export default class EuclideanCoordinates extends Coordinates {
@@ -76,6 +84,10 @@ export default class EuclideanCoordinates extends Coordinates {
 
   getDistanceTo(target: EuclideanCoordinates): number {
       return Math.sqrt((this.#xPos - target.#xPos) ** 2 + (this.#yPos - target.#yPos) ** 2);
+  }
+
+  getVectorTo(target: EuclideanCoordinates): Vec2 {
+      return new Vec2(this.#xPos - target.#xPos, this.#yPos - target.#yPos);
   }
 
   getDistanceFromOrigin(): number {

@@ -25,6 +25,7 @@ export default abstract class Engine {
         this.#world.activate();
         this.inputHandler.activate();
         this.tickers = [];
+        this.#term.deactivate();
     }
 
     getWorldState(): IEntity[] {
@@ -53,13 +54,11 @@ export default abstract class Engine {
     }
 
     addActor(id: string, actor: Actor): void  {
-        return this.gameLogic.addNewActor(id, actor);
+        return this.gameLogic.addActor(id, actor);
     }
 
     removeActor(id: string): void {
-        if(this.gameLogic.actors.has(id)) {
-            this.gameLogic.actors.delete(id);
-        }
+        this.gameLogic.removeActor(id);
     }
 
     update(millisec: number): void {
