@@ -126,24 +126,31 @@ export default class Actor {
     }
 }
 
-export class ActorInteraction {
-  #otherType: typeof Actor;
-  #channel = postal.channel();
-
-  constructor() {
-      this.#otherType = Actor;
-  }
-
-  getOtherType() {
-      return this.#otherType;
-  }
-
-  trigger(self: Actor, other: Actor): void {
-      this.#channel.publish("Actor.Interaction.Triggered", {
-          ActorA_ID: self.getID(),
-          ActorB_ID: other.getID(),
-          Distance: self.getCoords().getDistanceTo(other.getCoords()),
-          Message: `${self.getName()} interacted with ${other.getName()}`,
-      });
-  }
+export abstract class ActorInteraction {
+    //#otherType: typeof Actor;
+    triggerDist: number;
+  
+    constructor() {
+        //this.#otherType = Actor;
+        this.triggerDist = 40;
+    }
+  
+    getTriggerDist(): number {
+        return this.triggerDist;
+    }
+  
+    abstract trigger(self: Actor, other: Actor): void;
+}
+  
+export class DefaultInteraction extends ActorInteraction {
+    #channel = postal.channel();
+    
+    trigger(self: Actor, other: Actor): void {
+        this.#channel.publish("Actor.Interaction.Triggered", {
+            ActorA_ID: self.getID(),
+            ActorB_ID: other.getID(),
+            Distance: self.getCoords().getDistanceTo(other.getCoords()),
+            Message: `${self.getName()} interacted with ${other.getName()}`,
+        });
+    }
 }

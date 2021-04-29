@@ -6,9 +6,9 @@ import Player from "./Player";
 const speed = 400;
 
 export default class Bullet extends Actor {
-    #parent: Player;
+    #parent: Player | null;
 
-    constructor(id: string, parent: Player, pos1: [number, number], pos2: [number, number]) {
+    constructor(id: string, parent: Player | null, pos1: [number, number], pos2: [number, number]) {
         super(id);
         this.#parent = parent;
         const normalization = Math.sqrt((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2);
@@ -23,5 +23,9 @@ export default class Bullet extends Actor {
 
         this.addInteraction(new Bounce(this.#parent));
         this.addInteraction(new Damage(this.#parent));
+    }
+
+    isNullParent(): boolean {
+        return this.#parent === null;
     }
 }
