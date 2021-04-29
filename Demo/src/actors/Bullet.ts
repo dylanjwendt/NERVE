@@ -1,5 +1,6 @@
 import { Actor, Vec2, EuclideanCoordinates } from "nerve-engine";
 import Bounce from "../interactions/bounce";
+import Damage from "../interactions/Damage";
 import Player from "./Player";
 
 const speed = 400;
@@ -21,5 +22,6 @@ export default class Bullet extends Actor {
         this.setHeight(16);
 
         this.addInteraction(new Bounce(this.#parent));
+        this.addInteraction(new Damage(this.#parent));
     }
 }

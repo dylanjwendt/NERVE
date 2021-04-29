@@ -45,6 +45,7 @@ import Entity from './entity';
           entity.sprite.y = e.y - e.height / 2;
           entity.vx = e.vx;
           entity.vy = e.vy;
+          entity.sprite.tint = e.tint;
           entities.set(e.id, entity);
         }
       } else {
