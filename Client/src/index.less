@@ -7,6 +7,34 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, Ubuntu, roboto, noto, segoe ui, arial, sans-serif;
 }
 
+#overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.7);
+  z-index: 1000;
+}
+
+.overlay-center {
+  margin: 0 auto;
+  margin-top: 40%;
+  width: 60%;
+}
+
+.overlay-center p {
+  font-size: 28px;
+  margin-bottom: 0.1em;
+}
+
+.overlay-center input {
+  padding: 0.3em;
+  border: 3px solid #2e2e2e;
+  font-size: 24px;
+  width: 100%;
+}
+
 #debug-screen {
   position: absolute;
   top: 0;

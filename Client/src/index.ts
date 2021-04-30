@@ -7,10 +7,12 @@ import { SimpleGameState } from '../../Server/src/simple-game-state';
 import Entity from './entity';
 
 (async function start() {
-  console.log('hello from top-level client side JS');
+  const $ = (x: string) => document.querySelector(x);
 
+  console.log('hello from top-level client side JS');
   PIXI.utils.sayHello('Hello World!');
 
+  // Set up Pixi
   const app = new PIXI.Application({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -27,12 +29,12 @@ import Entity from './entity';
 
   document.body.appendChild(app.view);
 
+  // State sync
   const server = new NerveClient();
   let playerId = '';
   await server.connect('ws://localhost:2567');
   let lastSync = Date.now();
   let syncRate = 0;
-
   server.onStateChange((state: SimpleGameState) => {
     syncRate = Date.now() - lastSync;
     lastSync = Date.now();
@@ -71,6 +73,7 @@ import Entity from './entity';
     playerId = message;
   });
 
+  // Input listeners
   const keysDown = new Set();
   document.addEventListener('keydown', (e) => {
     if (!keysDown.has(e.key)) {
@@ -88,7 +91,7 @@ import Entity from './entity';
     server.send('mousedown', JSON.stringify({ player: playerId, mousePos: [e.clientX, e.clientY] }));
   });
 
-  app.ticker.start();
+  // App tickers
   app.ticker.add(() => {
     const player = entities.get(playerId);
     DebugScreen.update({
@@ -105,5 +108,19 @@ import Entity from './entity';
   // Client side prediction
   app.ticker.add(() => {
     entities.forEach((entity) => entity.update());
+  });
+
+  app.ticker.stop();
+
+  // Username handling
+  let username: string;
+  $('#username')?.addEventListener('keyup', (e) => {
+    const overlay = $('#overlay') as HTMLDivElement;
+    const evt = e as KeyboardEvent;
+    if (evt.key === 'Enter' && overlay) {
+      overlay.style.display = 'none';
+      username = ($('#username') as HTMLInputElement).innerText;
+      app.ticker.start();
+    }
   });
 }());
