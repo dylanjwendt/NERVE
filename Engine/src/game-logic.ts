@@ -37,12 +37,6 @@ export default class GameLogic extends System {
                   this.testInteraction(data.ActorA_ID, data.ActorB_ID, data.Dist);
               },
           }));
-          this.newSubscription(this.channel.subscribe({
-              topic: "Actor.Delete",
-              callback: (data: any) => {
-                  this.removeActor(data.ActorID);
-              },
-          }));
       }
       super.activate();
   }

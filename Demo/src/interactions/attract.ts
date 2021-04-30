@@ -4,16 +4,16 @@ import Bullet from "../actors/Bullet";
 export default class Attract extends ActorInteraction {
     constructor() {
         super();
-        this.triggerDist = 125;
+        this.triggerDist = 250;
     }
 
     trigger(self: Actor, other: Actor): void {
         if(other instanceof Bullet && !other.isNullParent()) {
-            const speed = self.getVelocity().magnitude();
+            //const speed = self.getVelocity().magnitude();
             const delta = self.getCoords()
                 .getVectorTo(other.getCoords())
                 .normalize()
-                .mul(0.1*speed);
+                .mul(50);
             other.addVelocity(delta);
         }
     }

@@ -67,7 +67,7 @@ export default class Actor {
 
     checkInteractions(other: Actor, dist: number): void {
         this.#interactions.forEach((e) => {
-            if(dist <= this.getTriggerRadius())
+            if(dist <= e.getTriggerDist())
             {
                 e.trigger(this, other);
             }

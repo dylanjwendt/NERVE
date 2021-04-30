@@ -9,9 +9,13 @@ export default class DemoEngine extends Engine {
     constructor() {
         super((w: World, l: GameLogic) => new DemoInputHandler(w, l));
         const bh = new Blackhole(this.gameLogic.getValidID(), "bh1", this);
-        bh.setCoords(new EuclideanCoordinates(300, 300));
+        bh.setCoords(new EuclideanCoordinates(500, 500));
+        bh.setOrigin(new EuclideanCoordinates(500, 500));
         this.gameLogic.addActor(bh.getID(), bh);
-        console.log("init");
+        const bh2 = new Blackhole(this.gameLogic.getValidID(), "bh2", this);
+        bh2.setCoords(new EuclideanCoordinates(500, 500));
+        bh2.setOrigin(new EuclideanCoordinates(500, 500));
+        this.gameLogic.addActor(bh2.getID(), bh2);
     }
 
     addActor(id: string): void {
@@ -31,6 +35,10 @@ export default class DemoEngine extends Engine {
 
     addBullet(bull: Bullet): void {
         this.gameLogic.addActor(bull.getID(), bull);
+    }
+
+    consumeBullet(bull: Bullet): void {
+        this.gameLogic.removeActor(bull.getID());
     }
 }
 
