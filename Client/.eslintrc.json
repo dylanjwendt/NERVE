@@ -19,6 +19,7 @@
     ],
     "rules": {
         "no-console": "off",
-        "@typescript-eslint/lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }]
+        "@typescript-eslint/lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
+        "linebreak-style": "off"
     }
 }

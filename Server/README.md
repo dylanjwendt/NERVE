@@ -1,5 +1,12 @@
 # Nerve Server
-- Handles matchmaking and turns over client actions to the engine
+The NERVE server is responsible for
+
+* Client filtering (kicking/banning)
+* Rate limiting
+* Matchmaking
+* Sending client inputs to engine, propagating engine state to clients
+* Logging
+
 
 # Resources
-- uses [Colyseus](https://github.com/colyseus/colyseus) for basic multiplayer server
+- Uses [Colyseus](https://github.com/colyseus/colyseus) for basic multiplayer server
