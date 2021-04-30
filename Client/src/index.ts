@@ -75,11 +75,20 @@ import Entity from './entity';
 
   // Input listeners
   const keysDown = new Set();
+  const mouse = [0, 0];
   document.addEventListener('keydown', (e) => {
     if (!keysDown.has(e.key)) {
       server.send('keydown', JSON.stringify({ player: playerId, key: e.key }));
       keysDown.add(e.key);
     }
+    if (e.key === 't') {
+      server.send('mousedown', JSON.stringify({ player: playerId, mousePos: mouse }));
+    }
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    mouse[0] = e.clientX;
+    mouse[1] = e.clientY;
   });
 
   document.addEventListener('keyup', (e) => {
@@ -99,6 +108,7 @@ import Entity from './entity';
       playerY: player ? player.sprite.y : -1,
       fps: app.ticker.FPS,
       syncRate,
+      numEntities: entities.size,
     });
     entities.forEach((entity) => {
       app.renderer.render(entity.sprite);

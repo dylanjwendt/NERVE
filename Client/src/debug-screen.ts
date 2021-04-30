@@ -8,7 +8,8 @@ const fieldLocalizations: FieldLocalization = {
   playerX: 'Player X',
   playerY: 'Player Y',
   fps: 'FPS',
-  syncRate: 'Last sync:',
+  syncRate: 'Last sync',
+  numEntities: 'Entities',
 };
 
 export interface DebugScreenInfo {
@@ -16,6 +17,7 @@ export interface DebugScreenInfo {
   playerY: number,
   fps: number,
   syncRate: number,
+  numEntities: number,
 }
 
 export default class DebugScreen {
