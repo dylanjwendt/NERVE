@@ -52,7 +52,7 @@ export default class World extends System {
         this.#gameLogic.actors.forEach((target) => {
             if(actor.getID() != target.getID()) {
                 const dist = actor.getCoords().getDistanceTo(target.getCoords());
-                if (dist > 100) return;
+                if (dist > 300) return;
                 this.#channel.publish("Actor.Interaction.Possible", {
                     ActorA_ID: actor.getID(),
                     ActorB_ID: target.getID(),

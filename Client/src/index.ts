@@ -7,10 +7,12 @@ import { SimpleGameState } from '../../Server/src/simple-game-state';
 import Entity from './entity';
 
 (async function start() {
-  console.log('hello from top-level client side JS');
+  const $ = (x: string) => document.querySelector(x);
 
+  console.log('hello from top-level client side JS');
   PIXI.utils.sayHello('Hello World!');
 
+  // Set up Pixi
   const app = new PIXI.Application({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -27,12 +29,12 @@ import Entity from './entity';
 
   document.body.appendChild(app.view);
 
+  // State sync
   const server = new NerveClient();
   let playerId = '';
   await server.connect('ws://localhost:2567');
   let lastSync = Date.now();
   let syncRate = 0;
-
   server.onStateChange((state: SimpleGameState) => {
     syncRate = Date.now() - lastSync;
     lastSync = Date.now();
@@ -45,6 +47,7 @@ import Entity from './entity';
           entity.sprite.y = e.y - e.height / 2;
           entity.vx = e.vx;
           entity.vy = e.vy;
+          entity.sprite.tint = e.tint;
           entities.set(e.id, entity);
         }
       } else {
@@ -70,12 +73,22 @@ import Entity from './entity';
     playerId = message;
   });
 
+  // Input listeners
   const keysDown = new Set();
+  const mouse = [0, 0];
   document.addEventListener('keydown', (e) => {
     if (!keysDown.has(e.key)) {
       server.send('keydown', JSON.stringify({ player: playerId, key: e.key }));
       keysDown.add(e.key);
     }
+    if (e.key === 't') {
+      server.send('mousedown', JSON.stringify({ player: playerId, mousePos: mouse }));
+    }
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    mouse[0] = e.clientX;
+    mouse[1] = e.clientY;
   });
 
   document.addEventListener('keyup', (e) => {
@@ -87,7 +100,7 @@ import Entity from './entity';
     server.send('mousedown', JSON.stringify({ player: playerId, mousePos: [e.clientX, e.clientY] }));
   });
 
-  app.ticker.start();
+  // App tickers
   app.ticker.add(() => {
     const player = entities.get(playerId);
     DebugScreen.update({
@@ -95,6 +108,7 @@ import Entity from './entity';
       playerY: player ? player.sprite.y : -1,
       fps: app.ticker.FPS,
       syncRate,
+      numEntities: entities.size,
     });
     entities.forEach((entity) => {
       app.renderer.render(entity.sprite);
@@ -104,5 +118,19 @@ import Entity from './entity';
   // Client side prediction
   app.ticker.add(() => {
     entities.forEach((entity) => entity.update());
+  });
+
+  app.ticker.stop();
+
+  // Username handling
+  let username: string;
+  $('#username')?.addEventListener('keyup', (e) => {
+    const overlay = $('#overlay') as HTMLDivElement;
+    const evt = e as KeyboardEvent;
+    if (evt.key === 'Enter' && overlay) {
+      overlay.style.display = 'none';
+      username = ($('#username') as HTMLInputElement).innerText;
+      app.ticker.start();
+    }
   });
 }());

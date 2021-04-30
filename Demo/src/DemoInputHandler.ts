@@ -1,18 +1,25 @@
-import { World, InputHandler, GameLogic } from "nerve-engine";
+import { World, InputHandler, GameLogic, Actor, EuclideanCoordinates } from "nerve-engine";
+import { DemoEngine } from ".";
 import Bullet from "./actors/Bullet";
 import Player from "./actors/Player";
-// import PlayerActor from "./actors/Player";
+import WallPiece from "./actors/WallPiece";
 
 export default class DemoInputHandler extends InputHandler {
     private world;
     private logic;
+    private engine: DemoEngine | null;
 
     constructor(world: World, logic: GameLogic) {
         super();
         this.world = world;
         this.logic = logic;
+        this.engine = null;
     }
     
+    setEngine(engine: DemoEngine) {
+        this.engine = engine;
+    }
+
     handleKeyDown(actorId: string, key: string): void {
         const actor = this.world.getActorById(actorId);
         if(actor instanceof Player) {
@@ -46,6 +53,9 @@ export default class DemoInputHandler extends InputHandler {
             else if(key === "d") {
                 actor.updateDirection("left");
             }
+            else if(key === " ") {
+                this.spawnWall(actor);
+            }
         }
     }
 
@@ -64,5 +74,19 @@ export default class DemoInputHandler extends InputHandler {
 
     handleMouseMoveInput(actorId: string, pos: [number, number]): void {
         // TODO:
+    }
+
+    spawnWall(parent: Actor): void {
+        if(this.engine === null) return;
+        const numEnt = 15;
+        const dist = 100;
+        for(let i = 0; i < numEnt; i++) {
+            const theta = ((360/numEnt)*i)*Math.PI/180;
+            const pos = [parent.getCoords().toVector().x + (Math.cos(theta)*dist), parent.getCoords().toVector().y + (Math.sin(theta)*dist)] as [number, number];
+            const piece = new WallPiece(this.logic.getValidID(), "todo", this.engine);
+            piece.setCoords(new EuclideanCoordinates(pos[0], pos[1]));
+            piece.setTint(0xa1a1a1);
+            this.logic.addActor(piece.getID(), piece);
+        }
     }
 }

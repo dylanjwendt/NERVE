@@ -10,6 +10,7 @@ export default class Entity {
   constructor(vx: number, vy: number, sprite: Sprite) {
     this.vx = vx;
     this.vy = vy;
+
     this.sprite = sprite;
   }
 

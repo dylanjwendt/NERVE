@@ -1,7 +1,10 @@
 import { Actor, Vec2 } from "nerve-engine";
+const MAXHEALTH = 255;
 
 export default class Player extends Actor {
     private maxSpeed;
+    private health;
+    private defaultTint;
 
     constructor(id: string, name = "") {
         super(id, name);
@@ -9,6 +12,25 @@ export default class Player extends Actor {
         this.setScale([1.5, 1.5]);
         this.setWidth(48);
         this.setHeight(48);
+        this.health = MAXHEALTH;
+        this.defaultTint = this.getTint();
+    }
+
+    getHealth () {
+        return this.health;
+    }
+
+    decHealth (dmg: number) {
+        this.health -= dmg;
+        if (this.health <= 0) {
+            this.health = MAXHEALTH;
+        }
+
+        let tint = this.defaultTint;
+        const ratio = ((MAXHEALTH - this.health)/MAXHEALTH);
+        tint += 0xFF0000 * ratio;
+        tint -= this.defaultTint * ratio;
+        this.setTint(tint);
     }
 
     updateDirection(direction: string): void {
