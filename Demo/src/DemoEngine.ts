@@ -4,6 +4,7 @@ import PlayerActor from "./actors/Player";
 import Player from "./actors/Player";
 import Bullet from "./actors/Bullet";
 import Blackhole from "./actors/Blackhole";
+import WallPiece from "./actors/WallPiece";
 
 export default class DemoEngine extends Engine {
     constructor() {
@@ -16,6 +17,7 @@ export default class DemoEngine extends Engine {
         bh2.setCoords(new EuclideanCoordinates(500, 500));
         bh2.setOrigin(new EuclideanCoordinates(500, 500));
         this.gameLogic.addActor(bh2.getID(), bh2);
+        (this.inputHandler as DemoInputHandler).setEngine(this);
     }
 
     addActor(id: string): void {
@@ -39,6 +41,10 @@ export default class DemoEngine extends Engine {
 
     consumeBullet(bull: Bullet): void {
         this.gameLogic.removeActor(bull.getID());
+    }
+
+    removeWall(wall: WallPiece): void {
+        this.gameLogic.removeActor(wall.getID());
     }
 }
 
