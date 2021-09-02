@@ -6,7 +6,10 @@
   "private": true,
   "scripts": {
     "start": "node index.js",
-    "build": "node build-all.js"
+    "build": "npm run -s build --workspaces",
+    "clean": "npm run -s clean --workspaces",
+    "lint": "npm run -s lint --workspaces",
+    "lint:fix": "npm run -s lint:fix --workspaces"
   },
   "repository": {
     "type": "git",
@@ -25,12 +28,12 @@
   },
   "homepage": "https://github.com/dylanjwendt/NERVE#readme",
   "workspaces": [
-    "Client",
-    "Demo",
     "Engine",
-    "Server"
+    "Demo",
+    "Server",
+    "Client"
   ],
   "dependencies": {
-    "eslint": "^7.21.0"
+    "nerve-server": "file:./Server"
   }
 }

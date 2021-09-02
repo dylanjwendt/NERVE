@@ -15,6 +15,7 @@
         "allowJs": true,
         "esModuleInterop": true,
         "sourceMap": true,
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "declaration": true
     }
 }

@@ -2,9 +2,15 @@
 const path = require('path')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
+
+const cwd = process.cwd().endsWith('Client') ? __dirname : path.resolve(__dirname, 'Client')
+
+console.log(`Running webpack in folder ${cwd}`)
 
 module.exports = {
   target: 'web',
+  context: cwd,
   module: {
     rules: [
       {
@@ -54,7 +60,8 @@ module.exports = {
       patterns: [
         { from: './res', to: './res' }
       ]
-    })
+    }),
+    new NodePolyfillPlugin()
   ],
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.json']

@@ -8,9 +8,10 @@
     "start": "node build/index.js",
     "test": "jest",
     "coverage": "jest --coverage",
-    "build": "tsc",
-    "lint": "eslint --ext .js,.ts, ./src ./tests",
-    "lint:fix": "eslint --ext .js,.ts, --fix ./src ./tests"
+    "build": "tsc --listEmittedFiles",
+    "lint": "eslint --ext .js,.ts, ./src ./tests --no-error-on-unmatched-pattern",
+    "lint:fix": "eslint --ext .js,.ts, --fix ./src ./tests --no-error-on-unmatched-pattern",
+    "clean": "rimraf ./build"
   },
   "keywords": [],
   "contributors": [
@@ -22,17 +23,19 @@
   "license": "MIT",
   "devDependencies": {
     "@tsconfig/node14": "^1.0.0",
-    "@types/jest": "^26.0.20",
+    "@types/jest": "^27.0.1",
     "@types/postal": "^1.0.30",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.16.1",
-    "eslint": "^7.21.0",
-    "eslint-config-airbnb-typescript": "^12.3.1",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jest": "^24.1.5",
-    "eslint-plugin-promise": "^4.3.1",
-    "jest": "^26.6.3",
-    "ts-jest": "^26.5.2",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-typescript": "^14.0.0",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-jest": "^24.4.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-workspaces": "^0.6.2",
+    "jest": "^27.1.0",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^27.0.5",
     "typescript": "^4.2.2"
   },
   "dependencies": {

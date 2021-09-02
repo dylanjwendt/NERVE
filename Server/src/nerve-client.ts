@@ -1,6 +1,6 @@
 import { INerveClient } from "./nerve-client.interface";
-import { Room } from "colyseus.js";
-import { Client } from "colyseus.js";
+import { Room , Client } from "colyseus.js";
+
 import { SimpleGameState } from "./simple-game-state";
 import { Schema } from "@colyseus/schema";
 

@@ -9,9 +9,7 @@ module.exports = merge(common, {
   entry: './src/index.ts',
   devtool: 'inline-source-map',
   devServer: {
-    contentBase: './dist',
     liveReload: true,
-    inline: true,
     hot: false
   },
   module: {

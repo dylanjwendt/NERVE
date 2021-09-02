@@ -11,6 +11,8 @@ Here are the basic steps to submit a pull request.
 1. Write and run unit tests and make sure everything passes.
 
 1. Run linters and fix any linting errors they brings up.
+    * You can do this for all subprojects by running `npm run -s lint` or `npm run -s lint:fix` from the top level.
+    * You can also do this for an individual subproject by running the same commands in that subproject's directory.
 
 1. Push to your branch and submit a pull request. Include the issue number (ex. `Resolves #1`) in the PR description.
 

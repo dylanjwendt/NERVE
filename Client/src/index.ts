@@ -2,8 +2,8 @@ import './index.less';
 import * as PIXI from 'pixi.js';
 import { Sprite, Texture } from 'pixi.js';
 import DebugScreen from './debug-screen';
-import { NerveClient } from '../../Server/src/nerve-client';
-import { SimpleGameState } from '../../Server/src/simple-game-state';
+import { NerveClient, SimpleGameState } from 'nerve-server';
+
 import Entity from './entity';
 
 (async function start() {

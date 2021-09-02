@@ -13,15 +13,20 @@ implementing their games.
 
 2. How you scaffold a NERVE project depends on what you plan to do with it:
     * For consumers/testers, run `npx degit https://github.com/dylanjwendt/NERVE`
-    * For contributors, clone this repo and cd into where you cloned it.
-* From the root level run these commands in order:
-    ```
+    * For contributors, run `git clone npx degit https://github.com/dylanjwendt/NERVE`
+    * Remember to `cd` into the NERVE directory.
+
+3. From the root level run these commands in order:
+    ```bash
     $ npm install --legacy-peer-deps --include=dev
     $ npm run -s build
     $ npm run -s start
     ```
-3. Open a web browser (preferably with hardware acceleration enabled) and navigate to `http://localhost:3000`.
+
+4. Open a web browser (preferably with hardware acceleration enabled) and navigate to `http://localhost:3000`.
 The demo game should now be running!
+
+* P.S running `npm run -s start` will automatically build all subprojects if the server has not been built yet.
 
 ## Authors and Acknowledgements
 

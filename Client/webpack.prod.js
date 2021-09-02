@@ -4,7 +4,7 @@ const { merge } = require('webpack-merge')
 const TerserPlugin = require('terser-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const common = require('./webpack.common.js')
 
 module.exports = merge(common, {
@@ -31,11 +31,7 @@ module.exports = merge(common, {
           output: { comments: false }
         }
       }),
-      new OptimizeCSSAssetsPlugin({
-        cssProcessorPluginOptions: {
-          preset: ['default', { discardComments: { removeAll: false } }]
-        }
-      })
+      new CssMinimizerPlugin({})
     ]
   },
   plugins: [
