@@ -13,12 +13,17 @@
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:jest/recommended",
-        "plugin:promise/recommended"
+        "plugin:promise/recommended",
+        "plugin:workspaces/recommended",
+        "plugin:import/recommended",
+        "plugin:import/typescript"
     ],
     "plugins": [
         "@typescript-eslint",
         "jest",
-        "promise"
+        "promise",
+        "workspaces",
+        "import"
     ],
     "rules": {
         "no-console": "off",

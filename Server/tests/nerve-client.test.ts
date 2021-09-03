@@ -1,7 +1,6 @@
 // jest.mock("colyseus");
 jest.mock("colyseus.js");
-import { Client } from "colyseus.js";
-import { Room } from "colyseus.js";
+import { Client , Room } from "colyseus.js";
 // const { Room } = jest.requireActual("colyseus.js");
 import { NerveClient } from  "../src/nerve-client";
 import { SimpleGameState } from "../src/simple-game-state";

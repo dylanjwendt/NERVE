@@ -1,0 +1,39 @@
+{
+  "name": "nerve",
+  "version": "0.1.0",
+  "description": "NERVE is a 2D, non-Euclidean .io game engine with integrated an integrated client/server. The goal of NERVE is to make\r developing .io games easier by providing a single comprehensive API and taking over tasks such as netcode and state\r synchronization. The non-Euclidean aspect is to give developers greater creative liberties in implementing their games.",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "node index.js",
+    "build": "npm run -s build --workspaces",
+    "clean": "npm run -s clean --workspaces",
+    "lint": "npm run -s lint --workspaces",
+    "lint:fix": "npm run -s lint:fix --workspaces"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dylanjwendt/NERVE.git"
+  },
+  "keywords": [],
+  "contributors": [
+    "Luke Ludlow",
+    "Jordan Taylor",
+    "Calvin Tu",
+    "Dylan Wendt"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dylanjwendt/NERVE/issues"
+  },
+  "homepage": "https://github.com/dylanjwendt/NERVE#readme",
+  "workspaces": [
+    "Engine",
+    "Demo",
+    "Server",
+    "Client"
+  ],
+  "dependencies": {
+    "nerve-server": "file:./Server"
+  }
+}
