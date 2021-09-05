@@ -129,7 +129,8 @@ import Entity from './entity';
     const evt = e as KeyboardEvent;
     if (evt.key === 'Enter' && overlay) {
       overlay.style.display = 'none';
-      username = ($('#username') as HTMLInputElement).innerText;
+      username = ($('#username') as HTMLInputElement).value;
+      server.send('username', JSON.stringify({ player: playerId, name: username }));
       app.ticker.start();
     }
   });

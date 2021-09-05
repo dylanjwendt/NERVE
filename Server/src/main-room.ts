@@ -24,6 +24,8 @@ export class MainRoom extends Room<SimpleGameState> {
                 this.engine.inputHandler.handleKeyUp(req.player, req.key); // Actor ID MUST be equal to client id
             } else if(type === "mousedown") {
                 this.engine.inputHandler.handleMouseDownInput(req.player, req.mousePos);
+            } else if (type == "username") {
+                console.log("Player " + req.player + " is now called " + req.name);
             }
         });
     }
