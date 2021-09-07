@@ -73,33 +73,6 @@ import Entity from './entity';
     playerId = message;
   });
 
-  // Input listeners
-  const keysDown = new Set();
-  const mouse = [0, 0];
-  document.addEventListener('keydown', (e) => {
-    if (!keysDown.has(e.key)) {
-      server.send('keydown', JSON.stringify({ player: playerId, key: e.key }));
-      keysDown.add(e.key);
-    }
-    if (e.key === 't') {
-      server.send('mousedown', JSON.stringify({ player: playerId, mousePos: mouse }));
-    }
-  });
-
-  document.addEventListener('mousemove', (e) => {
-    mouse[0] = e.clientX;
-    mouse[1] = e.clientY;
-  });
-
-  document.addEventListener('keyup', (e) => {
-    server.send('keyup', JSON.stringify({ player: playerId, key: e.key }));
-    keysDown.delete(e.key);
-  });
-
-  document.addEventListener('mousedown', (e) => {
-    server.send('mousedown', JSON.stringify({ player: playerId, mousePos: [e.clientX, e.clientY] }));
-  });
-
   // App tickers
   app.ticker.add(() => {
     const player = entities.get(playerId);
@@ -132,6 +105,38 @@ import Entity from './entity';
       username = ($('#username') as HTMLInputElement).value;
       server.send('username', JSON.stringify({ player: playerId, name: username }));
       app.ticker.start();
+
+      addInputListeners(server, playerId);
     }
   });
 }());
+
+//Creates event listeners for inputs from the client
+function addInputListeners(server: any, playerId: string) {
+      const keysDown = new Set();
+      const mouse = [0, 0];
+
+      document.addEventListener('keydown', (e) => {
+        if (!keysDown.has(e.key)) {
+          server.send('keydown', JSON.stringify({ player: playerId, key: e.key }));
+          keysDown.add(e.key);
+        }
+        if (e.key === 't') {
+          server.send('mousedown', JSON.stringify({ player: playerId, mousePos: mouse }));
+        }
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        mouse[0] = e.clientX;
+        mouse[1] = e.clientY;
+      });
+
+      document.addEventListener('keyup', (e) => {
+        server.send('keyup', JSON.stringify({ player: playerId, key: e.key }));
+        keysDown.delete(e.key);
+      });
+
+      document.addEventListener('mousedown', (e) => {
+        server.send('mousedown', JSON.stringify({ player: playerId, mousePos: [e.clientX, e.clientY] }));
+      });
+}
