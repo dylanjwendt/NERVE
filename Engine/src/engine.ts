@@ -47,7 +47,6 @@ export default abstract class Engine {
 
     getWorldState(): IEntity[] {
         const retArr: IEntity[] = [];
-        //this.#gameLogic.actors.forEach((e) => retArr.push((e.getCoords().toVector())));
         this.gameLogic.actors.forEach((actor) => {
             retArr.push(new EntityEntry(actor));
         });

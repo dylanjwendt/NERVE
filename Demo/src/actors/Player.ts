@@ -38,26 +38,26 @@ export default class Player extends Actor {
     updateDirection(direction: string): void {
         // Note up/down directions are flipped for top-left origin
         if(direction === "down") {
-            this.body.position.y += this.maxSpeed;
+            Matter.Body.setVelocity(this.body, Matter.Vector.create(this.body.velocity.x, this.body.velocity.y + this.maxSpeed));
         }
         else if(direction === "up") {
-            this.body.position.y -= this.maxSpeed;
+            Matter.Body.setVelocity(this.body, Matter.Vector.create(this.body.velocity.x, this.body.velocity.y - this.maxSpeed));
         }
         else if(direction === "left") {
-            this.body.position.x -= this.maxSpeed;
+            Matter.Body.setVelocity(this.body, Matter.Vector.create(this.body.velocity.x - this.maxSpeed, this.body.velocity.y));
         }
         else if(direction === "right") {
-            this.body.position.x += this.maxSpeed;
+            Matter.Body.setVelocity(this.body, Matter.Vector.create(this.body.velocity.x + this.maxSpeed, this.body.velocity.y));
         }
 
-        this.clamp(this.body.velocity.x, this.maxSpeed);
-        this.clamp(this.body.velocity.y, this.maxSpeed);
+        Matter.Body.setVelocity(this.body, Matter.Vector.create(this.clamp(this.body.velocity.x, this.maxSpeed), this.clamp(this.body.velocity.x, this.maxSpeed)));
     }
 
-    clamp(vel: number, maxSpeed: number):void {
+    clamp(vel: number, maxSpeed: number): number {
         if (vel < 0) {
             if(vel < maxSpeed) vel = -maxSpeed;
         }
         if(vel > maxSpeed) vel = maxSpeed;
+        return vel;
     }
 }
