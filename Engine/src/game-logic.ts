@@ -23,24 +23,6 @@ export default class GameLogic extends System {
       }
   }
 
-  testInteraction(ActorA_id: string, ActorB_id: string, dist: number): void {
-      if (this.actors.has(ActorA_id) && this.actors.has(ActorB_id)) {
-          this.actors.get(ActorA_id)?.checkInteractions(this.actors.get(ActorB_id)!, dist);
-      }
-  }
-
-  activate(): void {
-      if (this.getStatus() !== "Online") {
-          this.newSubscription(this.channel.subscribe({
-              topic: "Actor.Interaction.Possible",
-              callback: (data: any) => {
-                  this.testInteraction(data.ActorA_ID, data.ActorB_ID, data.Dist);
-              },
-          }));
-      }
-      super.activate();
-  }
-
   public getValidID(): string {
       let id: string;
       id = crypto.randomInt(281474976710655).toString();

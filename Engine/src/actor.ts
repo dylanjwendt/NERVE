@@ -1,29 +1,29 @@
+import Matter from "matter-js";
 import * as postal from "postal";
-import EuclideanCoordinates, { Vec2 } from "./coordinates";
 
 export default class Actor {
     #name: string;
     #id: string;
-    #coords: EuclideanCoordinates;
-    #velocity: Vec2;
     #interactions: ActorInteraction[];
-    #triggerRadius: number;
     #scale: [number, number];
     #tint: number;
     #width: number;
     #height: number;
+    public body: Matter.Body;
 
-    constructor(id: string, name = "") {
+    constructor(id: string, name = "", body: Matter.Body) { 
         this.#name = name;
-        this.#coords = new EuclideanCoordinates();
-        this.#velocity = new Vec2();
         this.#interactions = [];
         this.#id = id;
-        this.#triggerRadius = 40;
         this.#scale = [1, 1];
         this.#tint = 0x00efff;
         this.#width = 16;
         this.#height = 16;
+        //Default as circle at x = 0, y = 0, radius 5.
+        if(!body) {
+            body = Matter.Bodies.circle(0, 0, 5, {id: +this.#id});
+        }
+        this.body = body;
     }
 
     setName(name: string): void {
@@ -34,62 +34,18 @@ export default class Actor {
         return this.#name;
     }
 
-    setCoords(coords: EuclideanCoordinates): void {
-        this.#coords = coords;
-    }
-
-    getCoords(): EuclideanCoordinates {
-        return this.#coords;
-    }
-
     getID(): string {
         return this.#id;
-    }
-
-    setTriggerRadius(rad: number): void {
-        this.#triggerRadius = rad;
-    }
-
-    getTriggerRadius(): number {
-        return this.#triggerRadius;
     }
 
     addInteraction(interaction: ActorInteraction): void {
         this.#interactions.push(interaction);
     }
 
-    checkInteraction(other: Actor, int: ActorInteraction): void {
-        // if (other instanceof int.getOtherType())
-        // {
-        int.trigger(this, other);
-        // }
-    }
-
-    checkInteractions(other: Actor, dist: number): void {
-        this.#interactions.forEach((e) => {
-            if(dist <= e.getTriggerDist())
-            {
-                e.trigger(this, other);
-            }
-        });
-    }
-
-    moveTimestep(millisec: number): void {
-        const delta = millisec / 1000;
-        const deltaPos = new Vec2(this.#velocity.x * delta, this.#velocity.y * delta);
-        this.#coords.addVector(deltaPos);
-    }
-
-    setVelocity(vel: Vec2): void {
-        this.#velocity = vel;
-    }
-
-    addVelocity(vel: Vec2): void {
-        this.#velocity.add(vel);
-    }
-
-    getVelocity(): Vec2 {
-        return this.#velocity;
+    triggerInteractions(other: Actor, type: string): void {
+        for(let i = 0; i < this.#interactions.length; i++) {
+            this.#interactions[i].trigger(this, other, type);
+        }
     }
 
     setScale(val: [number, number]): void
@@ -128,28 +84,22 @@ export default class Actor {
 
 export abstract class ActorInteraction {
     //#otherType: typeof Actor;
-    triggerDist: number;
   
     constructor() {
         //this.#otherType = Actor;
-        this.triggerDist = 40;
     }
   
-    getTriggerDist(): number {
-        return this.triggerDist;
-    }
-  
-    abstract trigger(self: Actor, other: Actor): void;
+    abstract trigger(self: Actor, other: Actor, type: string): void;
 }
   
 export class DefaultInteraction extends ActorInteraction {
     #channel = postal.channel();
     
-    trigger(self: Actor, other: Actor): void {
+    trigger(self: Actor, other: Actor, type: string): void {
         this.#channel.publish("Actor.Interaction.Triggered", {
             ActorA_ID: self.getID(),
             ActorB_ID: other.getID(),
-            Distance: self.getCoords().getDistanceTo(other.getCoords()),
+            Type: type,
             Message: `${self.getName()} interacted with ${other.getName()}`,
         });
     }

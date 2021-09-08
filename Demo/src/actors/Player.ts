@@ -1,4 +1,5 @@
-import { Actor, Vec2 } from "nerve-engine";
+import Matter from "matter-js";
+import { Actor } from "nerve-engine";
 const MAXHEALTH = 255;
 
 export default class Player extends Actor {
@@ -7,13 +8,14 @@ export default class Player extends Actor {
     private defaultTint;
 
     constructor(id: string, name = "") {
-        super(id, name);
+        super(id, name, Matter.Bodies.circle(0,0,48));
         this.maxSpeed = 300;
         this.setScale([1.5, 1.5]);
         this.setWidth(48);
         this.setHeight(48);
         this.health = MAXHEALTH;
         this.defaultTint = this.getTint();
+        Matter.Body.setStatic(this.body, true);
     }
 
     getHealth () {
@@ -36,18 +38,26 @@ export default class Player extends Actor {
     updateDirection(direction: string): void {
         // Note up/down directions are flipped for top-left origin
         if(direction === "down") {
-            this.setVelocity(new Vec2(this.getVelocity().x, this.getVelocity().y + this.maxSpeed));
+            this.body.position.y += this.maxSpeed;
         }
         else if(direction === "up") {
-            this.setVelocity(new Vec2(this.getVelocity().x, this.getVelocity().y - this.maxSpeed));
+            this.body.position.y -= this.maxSpeed;
         }
         else if(direction === "left") {
-            this.setVelocity(new Vec2(this.getVelocity().x - this.maxSpeed, this.getVelocity().y));
+            this.body.position.x -= this.maxSpeed;
         }
         else if(direction === "right") {
-            this.setVelocity(new Vec2(this.getVelocity().x + this.maxSpeed, this.getVelocity().y));
+            this.body.position.x += this.maxSpeed;
         }
 
-        this.getVelocity().clamp(this.maxSpeed);
+        this.clamp(this.body.velocity.x, this.maxSpeed);
+        this.clamp(this.body.velocity.y, this.maxSpeed);
+    }
+
+    clamp(vel: number, maxSpeed: number):void {
+        if (vel < 0) {
+            if(vel < maxSpeed) vel = -maxSpeed;
+        }
+        if(vel > maxSpeed) vel = maxSpeed;
     }
 }

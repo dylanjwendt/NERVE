@@ -1,31 +1,48 @@
-import { Vec2 } from "./coordinates";
 import Actor from "./actor";
 import GameLogic from "./game-logic";
 import Terminal from "./terminal";
-import World from "./world";
 import { IEntity } from "./IEntity";
 import InputHandler from "./input-handler";
-
-export type Ticker = (world: World, timestep: number) => void;
+import Matter from "matter-js";
 
 export default abstract class Engine {
     protected gameLogic: GameLogic;
     #term: Terminal;
-    #world: World;
     inputHandler: InputHandler;
-    tickers: Ticker[]
+    engine: Matter.Engine;
 
-    constructor(getHandler: (a: World, l: GameLogic) => InputHandler) {
+    constructor(getHandler: (l: GameLogic) => InputHandler) {
         this.#term = new Terminal();
         this.gameLogic = new GameLogic();
-        this.#world = new World(this.gameLogic);
-        this.inputHandler = getHandler(this.#world, this.gameLogic);
+        this.inputHandler = getHandler(this.gameLogic);
         this.#term.activate();
         this.gameLogic.activate();
-        this.#world.activate();
         this.inputHandler.activate();
-        this.tickers = [];
         this.#term.deactivate();
+        //Matter Integration
+        this.engine = Matter.Engine.create();
+        this.engine.gravity.x = 0;
+        this.engine.gravity.y = 0;
+        function handleEvent(event: Matter.IEventCollision<Matter.Engine>, actors: Map<string, Actor>, type: string) {
+            return function(event: Matter.IEventCollision<Matter.Engine>, actors: Map<string, Actor>, type: string) {
+                const pairs = event.pairs;
+                for (let i = 0; i < pairs.length; i++) {
+                    const pair = pairs[i];
+                    const id1 = pair.bodyA.id;
+                    const id2 = pair.bodyA.id;
+                    const actorA = actors.get(id1.toString());
+                    const actorB = actors.get(id2.toString());
+                    if(!actorA || !actorB) {
+                        return;
+                    }
+                    actorA.triggerInteractions(actorB, type);
+                    actorB.triggerInteractions(actorA, type);
+                }
+            };
+        }
+        Matter.Events.on(this.engine, "collisionStart", (e) => handleEvent(e, this.gameLogic.actors, "Start"));
+        Matter.Events.on(this.engine, "collisionActive", (e) => handleEvent(e, this.gameLogic.actors, "Active"));
+        Matter.Events.on(this.engine, "collisionEnd", (e) => handleEvent(e, this.gameLogic.actors, "End"));
     }
 
     getWorldState(): IEntity[] {
@@ -37,24 +54,9 @@ export default abstract class Engine {
         return retArr;
     }
 
-    addActorVel(id: string, vel: Vec2): void {
-        this.#world.addActorVel(id, vel);
-    }
-
-    setActorVel(id: string, vel: Vec2): void {
-        this.#world.setActorVel(id, vel);
-    }
-
-    addActorPos(id: string, vel: Vec2): void {
-        this.#world.addActorPos(id, vel);
-    }
-
-    setActorPos(id: string, vel: Vec2): void {
-        this.#world.setActorPos(id, vel);
-    }
-
     addActor(id: string, actor: Actor): void  {
-        return this.gameLogic.addActor(id, actor);
+        this.gameLogic.addActor(id, actor);
+        Matter.Composite.add(this.engine.world, actor.body);
     }
 
     removeActor(id: string): void {
@@ -62,17 +64,14 @@ export default abstract class Engine {
     }
 
     update(millisec: number): void {
-        this.#world.moveTimestep(millisec);
-        this.tickers.forEach(t => t(this.#world, millisec));
+        Matter.Engine.update(this.engine, millisec);
     }
 
     showData(show: boolean): void {
         this.#term.showData(show);
     }
 
-    addTicker(ticker: Ticker): void {
-        this.tickers.push(ticker);
-    }
+    
 }
 
 class EntityEntry implements IEntity {
@@ -91,10 +90,10 @@ class EntityEntry implements IEntity {
 
     constructor(actor: Actor){
         this.id = actor.getID().toString();
-        this.x = actor.getCoords().toVector().x;
-        this.y = actor.getCoords().toVector().y;
-        this.vx = actor.getVelocity().x;
-        this.vy = actor.getVelocity().y;
+        this.x = actor.body.position.x;
+        this.y = actor.body.position.y;
+        this.vx = actor.body.velocity.x;
+        this.vy = actor.body.velocity.y;
         this.scale = actor.getScale();
         this.tint = actor.getTint();
         this.width = actor.getWidth();

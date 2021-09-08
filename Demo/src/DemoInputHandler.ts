@@ -1,27 +1,25 @@
-import { World, InputHandler, GameLogic, Actor, EuclideanCoordinates } from "nerve-engine";
+import { InputHandler, GameLogic, Actor } from "nerve-engine";
 import { DemoEngine } from ".";
 import Bullet from "./actors/Bullet";
 import Player from "./actors/Player";
 import WallPiece from "./actors/WallPiece";
 
 export default class DemoInputHandler extends InputHandler {
-    private world;
     private logic;
     private engine: DemoEngine | null;
 
-    constructor(world: World, logic: GameLogic) {
+    constructor(logic: GameLogic) {
         super();
-        this.world = world;
         this.logic = logic;
         this.engine = null;
     }
     
-    setEngine(engine: DemoEngine) {
+    setEngine(engine: DemoEngine): void {
         this.engine = engine;
     }
 
     handleKeyDown(actorId: string, key: string): void {
-        const actor = this.world.getActorById(actorId);
+        const actor = this.logic.actors.get(actorId);
         if(actor instanceof Player) {
             if(key === "w") {
                 actor.updateDirection("up");
@@ -39,7 +37,7 @@ export default class DemoInputHandler extends InputHandler {
     }
 
     handleKeyUp(actorId: string, key: string): void {
-        const actor = this.world.getActorById(actorId);
+        const actor = this.logic.actors.get(actorId);
         if(actor instanceof Player) {
             if(key === "w") {
                 actor.updateDirection("down");
@@ -63,8 +61,8 @@ export default class DemoInputHandler extends InputHandler {
         const id = this.logic.getValidID();
         const player = this.logic.actors.get(actorId);
         if (!player) return;
-        const pcoords = player.getCoords().toVector();
-        const bullet = new Bullet(id, player as Player, [pcoords!.x, pcoords!.y], pos);
+        const pcoords = player.body.position;
+        const bullet = new Bullet(id, player as Player, [pcoords.x, pcoords.y], pos);
         this.logic.addActor(id, bullet);
     }
 
@@ -82,9 +80,10 @@ export default class DemoInputHandler extends InputHandler {
         const dist = 100;
         for(let i = 0; i < numEnt; i++) {
             const theta = ((360/numEnt)*i)*Math.PI/180;
-            const pos = [parent.getCoords().toVector().x + (Math.cos(theta)*dist), parent.getCoords().toVector().y + (Math.sin(theta)*dist)] as [number, number];
+            const pos = [parent.body.position.x + (Math.cos(theta)*dist), parent.body.position.y + (Math.sin(theta)*dist)] as [number, number];
             const piece = new WallPiece(this.logic.getValidID(), "todo", this.engine);
-            piece.setCoords(new EuclideanCoordinates(pos[0], pos[1]));
+            piece.body.position.x = pos[0];
+            piece.body.position.x = pos[1];
             piece.setTint(0xa1a1a1);
             this.logic.addActor(piece.getID(), piece);
         }

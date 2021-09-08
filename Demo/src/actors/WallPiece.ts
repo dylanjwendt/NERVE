@@ -1,6 +1,6 @@
-import { Actor, Vec2, EuclideanCoordinates } from "nerve-engine";
+import Matter from "matter-js";
+import { Actor } from "nerve-engine";
 import { DemoEngine } from "..";
-import Bounce from "../interactions/bounce";
 import Damage from "../interactions/Damage";
 import Player from "./Player";
 
@@ -11,19 +11,22 @@ export default class WallPiece extends Actor {
     #engine: DemoEngine;
 
     constructor(id: string, name = "", engine: DemoEngine) {
-        super(id, name);
+        super(id, name, Matter.Bodies.polygon(0,0,6,48));
         this.setScale([1.5, 1.5]);
         this.setWidth(48);
         this.setHeight(48);
         this.#deltaT = 0;
         this.#engine = engine;
-    }
+        Matter.Body.setStatic(this.body, true);
+        function decay(event: Matter.IEventTimestamped<Matter.Engine>, thisPiece: WallPiece) {
+            const millisec = thisPiece.#engine.engine.timing.lastDelta;
 
-    moveTimestep(millisec: number) {
-        if(this.#deltaT >= maxAge) {
-            this.#engine.removeWall(this);
-            return;
+            if(thisPiece.#deltaT >= maxAge) {
+                thisPiece.#engine.removeWall(thisPiece);
+                return;
+            }
+            thisPiece.#deltaT += millisec;
         }
-        this.#deltaT += millisec;
+        Matter.Events.on(this.#engine.engine, "afterUpdate", (e) => decay(e, this));
     }
 }
