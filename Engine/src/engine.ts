@@ -6,7 +6,7 @@ import InputHandler from "./input-handler";
 import Matter from "matter-js";
 
 export default abstract class Engine {
-    protected gameLogic: GameLogic;
+    gameLogic: GameLogic;
     #term: Terminal;
     inputHandler: InputHandler;
     engine: Matter.Engine;
@@ -24,21 +24,20 @@ export default abstract class Engine {
         this.engine.gravity.x = 0;
         this.engine.gravity.y = 0;
         function handleEvent(event: Matter.IEventCollision<Matter.Engine>, actors: Map<string, Actor>, type: string) {
-            return function(event: Matter.IEventCollision<Matter.Engine>, actors: Map<string, Actor>, type: string) {
-                const pairs = event.pairs;
-                for (let i = 0; i < pairs.length; i++) {
-                    const pair = pairs[i];
-                    const id1 = pair.bodyA.id;
-                    const id2 = pair.bodyA.id;
-                    const actorA = actors.get(id1.toString());
-                    const actorB = actors.get(id2.toString());
-                    if(!actorA || !actorB) {
-                        return;
-                    }
-                    actorA.triggerInteractions(actorB, type);
-                    actorB.triggerInteractions(actorA, type);
+            const pairs = event.pairs;
+            for (let i = 0; i < pairs.length; i++) {
+                const pair = pairs[i];
+                const id1 = pair.bodyA.id;
+                const id2 = pair.bodyB.id;
+                const actorA = actors.get(id1.toString());
+                const actorB = actors.get(id2.toString());
+                if(!actorA || !actorB) {
+                    return;
                 }
-            };
+                actorA.triggerInteractions(actorB, type);
+                actorB.triggerInteractions(actorA, type);
+            }
+            console.log("impact");
         }
         Matter.Events.on(this.engine, "collisionStart", (e) => handleEvent(e, this.gameLogic.actors, "Start"));
         Matter.Events.on(this.engine, "collisionActive", (e) => handleEvent(e, this.gameLogic.actors, "Active"));

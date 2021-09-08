@@ -4,7 +4,7 @@ import Bullet from "../actors/Bullet";
 
 export default class Impact extends ActorInteraction {
 
-    trigger(self: Actor, other: Actor): void {
+    trigger(self: Actor, other: Actor, type: string): void {
         if(other instanceof Bullet && !other.isNullParent()) {
             (self as Blackhole).objectImpact(other);
         }

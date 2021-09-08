@@ -6,17 +6,21 @@ export default class Player extends Actor {
     private maxSpeed;
     private health;
     private defaultTint;
+    private movemask: number;
 
     constructor(id: string, name = "") {
-        super(id, name, Matter.Bodies.circle(0,0,48));
-        this.maxSpeed = 1;
+        super(id, name, Matter.Bodies.circle(0,0,24));
+        this.maxSpeed = 3;
         this.setScale([1.5, 1.5]);
         this.setWidth(48);
         this.setHeight(48);
         this.health = MAXHEALTH;
         this.defaultTint = this.getTint();
-        this.body.collisionFilter.category = 0x100;
-        this.body.collisionFilter.mask = ~0x100; 
+        this.body.collisionFilter.mask = 0b1<<1; 
+        this.body.collisionFilter.category = ~0b1<<0;
+        this.body.frictionAir = 0;
+        this.movemask = 0b0000;
+        Matter.Body.setMass(this.body, 100000);
     }
 
     getHealth () {
@@ -36,22 +40,42 @@ export default class Player extends Actor {
         this.setTint(tint);
     }
 
-    updateDirection(direction: string): void {
+    updateDirection(key: string): void {
         // Note up/down directions are flipped for top-left origin
-        if(direction === "down") {
-            Matter.Body.setVelocity(this.body, Matter.Vector.create(this.body.velocity.x, - this.maxSpeed));
+        if(key == "w") {
+            this.movemask |= 0b1000;
         }
-        else if(direction === "up") {
-            Matter.Body.setVelocity(this.body, Matter.Vector.create(this.body.velocity.x, + this.maxSpeed));
+        else if(key == "-w") {
+            this.movemask &= 0b0111;
         }
-        else if(direction === "left") {
-            Matter.Body.setVelocity(this.body, Matter.Vector.create( - this.maxSpeed, this.body.velocity.y));
+        else if(key == "a") {
+            this.movemask |= 0b0100;
         }
-        else if(direction === "right") {
-            Matter.Body.setVelocity(this.body, Matter.Vector.create( + this.maxSpeed, this.body.velocity.y));
+        else if(key == "-a") {
+            this.movemask &= 0b1011;
+        }
+        else if(key == "s") {
+            this.movemask |= 0b0010;
+        }
+        else if(key == "-s") {
+            this.movemask &= 0b1101;
+        }
+        else if(key == "d") {
+            this.movemask |= 0b0001;
+        }
+        else if(key == "-d") {
+            this.movemask &= 0b1110;
         }
 
-        Matter.Body.setVelocity(this.body, Matter.Vector.create(this.clamp(this.body.velocity.x, this.maxSpeed), this.clamp(this.body.velocity.x, this.maxSpeed)));
+        //Move
+        let vy = 0;
+        let vx = 0;
+        if(this.movemask & 0b1000) vy -= 1;
+        if(this.movemask & 0b0100) vx -= 1;
+        if(this.movemask & 0b0010) vy += 1;
+        if(this.movemask & 0b0001) vx += 1;
+
+        Matter.Body.setVelocity(this.body, Matter.Vector.create(vx*this.maxSpeed, vy*this.maxSpeed));
     }
 
     clamp(vel: number, maxSpeed: number): number {

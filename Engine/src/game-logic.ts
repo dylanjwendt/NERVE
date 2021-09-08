@@ -18,6 +18,7 @@ export default class GameLogic extends System {
       if(!this.actors.has(id)) {
           this.actors.set(id, actor);
           this.engine.addBody(actor.body);
+          actor.body.id = +id;
       }
   }
 

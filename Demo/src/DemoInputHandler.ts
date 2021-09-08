@@ -23,16 +23,16 @@ export default class DemoInputHandler extends InputHandler {
         const actor = this.logic.actors.get(actorId);
         if(actor instanceof Player) {
             if(key === "w") {
-                actor.updateDirection("up");
+                actor.updateDirection("w");
             }
             else if(key === "a") {
-                actor.updateDirection("left");
+                actor.updateDirection("a");
             }
             else if(key === "s") {
-                actor.updateDirection("down");
+                actor.updateDirection("s");
             }
             else if(key === "d") {
-                actor.updateDirection("right");
+                actor.updateDirection("d");
             }
         }
     }
@@ -41,16 +41,16 @@ export default class DemoInputHandler extends InputHandler {
         const actor = this.logic.actors.get(actorId);
         if(actor instanceof Player) {
             if(key === "w") {
-                actor.updateDirection("down");
+                actor.updateDirection("-w");
             }
             else if(key === "a") {
-                actor.updateDirection("right");
+                actor.updateDirection("-a");
             }
             else if(key === "s") {
-                actor.updateDirection("up");
+                actor.updateDirection("-s");
             }
             else if(key === "d") {
-                actor.updateDirection("left");
+                actor.updateDirection("-d");
             }
             else if(key === " ") {
                 this.spawnWall(actor);
@@ -63,7 +63,7 @@ export default class DemoInputHandler extends InputHandler {
         const player = this.logic.actors.get(actorId);
         if (!player) return;
         const pcoords = player.body.position;
-        const bullet = new Bullet(id, player as Player, [pcoords.x, pcoords.y], pos);
+        const bullet = new Bullet(id, player as Player, [pcoords.x, pcoords.y], pos, this.engine!.engine, this.logic);
         this.logic.addActor(id, bullet);
     }
 

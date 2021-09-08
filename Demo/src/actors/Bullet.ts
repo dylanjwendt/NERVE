@@ -1,30 +1,50 @@
-import { Actor} from "nerve-engine";
+import { Actor, GameLogic} from "nerve-engine";
 import Damage from "../interactions/Damage";
 import Player from "./Player";
 import Matter from "matter-js";
 
-const speed = 2;
+const speed = 5;
 
 export default class Bullet extends Actor {
     #parent: Player | null;
+    private creationTime: number;
+    private logic: GameLogic;
+    private LIFETIME: number;
 
-    constructor(id: string, parent: Player | null, pos1: [number, number], pos2: [number, number]) {
-        super(id, "Bullet", Matter.Bodies.circle(0,0,16));
+
+    constructor(id: string, parent: Player | null, pos1: [number, number], pos2: [number, number], engine: Matter.Engine, logic: GameLogic, life = 3000) {
+        super(id, "Bullet", Matter.Bodies.circle(0,0,8));
         this.#parent = parent;
-        pos2[1] *= -1;
         const normalization = Math.sqrt((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2);
-        const vx = ((pos2[0] - pos1[0]) / normalization) * speed;
-        const vy = ((pos2[1] - pos1[1]) / normalization) * speed;
+        const offset = 35;
+        const dx = ((pos2[0] - pos1[0]) / normalization);
+        const dy = ((pos2[1] - pos1[1]) / normalization);
+        const vx = dx * speed;
+        const vy = dy * speed;
         Matter.Body.setVelocity(this.body, Matter.Vector.create(vx, vy));
         this.setScale([0.5, 0.5]);
         this.setTint(0xf5ef42);
-        Matter.Body.setPosition(this.body, Matter.Vector.create(pos1[0], pos1[1]));
+        Matter.Body.setPosition(this.body, Matter.Vector.create(pos1[0]+offset*dx, pos1[1]+offset*dy));
         this.setWidth(16);
         this.setHeight(16);
         this.addInteraction(new Damage(this.#parent));
-        this.body.collisionFilter.category = 0x100;
-        this.body.collisionFilter.mask = ~0x100; 
+        this.body.collisionFilter.mask = 0b1<<0|0b1<<2; 
+        this.body.collisionFilter.category = 0b1<<1;
         this.body.frictionAir = 0;
+        this.creationTime = engine.timing.timestamp;
+        this.logic = logic;
+        this.LIFETIME = life;
+        this.addInteraction(new Damage(parent));
+        function maintainSpeed(event: Matter.IEventTimestamped<Matter.Engine>, bull: Bullet) {
+            const normalization = Math.sqrt(bull.body.velocity.x * bull.body.velocity.x + bull.body.velocity.y * bull.body.velocity.y);
+            const vx = (bull.body.velocity.x / normalization) * speed;
+            const vy = (bull.body.velocity.y / normalization) * speed;
+            Matter.Body.setVelocity(bull.body, Matter.Vector.create(vx, vy));
+            if(engine.timing.timestamp-bull.creationTime > bull.LIFETIME) {
+                bull.logic.removeActor(bull.getID());
+            }
+        }  
+        Matter.Events.on(engine, "beforeUpdate", (e) => maintainSpeed(e, this));
     }
 
     isNullParent(): boolean {
