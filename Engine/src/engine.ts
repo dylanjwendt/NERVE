@@ -13,7 +13,7 @@ export default abstract class Engine {
 
     constructor(getHandler: (l: GameLogic) => InputHandler) {
         this.#term = new Terminal();
-        this.gameLogic = new GameLogic();
+        this.gameLogic = new GameLogic(this);
         this.inputHandler = getHandler(this.gameLogic);
         this.#term.activate();
         this.gameLogic.activate();
@@ -70,6 +70,13 @@ export default abstract class Engine {
         this.#term.showData(show);
     }
 
+    addBody(body: Matter.Body): void {
+        Matter.World.add(this.engine.world, body);
+    }
+
+    removeBody(body: Matter.Body): void {
+        Matter.World.remove(this.engine.world, body);
+    }
     
 }
 

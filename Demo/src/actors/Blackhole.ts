@@ -13,6 +13,7 @@ export default class Blackhole extends Actor {
     #engine: DemoEngine;
     #origin: [number, number];
     #deltaT: number;
+    #tgt: {x: number, y: number};
 
     constructor(id: string, name = "", eng: DemoEngine) {
         super(id, name, Matter.Bodies.circle(0,0,48));
@@ -27,6 +28,7 @@ export default class Blackhole extends Actor {
         this.#deltaT = DECISIONINTERVAL+1;
         this.body.collisionFilter.mask = 0x800;
         this.body.collisionFilter.category = ~0x800;
+        this.#tgt = {x: 0,y: 0};
     }
 
     objectImpact(other: Actor): void {
@@ -43,23 +45,22 @@ export default class Blackhole extends Actor {
     }
 
     wander(millisec: number): void {
+        this.#deltaT += millisec;
         if(this.#deltaT >= DECISIONINTERVAL)
         {
             const offsetx = ((Math.random()*2)-1)*WANDERRANGE;
             const offsety = ((Math.random()*2)-1)*WANDERRANGE;
-            const tgt = {x: this.#origin[0]+offsetx, y: this.#origin[1] +offsety};
-            const deltax = tgt.x-this.body.position.x;
-            const deltay = tgt.y-this.body.position.y;
-            const vx = deltax/(DECISIONINTERVAL/1000);
-            const vy = deltay/(DECISIONINTERVAL/1000);
-            Matter.Body.setVelocity(this.body, Matter.Vector.create(vx, vy));
+            this.#tgt = {x: this.#origin[0]+offsetx, y: this.#origin[1] +offsety};
             this.#deltaT = 0;    
         }
         else
         {
-            this.#deltaT += millisec;
+            const deltax = this.#tgt.x-this.body.position.x;
+            const deltay = this.#tgt.y-this.body.position.y;
+            const vx = deltax/((2*DECISIONINTERVAL - this.#deltaT)/1000);
+            const vy = deltay/((2*DECISIONINTERVAL - this.#deltaT)/1000);
+            Matter.Body.setVelocity(this.body, Matter.Vector.create(vx, vy));
         }
-        console.log("Delta: %s\nPosition: %s\nVelocity: %s\n\n", millisec, this.body.position, this.body.velocity);
     }
 
     explode(): void {

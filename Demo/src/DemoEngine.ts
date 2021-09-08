@@ -18,11 +18,13 @@ export default class DemoEngine extends Engine {
 
         this.bh.setOrigin([500, 500]);
         this.gameLogic.addActor(this.bh.getID(), this.bh);
+
         this.bh2 = new Blackhole(this.gameLogic.getValidID(), "bh2", this);
-        Matter.Body.setPosition(this.bh2.body, Matter.Vector.create(500, 500));
-      
+        Matter.Body.setPosition(this.bh2.body, Matter.Vector.create(1000, 1000));
+
         this.bh2.setOrigin([500, 500]);
         this.gameLogic.addActor(this.bh2.getID(), this.bh2);
+
         (this.inputHandler as DemoInputHandler).setEngine(this);
     }
 

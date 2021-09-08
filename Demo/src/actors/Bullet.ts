@@ -3,7 +3,7 @@ import Damage from "../interactions/Damage";
 import Player from "./Player";
 import Matter from "matter-js";
 
-const speed = 400;
+const speed = 2;
 
 export default class Bullet extends Actor {
     #parent: Player | null;
@@ -21,8 +21,10 @@ export default class Bullet extends Actor {
         Matter.Body.setPosition(this.body, Matter.Vector.create(pos1[0], pos1[1]));
         this.setWidth(16);
         this.setHeight(16);
-
         this.addInteraction(new Damage(this.#parent));
+        this.body.collisionFilter.category = 0x100;
+        this.body.collisionFilter.mask = ~0x100; 
+        this.body.frictionAir = 0;
     }
 
     isNullParent(): boolean {

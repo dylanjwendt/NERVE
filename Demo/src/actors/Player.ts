@@ -9,13 +9,14 @@ export default class Player extends Actor {
 
     constructor(id: string, name = "") {
         super(id, name, Matter.Bodies.circle(0,0,48));
-        this.maxSpeed = 300;
+        this.maxSpeed = 1;
         this.setScale([1.5, 1.5]);
         this.setWidth(48);
         this.setHeight(48);
         this.health = MAXHEALTH;
         this.defaultTint = this.getTint();
-        Matter.Body.setStatic(this.body, true);
+        this.body.collisionFilter.category = 0x100;
+        this.body.collisionFilter.mask = ~0x100; 
     }
 
     getHealth () {
@@ -38,16 +39,16 @@ export default class Player extends Actor {
     updateDirection(direction: string): void {
         // Note up/down directions are flipped for top-left origin
         if(direction === "down") {
-            Matter.Body.setVelocity(this.body, Matter.Vector.create(this.body.velocity.x, this.body.velocity.y + this.maxSpeed));
+            Matter.Body.setVelocity(this.body, Matter.Vector.create(this.body.velocity.x, - this.maxSpeed));
         }
         else if(direction === "up") {
-            Matter.Body.setVelocity(this.body, Matter.Vector.create(this.body.velocity.x, this.body.velocity.y - this.maxSpeed));
+            Matter.Body.setVelocity(this.body, Matter.Vector.create(this.body.velocity.x, + this.maxSpeed));
         }
         else if(direction === "left") {
-            Matter.Body.setVelocity(this.body, Matter.Vector.create(this.body.velocity.x - this.maxSpeed, this.body.velocity.y));
+            Matter.Body.setVelocity(this.body, Matter.Vector.create( - this.maxSpeed, this.body.velocity.y));
         }
         else if(direction === "right") {
-            Matter.Body.setVelocity(this.body, Matter.Vector.create(this.body.velocity.x + this.maxSpeed, this.body.velocity.y));
+            Matter.Body.setVelocity(this.body, Matter.Vector.create( + this.maxSpeed, this.body.velocity.y));
         }
 
         Matter.Body.setVelocity(this.body, Matter.Vector.create(this.clamp(this.body.velocity.x, this.maxSpeed), this.clamp(this.body.velocity.x, this.maxSpeed)));
