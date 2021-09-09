@@ -23,21 +23,20 @@ export default abstract class Engine {
         this.engine = Matter.Engine.create();
         this.engine.gravity.x = 0;
         this.engine.gravity.y = 0;
-        function handleEvent(event: Matter.IEventCollision<Matter.Engine>, actors: Map<string, Actor>, type: string) {
+        function handleEvent(event: Matter.IEventCollision<Matter.Engine>, actors: Map<number, Actor>, type: string) {
             const pairs = event.pairs;
             for (let i = 0; i < pairs.length; i++) {
                 const pair = pairs[i];
                 const id1 = pair.bodyA.id;
                 const id2 = pair.bodyB.id;
-                const actorA = actors.get(id1.toString());
-                const actorB = actors.get(id2.toString());
+                const actorA = actors.get(id1);
+                const actorB = actors.get(id2);
                 if(!actorA || !actorB) {
                     return;
                 }
                 actorA.triggerInteractions(actorB, type);
                 actorB.triggerInteractions(actorA, type);
             }
-            console.log("impact");
         }
         Matter.Events.on(this.engine, "collisionStart", (e) => handleEvent(e, this.gameLogic.actors, "Start"));
         Matter.Events.on(this.engine, "collisionActive", (e) => handleEvent(e, this.gameLogic.actors, "Active"));
@@ -52,12 +51,12 @@ export default abstract class Engine {
         return retArr;
     }
 
-    addActor(id: string, actor: Actor): void  {
+    addActor(id: number, actor: Actor): void  {
         this.gameLogic.addActor(id, actor);
         Matter.Composite.add(this.engine.world, actor.body);
     }
 
-    removeActor(id: string): void {
+    removeActor(id: number): void {
         this.gameLogic.removeActor(id);
     }
 

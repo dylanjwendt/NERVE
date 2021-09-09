@@ -3,7 +3,7 @@ import * as postal from "postal";
 
 export default class Actor {
     #name: string;
-    #id: string;
+    #id: number;
     #interactions: ActorInteraction[];
     #scale: [number, number];
     #tint: number;
@@ -11,19 +11,21 @@ export default class Actor {
     #height: number;
     public body: Matter.Body;
 
-    constructor(id: string, name = "", body: Matter.Body) { 
+    constructor(id: number, name = "", body: Matter.Body) { 
         this.#name = name;
         this.#interactions = [];
         this.#id = id;
+        console.log("%s\n", id);
         this.#scale = [1, 1];
         this.#tint = 0x00efff;
         this.#width = 16;
         this.#height = 16;
         //Default as circle at x = 0, y = 0, radius 5.
         if(!body) {
-            body = Matter.Bodies.circle(0, 0, 5, {id: +this.#id});
+            body = Matter.Bodies.circle(0, 0, 5, {id: this.#id});
         }
         this.body = body;
+        this.body.id = +id;
     }
 
     setName(name: string): void {
@@ -34,7 +36,7 @@ export default class Actor {
         return this.#name;
     }
 
-    getID(): string {
+    getID(): number {
         return this.#id;
     }
 

@@ -15,7 +15,7 @@ export default class Blackhole extends Actor {
     #deltaT: number;
     #tgt: {x: number, y: number};
 
-    constructor(id: string, name = "", eng: DemoEngine) {
+    constructor(id: number, name = "", eng: DemoEngine) {
         super(id, name, Matter.Bodies.circle(0,0,24));
         this.setScale([1.5, 1.5]);
         this.setWidth(48);
@@ -26,7 +26,7 @@ export default class Blackhole extends Actor {
         this.addInteraction(new Impact());
         this.#origin = [0,0];
         this.#deltaT = DECISIONINTERVAL+1;
-        this.body.collisionFilter.mask = 0b1<<1;
+        this.body.collisionFilter.mask = 0b1<<3;
         this.body.collisionFilter.category = 0b1<<2;
         this.#tgt = {x: 0,y: 0};
     }

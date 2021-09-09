@@ -10,7 +10,7 @@ export default class WallPiece extends Actor {
     #deltaT: number;
     #engine: DemoEngine;
 
-    constructor(id: string, name = "", engine: DemoEngine) {
+    constructor(id: number, name = "", engine: DemoEngine) {
         super(id, name, Matter.Bodies.circle(0,0,24));
         this.setScale([1.5, 1.5]);
         this.setWidth(48);

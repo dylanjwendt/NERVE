@@ -19,7 +19,7 @@ export default class DemoInputHandler extends InputHandler {
         this.engine = engine;
     }
 
-    handleKeyDown(actorId: string, key: string): void {
+    handleKeyDown(actorId: number, key: string): void {
         const actor = this.logic.actors.get(actorId);
         if(actor instanceof Player) {
             if(key === "w") {
@@ -37,7 +37,7 @@ export default class DemoInputHandler extends InputHandler {
         }
     }
 
-    handleKeyUp(actorId: string, key: string): void {
+    handleKeyUp(actorId: number, key: string): void {
         const actor = this.logic.actors.get(actorId);
         if(actor instanceof Player) {
             if(key === "w") {
@@ -58,7 +58,7 @@ export default class DemoInputHandler extends InputHandler {
         }
     }
 
-    handleMouseDownInput(actorId: string, pos: [number, number]): void {
+    handleMouseDownInput(actorId: number, pos: [number, number]): void {
         const id = this.logic.getValidID();
         const player = this.logic.actors.get(actorId);
         if (!player) return;
@@ -67,11 +67,11 @@ export default class DemoInputHandler extends InputHandler {
         this.logic.addActor(id, bullet);
     }
 
-    handleMouseUpInput(actorId: string, pos: [number, number]): void {
+    handleMouseUpInput(actorId: number, pos: [number, number]): void {
         // TODO:
     }
 
-    handleMouseMoveInput(actorId: string, pos: [number, number]): void {
+    handleMouseMoveInput(actorId: number, pos: [number, number]): void {
         // TODO:
     }
 

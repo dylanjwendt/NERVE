@@ -34,18 +34,18 @@ export default class DemoEngine extends Engine {
         super.update(millisec);
     }
 
-    addActor(id: string): void {
+    addActor(id: number): void {
         super.addActor(id, new Player(id, "todo"));
     }
 
-    newPlayerActor(name = ""): string {
+    newPlayerActor(name = ""): number {
         const id = this.gameLogic.getValidID();
         const actor = new PlayerActor(id, name);
-        this.addActor(actor.getID().toString());
+        this.addActor(actor.getID());
         return id;
     }
 
-    getValidID(): string {
+    getValidID(): number {
         return this.gameLogic.getValidID();
     }
 

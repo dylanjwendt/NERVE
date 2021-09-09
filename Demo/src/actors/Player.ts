@@ -8,7 +8,7 @@ export default class Player extends Actor {
     private defaultTint;
     private movemask: number;
 
-    constructor(id: string, name = "") {
+    constructor(id: number, name = "") {
         super(id, name, Matter.Bodies.circle(0,0,24));
         this.maxSpeed = 3;
         this.setScale([1.5, 1.5]);
@@ -16,8 +16,8 @@ export default class Player extends Actor {
         this.setHeight(48);
         this.health = MAXHEALTH;
         this.defaultTint = this.getTint();
-        this.body.collisionFilter.mask = 0b1<<1; 
-        this.body.collisionFilter.category = ~0b1<<0;
+        this.body.collisionFilter.mask = 0b1<<3; 
+        this.body.collisionFilter.category = 0b1<<1;
         this.body.frictionAir = 0;
         this.movemask = 0b0000;
         Matter.Body.setMass(this.body, 100000);
@@ -76,13 +76,5 @@ export default class Player extends Actor {
         if(this.movemask & 0b0001) vx += 1;
 
         Matter.Body.setVelocity(this.body, Matter.Vector.create(vx*this.maxSpeed, vy*this.maxSpeed));
-    }
-
-    clamp(vel: number, maxSpeed: number): number {
-        if (vel < 0) {
-            if(vel < maxSpeed) vel = -maxSpeed;
-        }
-        if(vel > maxSpeed) vel = maxSpeed;
-        return vel;
     }
 }

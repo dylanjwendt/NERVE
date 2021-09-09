@@ -12,7 +12,7 @@ export default class Bullet extends Actor {
     private LIFETIME: number;
 
 
-    constructor(id: string, parent: Player | null, pos1: [number, number], pos2: [number, number], engine: Matter.Engine, logic: GameLogic, life = 3000) {
+    constructor(id: number, parent: Player | null, pos1: [number, number], pos2: [number, number], engine: Matter.Engine, logic: GameLogic, life = 3000) {
         super(id, "Bullet", Matter.Bodies.circle(0,0,8));
         this.#parent = parent;
         const normalization = Math.sqrt((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2);
@@ -28,8 +28,8 @@ export default class Bullet extends Actor {
         this.setWidth(16);
         this.setHeight(16);
         this.addInteraction(new Damage(this.#parent));
-        this.body.collisionFilter.mask = 0b1<<0|0b1<<2; 
-        this.body.collisionFilter.category = 0b1<<1;
+        this.body.collisionFilter.mask = ~(0b1<<3); 
+        this.body.collisionFilter.category = 0b1<<3;
         this.body.frictionAir = 0;
         this.creationTime = engine.timing.timestamp;
         this.logic = logic;
@@ -44,7 +44,7 @@ export default class Bullet extends Actor {
                 bull.logic.removeActor(bull.getID());
             }
         }  
-        Matter.Events.on(engine, "beforeUpdate", (e) => maintainSpeed(e, this));
+        Matter.Events.on(engine, "afterUpdate", (e) => maintainSpeed(e, this));
     }
 
     isNullParent(): boolean {
