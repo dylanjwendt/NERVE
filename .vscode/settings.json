@@ -1,18 +1,19 @@
 {
-  "eslint.workingDirectories": [
-    "Client/",
-    "Editor/",
-    "Engine/",
-    "Server/",
-    "Demo/"
-  ],
-  "files.eol": "\n",
-  "files.exclude": {
-    "**/.git": true,
-    "**/.svn": true,
-    "**/.hg": true,
-    "**/CVS": true,
-    "**/.DS_Store": true,
-    "**/node_modules": true,
-  }
+    "eslint.workingDirectories": [
+        "Client/",
+        "Editor/",
+        "Engine/",
+        "Server/",
+        "Demo/"
+    ],
+    "files.eol": "\n",
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/node_modules": true,
+    },
+    "jest.jestCommandLine": "~/code/NERVE/Server/node_modules/.bin/jest --config ~/code/NERVE/Server/jest.config.js"
 }

@@ -1,40 +1,74 @@
 import http from "http";
-import { Server as ColyseusServer } from "colyseus";
-import { MainRoom } from "./main-room";
+import { INerveServer } from "./nerve-server.interface";
+import { Client, Room as ClientRoom } from "colyseus.js";
+import { Server } from "colyseus";
+import { GameState } from "./colyseus/game-state";
+import { inject, injectable } from "tsyringe";
+import { ColyseusRoom } from "./colyseus/colyseus-room";
+import { ServerConfig } from "./server-config";
 
-// const gameServer = new Server({
-//     server: http.createServer()
-// });
+@injectable()
+export class NerveServer implements INerveServer {
+    private colyseusServer: Server;
+    private colyseusClient: Client;
+    private config: ServerConfig;
+    private isInitialized: boolean;
+    private room?: ClientRoom;
+    private ROOM_NAME = "mainroom";
 
-// gameServer.define("my_room", MyRoom);
+    constructor(@inject("ColyseusClient") colyseusClient: Client, 
+                @inject("ColyseusServer") colyseusServer: Server, 
+                @inject("Config") config: ServerConfig) {
+        this.colyseusServer = colyseusServer;
+        this.colyseusClient = colyseusClient;
+        this.config = config;
+        this.room = undefined;
+        this.isInitialized = false;
+    }
 
-// gameServer.listen(2567);
-// console.log("listening on ws://localhost:2567");
+    async init(): Promise<void> {
+        this.colyseusServer.attach({
+            server: http.createServer()
+        });
+        this.colyseusServer.define(this.ROOM_NAME, ColyseusRoom);
+        this.colyseusServer.listen(this.config.port, this.config.host);
+        console.log(`listening on ws://${this.config.host}:${this.config.port}`);
+    }
 
-export class NerveServer {
+    async connect(endpoint: string): Promise<void> {
+        if (!this.isInitialized) {
+            await this.init();
+        }
+        console.log(`connecting to game server at ${endpoint}...`);
+        // our colyseus client already knows the endpoint
+        this.room = await this.colyseusClient.joinOrCreate<GameState>(this.ROOM_NAME);
+        console.log("connected");
+    }
 
-    private colyseus: ColyseusServer;
-
-    constructor(colyseus?: ColyseusServer) {
-        if (colyseus) {
-            this.colyseus = colyseus;
+    send(messageType: string, message: string): void {
+        console.log(`sending message to server: ${message}`);
+        if (this.room === undefined) {
+            throw new Error("haven't connected to a room yet");
         } 
-        else {
-            this.colyseus = new ColyseusServer();
+        this.room.send(messageType, message);
+    }
+
+    // this event is triggered when the server sends a message back to the client
+    onMessage(messageType: string, callback: (message: any) => void): void {
+        this.room?.onMessage(messageType, callback);
+    }
+
+    onStateChange(callback: (state: GameState) => void): void {
+        if (this.room !== undefined) {
+            this.room.onStateChange(callback);
         }
     }
 
-    public start(host: string, port: number): void {
-        this.colyseus.attach({
-            server: http.createServer()
-        });
-        // const gameServer = new this.colyseus({
-        // host: "";  // TODO
-        // port: 0;  // TODO
-        // server: http.createServer()
-        // });
-        this.colyseus.define("mainroom", MainRoom);
-        this.colyseus.listen(port, host);
-        console.log(`listening on ws://${host}:${port}`);
+    leave(consented: boolean): void {
+        throw new Error("Method not implemented.");
+    }
+
+    onDispose(): void {
+        this.colyseusServer.gracefullyShutdown();
     }
 }

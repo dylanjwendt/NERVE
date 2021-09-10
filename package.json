@@ -35,5 +35,8 @@
   ],
   "dependencies": {
     "nerve-server": "file:./Server"
+  },
+  "devDependencies": {
+    "webpack-cli": "^4.8.0"
   }
 }
