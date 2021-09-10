@@ -7,32 +7,73 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, Ubuntu, roboto, noto, segoe ui, arial, sans-serif;
 }
 
+button {
+  transition-duration: 0.4s;
+}
+
 #overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  height: 100%;
+  width: 100%;
   background-color: rgba(0,0,0,0.7);
   z-index: 1000;
 }
 
 .overlay-center {
-  margin: 0 auto;
-  margin-top: 40%;
-  width: 60%;
+  border: 1em solid white;
+  border-radius: 3%;
+  margin: 10vmax 30vmax;
+  height: 20em;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  box-shadow: 0em 0em 3em rgb(0, 0, 0);
+}
+
+#btn_play {
+  margin-right: 1vmax;
+  margin-left: 1vmax;
+  font-size: 30px;
+  background-color: green;
+  border: 3px solid black;
+  border-radius: 5%;
+  color: white;
+}
+
+#btn_play:hover {
+  background-color: white;
+  color: black;
+  transition-duration: 0.4s;
 }
 
 .overlay-center p {
+  margin-bottom: 1vmax;
   font-size: 28px;
-  margin-bottom: 0.1em;
+}
+
+.overlay-button {
+  margin-right: 1vmax;
+  margin-left: 1vmax;
+  font-size: 48px;
+  background-color: rgb(133, 133, 255);
+  border: 3px solid black;
+  border-radius: 5%;
+  color: white;
+}
+
+.overlay-button:hover {
+  background-color: white;
+  color: black;
 }
 
 .overlay-center input {
+  margin: 1vmax;
   padding: 0.3em;
   border: 3px solid #2e2e2e;
   font-size: 24px;
-  width: 100%;
+  width: 40%;
 }
 
 #debug-screen {
