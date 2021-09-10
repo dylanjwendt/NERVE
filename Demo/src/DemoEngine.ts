@@ -12,7 +12,7 @@ export default class DemoEngine extends Engine {
     bh2: Blackhole;
 
     constructor() {
-        super((l: GameLogic) => new DemoInputHandler(l));
+        super((l: GameLogic) => new DemoInputHandler(l, this));
         this.bh = new Blackhole(this.gameLogic.getValidID(), "bh1", this);
         Matter.Body.setPosition(this.bh.body, Matter.Vector.create(500, 500));
 
@@ -35,12 +35,12 @@ export default class DemoEngine extends Engine {
     }
 
     addActor(id: number): void {
-        super.addActor(id, new Player(id, "todo"));
+        super.addActor(id, new Player(id, "todo", this));
     }
 
     newPlayerActor(name = ""): number {
         const id = this.gameLogic.getValidID();
-        const actor = new PlayerActor(id, name);
+        const actor = new PlayerActor(id, name, this);
         this.addActor(actor.getID());
         return id;
     }

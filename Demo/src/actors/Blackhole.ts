@@ -16,7 +16,7 @@ export default class Blackhole extends Actor {
     #tgt: {x: number, y: number};
 
     constructor(id: number, name = "", eng: DemoEngine) {
-        super(id, name, Matter.Bodies.circle(0,0,24));
+        super(id, name, Matter.Bodies.circle(0,0,24), eng);
         this.setScale([1.5, 1.5]);
         this.setWidth(48);
         this.setHeight(48);
@@ -69,7 +69,7 @@ export default class Blackhole extends Actor {
             const theta = ((360/THRESHOLD)*i)*Math.PI/180;
             const pos = [bhPos[0] + Math.cos(theta), bhPos[1] + Math.sin(theta)] as [number, number];
 
-            const bullet = new Bullet(this.#engine.getValidID(), null, bhPos, pos, this.#engine.engine, this.#engine.gameLogic);
+            const bullet = new Bullet(this.#engine.getValidID(), null, bhPos, pos, this.#engine.engine, this.#engine);
             bullet.setTint(0xa30207);
             this.#engine.addBullet(bullet);
         }

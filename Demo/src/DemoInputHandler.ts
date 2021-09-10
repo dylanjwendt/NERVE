@@ -1,5 +1,5 @@
 import Matter from "matter-js";
-import { InputHandler, GameLogic, Actor } from "nerve-engine";
+import { InputHandler, GameLogic, Actor, Engine } from "nerve-engine";
 import { DemoEngine } from ".";
 import Bullet from "./actors/Bullet";
 import Player from "./actors/Player";
@@ -7,12 +7,12 @@ import WallPiece from "./actors/WallPiece";
 
 export default class DemoInputHandler extends InputHandler {
     private logic;
-    private engine: DemoEngine | null;
+    private engine: Engine;
 
-    constructor(logic: GameLogic) {
+    constructor(logic: GameLogic, eng: Engine) {
         super();
         this.logic = logic;
-        this.engine = null;
+        this.engine = eng;
     }
     
     setEngine(engine: DemoEngine): void {
@@ -63,7 +63,7 @@ export default class DemoInputHandler extends InputHandler {
         const player = this.logic.actors.get(actorId);
         if (!player) return;
         const pcoords = player.body.position;
-        const bullet = new Bullet(id, player as Player, [pcoords.x, pcoords.y], pos, this.engine!.engine, this.logic);
+        const bullet = new Bullet(id, player as Player, [pcoords.x, pcoords.y], pos, this.engine!.engine, this.engine);
         this.logic.addActor(id, bullet);
     }
 

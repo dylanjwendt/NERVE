@@ -1,5 +1,5 @@
 import Matter from "matter-js";
-import { Actor } from "nerve-engine";
+import { Actor, Engine } from "nerve-engine";
 const MAXHEALTH = 255;
 
 export default class Player extends Actor {
@@ -8,8 +8,8 @@ export default class Player extends Actor {
     private defaultTint;
     private movemask: number;
 
-    constructor(id: number, name = "") {
-        super(id, name, Matter.Bodies.circle(0,0,24));
+    constructor(id: number, name = "", eng: Engine) {
+        super(id, name, Matter.Bodies.circle(0,0,24), eng);
         this.maxSpeed = 3;
         this.setScale([1.5, 1.5]);
         this.setWidth(48);

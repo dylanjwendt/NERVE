@@ -57,7 +57,10 @@ export default abstract class Engine {
     }
 
     removeActor(id: number): void {
+        if(!this.gameLogic.actors.has(id)) return;
+        const body = this.gameLogic.actors.get(id)!.body;
         this.gameLogic.removeActor(id);
+        Matter.Composite.remove(this.engine.world, body);
     }
 
     update(millisec: number): void {

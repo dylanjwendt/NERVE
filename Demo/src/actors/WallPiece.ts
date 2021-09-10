@@ -1,6 +1,5 @@
 import Matter from "matter-js";
-import { Actor } from "nerve-engine";
-import { DemoEngine } from "..";
+import { Actor, Engine } from "nerve-engine";
 import Damage from "../interactions/Damage";
 import Player from "./Player";
 
@@ -8,10 +7,10 @@ const maxAge = 5000;
 
 export default class WallPiece extends Actor {
     #deltaT: number;
-    #engine: DemoEngine;
+    #engine: Engine;
 
-    constructor(id: number, name = "", engine: DemoEngine) {
-        super(id, name, Matter.Bodies.circle(0,0,24));
+    constructor(id: number, name = "", engine: Engine) {
+        super(id, name, Matter.Bodies.circle(0,0,24), engine);
         this.setScale([1.5, 1.5]);
         this.setWidth(48);
         this.setHeight(48);
@@ -24,7 +23,7 @@ export default class WallPiece extends Actor {
             const millisec = thisPiece.#engine.engine.timing.lastDelta;
 
             if(thisPiece.#deltaT >= maxAge) {
-                thisPiece.#engine.removeWall(thisPiece);
+                thisPiece.destroy();
                 return;
             }
             thisPiece.#deltaT += millisec;

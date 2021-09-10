@@ -1,4 +1,4 @@
-import { Actor, GameLogic} from "nerve-engine";
+import { Actor, GameLogic, Engine} from "nerve-engine";
 import Damage from "../interactions/Damage";
 import Player from "./Player";
 import Matter from "matter-js";
@@ -12,8 +12,8 @@ export default class Bullet extends Actor {
     private LIFETIME: number;
 
 
-    constructor(id: number, parent: Player | null, pos1: [number, number], pos2: [number, number], engine: Matter.Engine, logic: GameLogic, life = 3000) {
-        super(id, "Bullet", Matter.Bodies.circle(0,0,8));
+    constructor(id: number, parent: Player | null, pos1: [number, number], pos2: [number, number], engine: Matter.Engine, eng: Engine, life = 3000) {
+        super(id, "Bullet", Matter.Bodies.circle(0,0,8), eng);
         this.#parent = parent;
         const normalization = Math.sqrt((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2);
         const offset = 35;
@@ -32,7 +32,7 @@ export default class Bullet extends Actor {
         this.body.collisionFilter.category = 0b1<<3;
         this.body.frictionAir = 0;
         this.creationTime = engine.timing.timestamp;
-        this.logic = logic;
+        this.logic = eng.gameLogic;
         this.LIFETIME = life;
         this.addInteraction(new Damage(parent));
         function maintainSpeed(event: Matter.IEventTimestamped<Matter.Engine>, bull: Bullet) {

@@ -1,5 +1,6 @@
 import Matter from "matter-js";
 import * as postal from "postal";
+import { Engine } from ".";
 
 export default class Actor {
     #name: string;
@@ -10,8 +11,9 @@ export default class Actor {
     #width: number;
     #height: number;
     public body: Matter.Body;
+    private engine: Engine;
 
-    constructor(id: number, name = "", body: Matter.Body) { 
+    constructor(id: number, name = "", body: Matter.Body, eng: Engine) { 
         this.#name = name;
         this.#interactions = [];
         this.#id = id;
@@ -26,6 +28,7 @@ export default class Actor {
         }
         this.body = body;
         this.body.id = +id;
+        this.engine = eng;
     }
 
     setName(name: string): void {
@@ -81,6 +84,10 @@ export default class Actor {
 
     getHeight(): number {
         return this.#height;
+    }
+
+    destroy(): void {
+        this.engine.removeActor(this.#id);
     }
 }
 
