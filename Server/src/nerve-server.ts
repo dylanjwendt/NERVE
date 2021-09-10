@@ -1,6 +1,7 @@
 import http from "http";
 import { INerveServer } from "./nerve-server.interface";
-import { Client, Room as ClientRoom } from "colyseus.js";
+import { Client, Room } from "colyseus.js";
+import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Server } from "colyseus";
 import { GameState } from "./colyseus/game-state";
 import { inject, injectable } from "tsyringe";
@@ -13,7 +14,7 @@ export class NerveServer implements INerveServer {
     private colyseusClient: Client;
     private config: ServerConfig;
     private isInitialized: boolean;
-    private room?: ClientRoom;
+    private room?: Room;
     private ROOM_NAME = "mainroom";
 
     constructor(@inject("ColyseusClient") colyseusClient: Client, 
@@ -28,7 +29,9 @@ export class NerveServer implements INerveServer {
 
     async init(): Promise<void> {
         this.colyseusServer.attach({
-            server: http.createServer()
+            transport: new WebSocketTransport({
+                server: http.createServer()
+            })
         });
         this.colyseusServer.define(this.ROOM_NAME, ColyseusRoom);
         this.colyseusServer.listen(this.config.port, this.config.host);
