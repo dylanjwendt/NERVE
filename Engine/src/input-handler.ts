@@ -6,9 +6,9 @@ export default abstract class InputHandler extends System {
         this.sysName = "InputHandler";
     }
 
-    abstract handleKeyDown(Actorid: number, key: string): void;
-    abstract handleKeyUp(Actorid: number, key: string): void;
-    abstract handleMouseDownInput(Actorid: number, pos: [number, number]): void;
-    abstract handleMouseUpInput(Actorid: number, pos: [number, number]): void;
-    abstract handleMouseMoveInput(Actorid: number, pos: [number, number]): void;
+    abstract handleKeyDown(actorId: number, key: string): void;
+    abstract handleKeyUp(actorId: number, key: string): void;
+    abstract handleMouseDownInput(actorId: number, pos: [number, number]): void;
+    abstract handleMouseUpInput(actorId: number, pos: [number, number]): void;
+    abstract handleMouseMoveInput(actorId: number, pos: [number, number]): void;
 }

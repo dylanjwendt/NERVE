@@ -78,6 +78,10 @@ export default abstract class Engine {
     removeBody(body: Matter.Body): void {
         Matter.World.remove(this.engine.world, body);
     }
+
+    getValidId(): number {
+        return this.gameLogic.getValidID();
+    }
     
 }
 

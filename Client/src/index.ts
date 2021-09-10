@@ -2,7 +2,7 @@ import './index.less';
 import * as PIXI from 'pixi.js';
 import { Sprite, Texture } from 'pixi.js';
 import DebugScreen from './debug-screen';
-import { NerveClient, SimpleGameState } from 'nerve-server';
+import { NerveServerCommon, GameState } from 'nerve-server';
 
 import Entity from './entity';
 
@@ -30,12 +30,12 @@ import Entity from './entity';
   document.body.appendChild(app.view);
 
   // State sync
-  const server = new NerveClient();
+  const server = new NerveServerCommon();
   let playerId = '';
   await server.connect('ws://localhost:2567');
   let lastSync = Date.now();
   let syncRate = 0;
-  server.onStateChange((state: SimpleGameState) => {
+  server.onStateChange((state: GameState) => {
     syncRate = Date.now() - lastSync;
     lastSync = Date.now();
     const entityList: any[] = JSON.parse(state.text);

@@ -5,6 +5,23 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "node",
+            "name": "vscode-jest-tests",
+            "request": "launch",
+            "program": "${workspaceFolder}/Server/node_modules/.bin/jest",
+            "args": [
+                "--runInBand",
+                "--watchAll=false"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "disableOptimisticBPs": true,
+            "windows": {
+                "program": "${workspaceFolder}/Server/node_modules/jest/bin/jest"
+            }
+        },
+        {
             "name": "debug jest tests server",
             "type": "node",
             "request": "launch",
@@ -27,7 +44,8 @@
             "cwd": "${workspaceRoot}/Server/",
             "runtimeExecutable": "npm",
             "runtimeArgs": [
-                "run-script", "debug"
+                "run-script",
+                "debug"
             ],
             "port": 5858
         }
