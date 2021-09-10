@@ -1,6 +1,7 @@
 import Matter from "matter-js";
 import { Actor,} from "nerve-engine";
 import { DemoEngine } from "..";
+import Attract from "../interactions/Attract";
 import Impact from "../interactions/bhImpact";
 import Bullet from "./Bullet";
 
@@ -29,6 +30,7 @@ export default class Blackhole extends Actor {
         this.body.collisionFilter.mask = 0b1<<3;
         this.body.collisionFilter.category = 0b1<<2;
         this.#tgt = {x: 0,y: 0};
+        this.addInteraction(new Attract(this, 48));
     }
 
     objectImpact(other: Actor): void {

@@ -11,7 +11,7 @@ export default class Actor {
     #width: number;
     #height: number;
     public body: Matter.Body;
-    private engine: Engine;
+    engine: Engine;
 
     constructor(id: number, name = "", body: Matter.Body, eng: Engine) { 
         this.#name = name;
