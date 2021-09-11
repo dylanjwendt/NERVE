@@ -15,7 +15,6 @@ export default class Actor {
         this.#name = name;
         this.#interactions = [];
         this.#id = id;
-        console.log("%s\n", id);
         this.#scale = [1, 1];
         this.#tint = 0x00efff;
         this.#width = 16;
@@ -36,7 +35,7 @@ export default class Actor {
         return this.#name;
     }
 
-    getID(): number {
+    getId(): number {
         return this.#id;
     }
 
@@ -99,8 +98,8 @@ export class DefaultInteraction extends ActorInteraction {
     
     trigger(self: Actor, other: Actor, type: string): void {
         this.#channel.publish("Actor.Interaction.Triggered", {
-            ActorA_ID: self.getID(),
-            ActorB_ID: other.getID(),
+            ActorA_ID: self.getId(),
+            ActorB_ID: other.getId(),
             Type: type,
             Message: `${self.getName()} interacted with ${other.getName()}`,
         });

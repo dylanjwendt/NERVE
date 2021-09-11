@@ -10,6 +10,7 @@
     "test": "jest",
     "coverage": "jest --coverage",
     "build": "tsc --listEmittedFiles",
+    "build:watch": "tsc --listEmittedFiles -w",
     "prod": "npm run build && npm run start",
     "lint": "eslint --ext .js,.ts ./src ./tests --no-error-on-unmatched-pattern",
     "lint:fix": "eslint --ext .js,.ts --fix ./src ./tests --no-error-on-unmatched-pattern",

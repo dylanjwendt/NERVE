@@ -85,7 +85,7 @@ export default class DemoInputHandler extends InputHandler {
             const piece = new WallPiece(this.logic.getValidId(), "todo", this.engine);
             Matter.Body.setPosition(piece.body, Matter.Vector.create(pos[0], pos[1]));
             piece.setTint(0xa1a1a1);
-            this.logic.addActor(piece.getID(), piece);
+            this.logic.addActor(piece.getId(), piece);
         }
     }
 }

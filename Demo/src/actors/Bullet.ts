@@ -41,7 +41,7 @@ export default class Bullet extends Actor {
             const vy = (bull.body.velocity.y / normalization) * speed;
             Matter.Body.setVelocity(bull.body, Matter.Vector.create(vx, vy));
             if(engine.timing.timestamp-bull.creationTime > bull.LIFETIME) {
-                bull.logic.removeActor(bull.getID());
+                bull.logic.removeActor(bull.getId());
             }
         }  
         Matter.Events.on(engine, "afterUpdate", (e) => maintainSpeed(e, this));

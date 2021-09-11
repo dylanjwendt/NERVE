@@ -82,7 +82,7 @@ export default abstract class Engine {
 }
 
 class EntityEntry implements IEntity {
-    id: string;
+    id: number;
     x: number;
     y: number;
     vx: number;
@@ -96,7 +96,7 @@ class EntityEntry implements IEntity {
     }
 
     constructor(actor: Actor){
-        this.id = actor.getID().toString();
+        this.id = actor.getId();
         this.x = actor.body.position.x;
         this.y = actor.body.position.y;
         this.vx = actor.body.velocity.x;

@@ -17,13 +17,13 @@ export default class DemoEngine extends Engine {
         Matter.Body.setPosition(this.bh.body, Matter.Vector.create(500, 500));
 
         this.bh.setOrigin([500, 500]);
-        this.gameLogic.addActor(this.bh.getID(), this.bh);
+        this.gameLogic.addActor(this.bh.getId(), this.bh);
 
         this.bh2 = new Blackhole(this.gameLogic.getValidId(), "bh2", this);
         Matter.Body.setPosition(this.bh2.body, Matter.Vector.create(1000, 1000));
 
         this.bh2.setOrigin([500, 500]);
-        this.gameLogic.addActor(this.bh2.getID(), this.bh2);
+        this.gameLogic.addActor(this.bh2.getId(), this.bh2);
 
         (this.inputHandler as DemoInputHandler).setEngine(this);
     }
@@ -41,7 +41,7 @@ export default class DemoEngine extends Engine {
     newPlayerActor(name = ""): number {
         const id = this.gameLogic.getValidId();
         const actor = new PlayerActor(id, name);
-        this.addActor(actor.getID());
+        this.addActor(actor.getId());
         return id;
     }
 
@@ -50,15 +50,15 @@ export default class DemoEngine extends Engine {
     }
 
     addBullet(bull: Bullet): void {
-        this.gameLogic.addActor(bull.getID(), bull);
+        this.gameLogic.addActor(bull.getId(), bull);
     }
 
     consumeBullet(bull: Bullet): void {
-        this.gameLogic.removeActor(bull.getID());
+        this.gameLogic.removeActor(bull.getId());
     }
 
     removeWall(wall: WallPiece): void {
-        this.gameLogic.removeActor(wall.getID());
+        this.gameLogic.removeActor(wall.getId());
     }
 }
 

@@ -32,9 +32,9 @@ export class ServerRoomImpl {
     public onMessage(type: string | number, message: string): void {
         const req = JSON.parse(message);
         if (type === "keydown") {
-            this.engine.inputHandler.handleKeyDown(req.player, req.key); // Actor ID MUST be equal to client id
+            this.engine.inputHandler.handleKeyDown(req.player, req.key); // Actor id MUST be equal to client id
         } else if(type === "keyup") {
-            this.engine.inputHandler.handleKeyUp(req.player, req.key); // Actor ID MUST be equal to client id
+            this.engine.inputHandler.handleKeyUp(req.player, req.key); // Actor id MUST be equal to client id
         } else if(type === "mousedown") {
             this.engine.inputHandler.handleMouseDownInput(req.player, req.mousePos);
         } else if (type === "username") {
