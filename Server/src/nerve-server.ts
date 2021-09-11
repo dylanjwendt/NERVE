@@ -5,8 +5,8 @@ import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Server } from "colyseus";
 import { GameState } from "./colyseus/game-state";
 import { inject, injectable } from "tsyringe";
-import { ColyseusRoom } from "./colyseus/colyseus-room";
 import { ServerConfig } from "./server-config";
+import { ServerRoomCommon } from "./common/server-room-common";
 
 @injectable()
 export class NerveServer implements INerveServer {
@@ -33,7 +33,7 @@ export class NerveServer implements INerveServer {
                 server: http.createServer()
             })
         });
-        this.colyseusServer.define(this.ROOM_NAME, ColyseusRoom);
+        this.colyseusServer.define(this.ROOM_NAME, ServerRoomCommon);
         this.colyseusServer.listen(this.config.port, this.config.host);
         console.log(`listening on ws://${this.config.host}:${this.config.port}`);
     }
