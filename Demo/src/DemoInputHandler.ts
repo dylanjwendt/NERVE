@@ -59,7 +59,7 @@ export default class DemoInputHandler extends InputHandler {
     }
 
     handleMouseDownInput(actorId: number, pos: [number, number]): void {
-        const id = this.logic.getValidID();
+        const id = this.logic.getValidId();
         const player = this.logic.actors.get(actorId);
         if (!player) return;
         const pcoords = player.body.position;
@@ -82,7 +82,7 @@ export default class DemoInputHandler extends InputHandler {
         for(let i = 0; i < numEnt; i++) {
             const theta = ((360/numEnt)*i)*Math.PI/180;
             const pos = [parent.body.position.x + (Math.cos(theta)*dist), parent.body.position.y + (Math.sin(theta)*dist)] as [number, number];
-            const piece = new WallPiece(this.logic.getValidID(), "todo", this.engine);
+            const piece = new WallPiece(this.logic.getValidId(), "todo", this.engine);
             Matter.Body.setPosition(piece.body, Matter.Vector.create(pos[0], pos[1]));
             piece.setTint(0xa1a1a1);
             this.logic.addActor(piece.getID(), piece);
