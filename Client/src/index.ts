@@ -95,21 +95,59 @@ import Entity from './entity';
 
   app.ticker.stop();
 
+
+  //Holds the class value
+  let classValue: number;
+  classValue = 0;
+
   // Username handling
   let username: string;
   $('#username')?.addEventListener('keyup', (e) => {
     const overlay = $('#overlay') as HTMLDivElement;
     const evt = e as KeyboardEvent;
     if (evt.key === 'Enter' && overlay) {
-      overlay.style.display = 'none';
-      username = ($('#username') as HTMLInputElement).value;
-      server.send('username', JSON.stringify({ player: playerId, name: username }));
+      removeOverlay(overlay, server, username, playerId, classValue);
       app.ticker.start();
-
-      addInputListeners(server, playerId);
     }
   });
+
+  // Game class handling
+  $('#btn_A')?.addEventListener('click', (e) => {
+    classValue = 0;
+    $('#btn_A')?.setAttribute('disabled', 'disabled');
+    $('#btn_B')?.removeAttribute('disabled');
+    $('#btn_C')?.removeAttribute('disabled');
+  });
+  $('#btn_B')?.addEventListener('click', (e) => {
+    classValue = 1;
+    $('#btn_B')?.setAttribute('disabled', 'disabled');
+    $('#btn_A')?.removeAttribute('disabled');
+    $('#btn_C')?.removeAttribute('disabled');
+  });
+  $('#btn_C')?.addEventListener('click', (e) => {
+    classValue = 2;
+    $('#btn_C')?.setAttribute('disabled', 'disabled');
+    $('#btn_A')?.removeAttribute('disabled');
+    $('#btn_B')?.removeAttribute('disabled');
+  });
+
+  $('#btn_play')?.addEventListener('click', (e) => {
+    const overlay = $('#overlay') as HTMLDivElement;
+    removeOverlay(overlay, server, username, playerId, classValue);
+    app.ticker.start();
+  });
+
+
 }());
+
+function removeOverlay(overlay: any, server: any, username : string, playerId : string, classValue : number){
+  overlay.style.display = 'none';
+  username = (document.getElementById('username') as HTMLInputElement).value;
+  server.send('username', JSON.stringify({ player: playerId, name: username }));
+  server.send('classValue', JSON.stringify({ player: playerId, classValue: classValue }));
+
+  addInputListeners(server, playerId);
+}
 
 //Creates event listeners for inputs from the client
 function addInputListeners(server: any, playerId: string) {
