@@ -35,17 +35,18 @@ export default class Bullet extends Actor {
         this.logic = logic;
         this.LIFETIME = life;
         this.addInteraction(new Damage(parent));
-        function maintainSpeed(event: Matter.IEventTimestamped<Matter.Engine>, bull: Bullet) {
-            const normalization = Math.sqrt(bull.body.velocity.x * bull.body.velocity.x + bull.body.velocity.y * bull.body.velocity.y);
-            const vx = (bull.body.velocity.x / normalization) * speed;
-            const vy = (bull.body.velocity.y / normalization) * speed;
-            Matter.Body.setVelocity(bull.body, Matter.Vector.create(vx, vy));
-            if(engine.timing.timestamp-bull.creationTime > bull.LIFETIME) {
-                bull.destroy();
-            }
-        }  
-        Matter.Events.on(engine, "afterUpdate", (e) => maintainSpeed(e, this));
+        Matter.Events.on(engine, "afterUpdate", (e) => this.maintainSpeed(e, this));
     }
+
+    maintainSpeed(event: Matter.IEventTimestamped<Matter.Engine>, bull: Bullet): void {
+        const normalization = Math.sqrt(bull.body.velocity.x * bull.body.velocity.x + bull.body.velocity.y * bull.body.velocity.y);
+        const vx = (bull.body.velocity.x / normalization) * speed;
+        const vy = (bull.body.velocity.y / normalization) * speed;
+        Matter.Body.setVelocity(bull.body, Matter.Vector.create(vx, vy));
+        if(this.engine.engine.timing.timestamp - bull.creationTime > bull.LIFETIME) {
+            bull.destroy();
+        }
+    }  
 
     isNullParent(): boolean {
         return this.#parent === null;

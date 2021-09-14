@@ -44,7 +44,7 @@ export class ServerRoomImpl {
 
     public async onJoin(client: Client): Promise<void> {
         const id = this.engine.getValidId();
-        this.engine.addActor(id);
+        this.engine.addPlayerActor(id);
         client.send("getPlayerId", id);
         this.socketEngineIdMap.set(client.id, id);
         console.log(`[${new Date().toLocaleTimeString()}] Player joined with id ${id}`);
