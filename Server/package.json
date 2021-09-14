@@ -10,6 +10,7 @@
     "test": "jest",
     "coverage": "jest --coverage",
     "build": "tsc --listEmittedFiles",
+    "build:watch": "tsc --listEmittedFiles -w",
     "prod": "npm run build && npm run start",
     "lint": "eslint --ext .js,.ts ./src ./tests --no-error-on-unmatched-pattern",
     "lint:fix": "eslint --ext .js,.ts --fix ./src ./tests --no-error-on-unmatched-pattern",
@@ -34,6 +35,8 @@
     "koa-bodyparser": "^4.3.0",
     "koa-static": "^5.0.0",
     "nerve-demo": "file:../Demo",
+    "reflect-metadata": "^0.1.13",
+    "tsyringe": "^4.6.0",
     "typescript": "^4.2.2"
   },
   "devDependencies": {
@@ -56,6 +59,7 @@
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-workspaces": "^0.6.2",
     "jest": "^27.1.0",
+    "jest-mock-extended": "^2.0.2-beta2",
     "readline-sync": "^1.4.10",
     "rimraf": "^3.0.2",
     "supertest": "^6.1.3",

@@ -1,82 +1,91 @@
-import { Vec2 } from "./coordinates";
 import Actor from "./actor";
 import GameLogic from "./game-logic";
 import Terminal from "./terminal";
-import World from "./world";
 import { IEntity } from "./IEntity";
 import InputHandler from "./input-handler";
-
-export type Ticker = (world: World, timestep: number) => void;
+import Matter from "matter-js";
 
 export default abstract class Engine {
-    protected gameLogic: GameLogic;
+    gameLogic: GameLogic;
     #term: Terminal;
-    #world: World;
     inputHandler: InputHandler;
-    tickers: Ticker[]
+    engine: Matter.Engine;
 
-    constructor(getHandler: (a: World, l: GameLogic) => InputHandler) {
+    constructor(getHandler: (l: GameLogic) => InputHandler) {
         this.#term = new Terminal();
-        this.gameLogic = new GameLogic();
-        this.#world = new World(this.gameLogic);
-        this.inputHandler = getHandler(this.#world, this.gameLogic);
+        this.gameLogic = new GameLogic(this);
+        this.inputHandler = getHandler(this.gameLogic);
         this.#term.activate();
         this.gameLogic.activate();
-        this.#world.activate();
         this.inputHandler.activate();
-        this.tickers = [];
         this.#term.deactivate();
+        //Matter Integration
+        this.engine = Matter.Engine.create();
+        this.engine.gravity.x = 0;
+        this.engine.gravity.y = 0;
+        function handleEvent(event: Matter.IEventCollision<Matter.Engine>, actors: Map<number, Actor>, type: string) {
+            const pairs = event.pairs;
+            for (let i = 0; i < pairs.length; i++) {
+                const pair = pairs[i];
+                const id1 = pair.bodyA.id;
+                const id2 = pair.bodyB.id;
+                const actorA = actors.get(id1);
+                const actorB = actors.get(id2);
+                if(!actorA || !actorB) {
+                    return;
+                }
+                actorA.triggerInteractions(actorB, type);
+                actorB.triggerInteractions(actorA, type);
+            }
+        }
+        Matter.Events.on(this.engine, "collisionStart", (e) => handleEvent(e, this.gameLogic.actors, "Start"));
+        Matter.Events.on(this.engine, "collisionActive", (e) => handleEvent(e, this.gameLogic.actors, "Active"));
+        Matter.Events.on(this.engine, "collisionEnd", (e) => handleEvent(e, this.gameLogic.actors, "End"));
     }
 
     getWorldState(): IEntity[] {
         const retArr: IEntity[] = [];
-        //this.#gameLogic.actors.forEach((e) => retArr.push((e.getCoords().toVector())));
         this.gameLogic.actors.forEach((actor) => {
             retArr.push(new EntityEntry(actor));
         });
         return retArr;
     }
 
-    addActorVel(id: string, vel: Vec2): void {
-        this.#world.addActorVel(id, vel);
+    addActor(id: number, actor: Actor): void  {
+        this.gameLogic.addActor(id, actor);
+        Matter.Composite.add(this.engine.world, actor.body);
     }
 
-    setActorVel(id: string, vel: Vec2): void {
-        this.#world.setActorVel(id, vel);
-    }
-
-    addActorPos(id: string, vel: Vec2): void {
-        this.#world.addActorPos(id, vel);
-    }
-
-    setActorPos(id: string, vel: Vec2): void {
-        this.#world.setActorPos(id, vel);
-    }
-
-    addActor(id: string, actor: Actor): void  {
-        return this.gameLogic.addActor(id, actor);
-    }
-
-    removeActor(id: string): void {
+    removeActor(id: number): void {
+        if(!this.gameLogic.actors.has(id)) return;
+        const body = this.gameLogic.actors.get(id)!.body;
         this.gameLogic.removeActor(id);
+        Matter.Composite.remove(this.engine.world, body);
     }
 
     update(millisec: number): void {
-        this.#world.moveTimestep(millisec);
-        this.tickers.forEach(t => t(this.#world, millisec));
+        Matter.Engine.update(this.engine, millisec);
     }
 
     showData(show: boolean): void {
         this.#term.showData(show);
     }
 
-    addTicker(ticker: Ticker): void {
-        this.tickers.push(ticker);
+    addBody(body: Matter.Body): void {
+        Matter.World.add(this.engine.world, body);
+    }
+
+    removeBody(body: Matter.Body): void {
+        Matter.World.remove(this.engine.world, body);
+    }
+
+    getValidId(): number {
+        return this.gameLogic.getValidID();
     }
 }
 
 class EntityEntry implements IEntity {
-    id: string;
+    id: number;
     x: number;
     y: number;
     vx: number;
@@ -90,11 +99,11 @@ class EntityEntry implements IEntity {
     }
 
     constructor(actor: Actor){
-        this.id = actor.getID().toString();
-        this.x = actor.getCoords().toVector().x;
-        this.y = actor.getCoords().toVector().y;
-        this.vx = actor.getVelocity().x;
-        this.vy = actor.getVelocity().y;
+        this.id = actor.getID();
+        this.x = actor.body.position.x;
+        this.y = actor.body.position.y;
+        this.vx = actor.body.velocity.x;
+        this.vy = actor.body.velocity.y;
         this.scale = actor.getScale();
         this.tint = actor.getTint();
         this.width = actor.getWidth();

@@ -31,7 +31,25 @@ The demo game should now be running!
    
    Developers should read the [contributing guidelines](./CONTRIBUTING.md).
 
-* P.S running `npm run -s start` will automatically build all subprojects if the server has not already been built yet.
+### Overview of scripts
+You can run these npm scripts by running `npm run -s <script-name>` at the root level.
+
+| Script name | What it does                                            |
+| ----------- | ------------------------------------------------------- |
+| start       | run the project, if it has been built                   |
+| build       | builds all four subprojects in the correct build order  |
+| clean       | deletes all built files, leaving only source code       |
+| lint        | lints code according to this repo's code guidelines     |
+| lint:fix    | lints code, but also automatically fixes what it can    |
+| prod        | same as running `build` then `start`, but in one script |
+| dev         | starts a development environment (see below)            |
+
+The development environment runs the client on `http://localhost:3001` and will live reload the client whenever the
+client code is changed. Whenever server code is changed, it will rebuild and restart the server. When the server
+restarts you will have to reload the client to reconnect.
+
+P.S You can run a script on an individual subproject by adding `--workspace=<Client|Server|Engine|Demo>` to the end of
+the `npm run` command. This can be useful if you only want to rebuild one of them!
 
 ## Authors and Acknowledgements
 

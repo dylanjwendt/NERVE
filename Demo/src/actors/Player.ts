@@ -1,19 +1,26 @@
-import { Actor, Vec2 } from "nerve-engine";
+import Matter from "matter-js";
+import { Actor, Engine } from "nerve-engine";
 const MAXHEALTH = 255;
 
 export default class Player extends Actor {
     private maxSpeed;
     private health;
     private defaultTint;
+    private movemask: number;
 
-    constructor(id: string, name = "") {
-        super(id, name);
-        this.maxSpeed = 300;
+    constructor(id: number, eng: Engine, name = "") {
+        super(id, name, Matter.Bodies.circle(0,0,24), eng);
+        this.maxSpeed = 3;
         this.setScale([1.5, 1.5]);
         this.setWidth(48);
         this.setHeight(48);
         this.health = MAXHEALTH;
         this.defaultTint = this.getTint();
+        this.body.collisionFilter.mask = 0b1<<3; 
+        this.body.collisionFilter.category = 0b1<<1;
+        this.body.frictionAir = 0;
+        this.movemask = 0b0000;
+        Matter.Body.setMass(this.body, 100000);
     }
 
     getHealth () {
@@ -33,21 +40,41 @@ export default class Player extends Actor {
         this.setTint(tint);
     }
 
-    updateDirection(direction: string): void {
+    updateDirection(key: string): void {
         // Note up/down directions are flipped for top-left origin
-        if(direction === "down") {
-            this.setVelocity(new Vec2(this.getVelocity().x, this.getVelocity().y + this.maxSpeed));
+        if(key == "w") {
+            this.movemask |= 0b1000;
         }
-        else if(direction === "up") {
-            this.setVelocity(new Vec2(this.getVelocity().x, this.getVelocity().y - this.maxSpeed));
+        else if(key == "-w") {
+            this.movemask &= 0b0111;
         }
-        else if(direction === "left") {
-            this.setVelocity(new Vec2(this.getVelocity().x - this.maxSpeed, this.getVelocity().y));
+        else if(key == "a") {
+            this.movemask |= 0b0100;
         }
-        else if(direction === "right") {
-            this.setVelocity(new Vec2(this.getVelocity().x + this.maxSpeed, this.getVelocity().y));
+        else if(key == "-a") {
+            this.movemask &= 0b1011;
+        }
+        else if(key == "s") {
+            this.movemask |= 0b0010;
+        }
+        else if(key == "-s") {
+            this.movemask &= 0b1101;
+        }
+        else if(key == "d") {
+            this.movemask |= 0b0001;
+        }
+        else if(key == "-d") {
+            this.movemask &= 0b1110;
         }
 
-        this.getVelocity().clamp(this.maxSpeed);
+        //Move
+        let vy = 0;
+        let vx = 0;
+        if(this.movemask & 0b1000) vy -= 1;
+        if(this.movemask & 0b0100) vx -= 1;
+        if(this.movemask & 0b0010) vy += 1;
+        if(this.movemask & 0b0001) vx += 1;
+
+        Matter.Body.setVelocity(this.body, Matter.Vector.create(vx*this.maxSpeed, vy*this.maxSpeed));
     }
 }
