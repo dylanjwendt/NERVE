@@ -29,7 +29,7 @@ export default class GameLogic extends System {
       }
   }
 
-  public getValidId(): number {
+  public getValidID(): number {
       return Matter.Common.nextId();
   }
 }

@@ -57,7 +57,10 @@ export default abstract class Engine {
     }
 
     removeActor(id: number): void {
+        if(!this.gameLogic.actors.has(id)) return;
+        const body = this.gameLogic.actors.get(id)!.body;
         this.gameLogic.removeActor(id);
+        Matter.Composite.remove(this.engine.world, body);
     }
 
     update(millisec: number): void {
@@ -77,7 +80,7 @@ export default abstract class Engine {
     }
 
     getValidId(): number {
-        return this.gameLogic.getValidId();
+        return this.gameLogic.getValidID();
     }
 }
 
@@ -96,7 +99,7 @@ class EntityEntry implements IEntity {
     }
 
     constructor(actor: Actor){
-        this.id = actor.getId();
+        this.id = actor.getID();
         this.x = actor.body.position.x;
         this.y = actor.body.position.y;
         this.vx = actor.body.velocity.x;

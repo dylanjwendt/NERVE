@@ -10,19 +10,17 @@ const DECISIONINTERVAL = 2000;
 
 export default class Blackhole extends Actor {
     private entityCount;
-    #engine: DemoEngine;
     #origin: [number, number];
     #deltaT: number;
     #tgt: {x: number, y: number};
 
     constructor(id: number, name = "", eng: DemoEngine) {
-        super(id, name, Matter.Bodies.circle(0,0,24));
+        super(id, name, Matter.Bodies.circle(0,0,24), eng);
         this.setScale([1.5, 1.5]);
         this.setWidth(48);
         this.setHeight(48);
         this.setTint(0x000000);
         this.entityCount = 0;
-        this.#engine = eng;
         this.addInteraction(new Impact());
         this.#origin = [0,0];
         this.#deltaT = DECISIONINTERVAL+1;
@@ -33,7 +31,7 @@ export default class Blackhole extends Actor {
 
     objectImpact(other: Actor): void {
         if(other instanceof Bullet) {
-            this.#engine.consumeBullet(other);
+            other.destroy();
             this.entityCount++;
             //Handle threshold explosion
             if(this.entityCount >= THRESHOLD)
@@ -69,9 +67,9 @@ export default class Blackhole extends Actor {
             const theta = ((360/THRESHOLD)*i)*Math.PI/180;
             const pos = [bhPos[0] + Math.cos(theta), bhPos[1] + Math.sin(theta)] as [number, number];
 
-            const bullet = new Bullet(this.#engine.getValidId(), null, bhPos, pos, this.#engine.engine, this.#engine.gameLogic);
+            const bullet = new Bullet(this.engine.gameLogic.getValidID(), null, bhPos, pos, this.engine.engine, this.engine.gameLogic, this.engine);
             bullet.setTint(0xa30207);
-            this.#engine.addBullet(bullet);
+            this.engine.addActor(bullet.body.id, bullet);
         }
     }
 

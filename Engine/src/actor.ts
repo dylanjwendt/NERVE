@@ -1,5 +1,6 @@
 import Matter from "matter-js";
 import * as postal from "postal";
+import { Engine } from ".";
 
 export default class Actor {
     #name: string;
@@ -10,8 +11,9 @@ export default class Actor {
     #width: number;
     #height: number;
     public body: Matter.Body;
+    public engine: Engine;
 
-    constructor(id: number, name = "", body: Matter.Body) { 
+    constructor(id: number, name = "", body: Matter.Body, eng: Engine) { 
         this.#name = name;
         this.#interactions = [];
         this.#id = id;
@@ -25,6 +27,11 @@ export default class Actor {
         }
         this.body = body;
         this.body.id = +id;
+        this.engine = eng;
+    }
+
+    destroy(): void {
+        this.engine.removeActor(this.#id);
     }
 
     setName(name: string): void {
@@ -35,7 +42,7 @@ export default class Actor {
         return this.#name;
     }
 
-    getId(): number {
+    getID(): number {
         return this.#id;
     }
 
@@ -98,8 +105,8 @@ export class DefaultInteraction extends ActorInteraction {
     
     trigger(self: Actor, other: Actor, type: string): void {
         this.#channel.publish("Actor.Interaction.Triggered", {
-            ActorA_ID: self.getId(),
-            ActorB_ID: other.getId(),
+            ActorA_ID: self.getID(),
+            ActorB_ID: other.getID(),
             Type: type,
             Message: `${self.getName()} interacted with ${other.getName()}`,
         });

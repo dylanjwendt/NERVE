@@ -1,4 +1,4 @@
-import { Actor, GameLogic} from "nerve-engine";
+import { Actor, Engine, GameLogic} from "nerve-engine";
 import Damage from "../interactions/Damage";
 import Player from "./Player";
 import Matter from "matter-js";
@@ -12,8 +12,8 @@ export default class Bullet extends Actor {
     private LIFETIME: number;
 
 
-    constructor(id: number, parent: Player | null, pos1: [number, number], pos2: [number, number], engine: Matter.Engine, logic: GameLogic, life = 3000) {
-        super(id, "Bullet", Matter.Bodies.circle(0,0,8));
+    constructor(id: number, parent: Player | null, pos1: [number, number], pos2: [number, number], engine: Matter.Engine, logic: GameLogic, eng: Engine, life = 3000) {
+        super(id, "Bullet", Matter.Bodies.circle(0,0,8), eng);
         this.#parent = parent;
         const normalization = Math.sqrt((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2);
         const offset = 35;
@@ -41,7 +41,7 @@ export default class Bullet extends Actor {
             const vy = (bull.body.velocity.y / normalization) * speed;
             Matter.Body.setVelocity(bull.body, Matter.Vector.create(vx, vy));
             if(engine.timing.timestamp-bull.creationTime > bull.LIFETIME) {
-                bull.logic.removeActor(bull.getId());
+                bull.destroy();
             }
         }  
         Matter.Events.on(engine, "afterUpdate", (e) => maintainSpeed(e, this));
