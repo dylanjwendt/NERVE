@@ -39,6 +39,8 @@ export class ServerRoomImpl {
             this.engine.inputHandler.handleMouseDownInput(req.player, req.mousePos);
         } else if (type === "username") {
             console.log("Player " + req.player + " is now called " + req.name);
+        } else if (type === "classValue") {
+            console.log("Player " + req.player + " is part of " + req.classValue);
         }
     }
 
