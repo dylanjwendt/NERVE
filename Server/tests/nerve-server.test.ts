@@ -1,34 +1,73 @@
-jest.mock("colyseus");
+import { Client , Room as ClientRoom } from "colyseus.js";
+import { NerveServer } from  "../src/nerve-server";
 import { Server } from "colyseus";
-import { MainRoom } from "../src/main-room";
-import { NerveServer } from "../src/nerve-server";
+import { mock } from "jest-mock-extended";
+
+jest.mock("colyseus", () => ({
+    ...jest.requireActual("colyseus"),
+    speak: jest.fn()
+}));
+
+jest.mock("http", () => ({
+    ...jest.requireActual("http"),
+    speak: jest.fn()
+}));
+
+jest.mock("tsyringe", () => ({
+    ...jest.requireActual("tsyringe"),
+    speak: jest.fn()
+}));
 
 describe("nerve server", () => {
 
-    it("start should create colyseus server", () => {
-        const mockServer: Server = new Server();
-        jest.spyOn(mockServer, "attach");
-        const serverMain = new NerveServer(mockServer);
-        serverMain.start("localhost", 2567);
-        expect(mockServer.attach).toHaveBeenCalledTimes(1);
+    const mockColyseusClient = mock<Client>();
+    const mockColyseusServer = mock<Server>();
+    const mockConfig = {host: "localhost", "port": 2567};
+    const ENDPOINT = "ws://localhost:2567";
+
+    test("init should attach http server", async () => {
+        const server = new NerveServer(mockColyseusClient, mockColyseusServer, mockConfig);
+        await server.init();
+        expect(mockColyseusServer.attach).toHaveBeenCalled();
     });
 
-
-    it("should listen on host and port", () => {
-        const mockServer: Server = new Server();
-        jest.spyOn(mockServer, "listen");
-        const serverMain = new NerveServer(mockServer);
-        serverMain.start("localhost", 2567);
-        expect(mockServer.listen).toHaveBeenCalledTimes(1);
-        expect(mockServer.listen).toHaveBeenCalledWith(2567, "localhost");
+    test("init should define room", async () => {
+        const server = new NerveServer(mockColyseusClient, mockColyseusServer, mockConfig);
+        await server.init();
+        expect(mockColyseusServer.define).toHaveBeenCalled();
     });
 
-    it("should define room", () => {
-        const mockServer: Server = new Server();
-        jest.spyOn(mockServer, "define");
-        const serverMain = new NerveServer(mockServer);
-        serverMain.start("localhost", 2567);
-        expect(mockServer.define).toHaveBeenCalledWith("mainroom", MainRoom);
+    test("init should start listening", async () => {
+        const server = new NerveServer(mockColyseusClient, mockColyseusServer, mockConfig);
+        await server.init();
+        expect(mockColyseusServer.listen).toHaveBeenCalledWith(mockConfig.port, mockConfig.host);
     });
 
+    test("connect should join or create room", async () => {
+        const server = new NerveServer(mockColyseusClient, mockColyseusServer, mockConfig);
+        await server.connect(ENDPOINT);
+        expect(mockColyseusClient.joinOrCreate).toHaveBeenCalledWith("mainroom");
+    });
+
+    test("connect should keep reference to room", async () => {
+        const mockRoom = mock<ClientRoom>();
+        mockColyseusClient.joinOrCreate.mockResolvedValue(mockRoom);
+        const server = new NerveServer(mockColyseusClient, mockColyseusServer, mockConfig);
+        await server.connect(ENDPOINT);
+        expect(server["room"]).toBeDefined();
+    });
+
+    test("send should forward to room", async () => {
+        const mockRoom = mock<ClientRoom>();
+        mockColyseusClient.joinOrCreate.mockResolvedValue(mockRoom);
+        const server = new NerveServer(mockColyseusClient, mockColyseusServer, mockConfig);
+        await server.connect(ENDPOINT);
+        server.send("type", "hello");
+        expect(mockRoom.send).toHaveBeenCalledWith("type", "hello");
+    });
+
+    test("send message before connecting should throw", () => {
+        const server = new NerveServer(mockColyseusClient, mockColyseusServer, mockConfig);
+        expect(() => {server.send("type", "hello");}).toThrowError();
+    });
 });

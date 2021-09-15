@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.prod.js",
-    "dev": "webpack serve --port=3000 --config webpack.dev.js",
+    "dev": "webpack serve --port=3001 --config webpack.dev.js",
     "lint": "eslint --ext .js,.ts ./src",
     "lint:fix": "eslint --ext .js,.ts --fix ./src",
     "clean": "rimraf ./dist"

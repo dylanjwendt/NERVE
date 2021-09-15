@@ -1,5 +1,5 @@
 export interface IEntity {
-  id: string;
+  id: number;
   x: number;
   y: number;
   vx: number;

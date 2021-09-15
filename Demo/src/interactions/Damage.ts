@@ -8,7 +8,7 @@ export default class Damage extends ActorInteraction {
         this.#parent = parent;
     }
 
-    trigger(self: Actor, other: Actor): void {
+    trigger(self: Actor, other: Actor, type: string): void {
         if(other instanceof Player && (this.#parent === null || other.getID() !== this.#parent.getID())) {
             other.decHealth(10);
             this.#parent = other;

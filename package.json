@@ -9,7 +9,9 @@
     "build": "npm run -s build --workspaces",
     "clean": "npm run -s clean --workspaces",
     "lint": "npm run -s lint --workspaces",
-    "lint:fix": "npm run -s lint:fix --workspaces"
+    "lint:fix": "npm run -s lint:fix --workspaces",
+    "prod": "npm run build && npm run start",
+    "dev": "concurrently \"npm run -s dev --workspace=Client\" \"nodemon ./Server/src/index.ts\""
   },
   "repository": {
     "type": "git",
@@ -35,5 +37,10 @@
   ],
   "dependencies": {
     "nerve-server": "file:./Server"
+  },
+  "devDependencies": {
+    "concurrently": "^6.2.1",
+    "nodemon": "^2.0.12",
+    "ts-node": "^10.2.1"
   }
 }

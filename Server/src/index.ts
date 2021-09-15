@@ -1,4 +1,4 @@
-import { NerveServer } from "./nerve-server";
+import { Startup } from "./startup";
 import Koa from "koa";
 import serve from "koa-static";
 import path from "path";
@@ -7,11 +7,12 @@ const clientRoot = path.join(__dirname, "../../Client/dist");
 const PORT = 3000;
 
 (async function () {
-    // Start game server
-    const server = new NerveServer();
-    server.start("localhost", 2567);
+    // start game server (websockets)
+    const server = Startup.start();
+    await server.init();
     console.log("Started game server");
 
+    // start koa router (http)
     const app = new Koa();
     app.use(serve(clientRoot));
     app.listen(PORT, () => {
