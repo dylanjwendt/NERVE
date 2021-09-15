@@ -11,7 +11,8 @@
     "lint": "npm run -s lint --workspaces",
     "lint:fix": "npm run -s lint:fix --workspaces",
     "prod": "npm run build && npm run start",
-    "dev": "concurrently \"npm run -s dev --workspace=Client\" \"nodemon ./Server/src/index.ts\""
+    "dev": "concurrently \"npm run -s dev --workspace=Client\" \"nodemon ./Server/src/index.ts\"",
+    "doc": "typedoc"
   },
   "repository": {
     "type": "git",
@@ -41,6 +42,7 @@
   "devDependencies": {
     "concurrently": "^6.2.1",
     "nodemon": "^2.0.12",
-    "ts-node": "^10.2.1"
+    "ts-node": "^10.2.1",
+    "typedoc": "^0.22.3"
   }
 }

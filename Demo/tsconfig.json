@@ -10,6 +10,7 @@
     "outDir": "build",
     "allowSyntheticDefaultImports": true,
     "declaration": true,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "sourceMap": true
   }
 }

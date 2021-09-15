@@ -8,6 +8,9 @@ import { inject, injectable } from "tsyringe";
 import { ColyseusRoom } from "./colyseus/colyseus-room";
 import { ServerConfig } from "./server-config";
 
+/**
+ * The primary nerve server
+ */
 @injectable()
 export class NerveServer implements INerveServer {
     private colyseusServer: Server;
