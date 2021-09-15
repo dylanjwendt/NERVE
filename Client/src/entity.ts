@@ -2,6 +2,9 @@ import { Sprite } from 'pixi.js';
 
 const smoothing = 0.2;
 
+/**
+ * Simple entity data class for client-side prediction
+ */
 export default class Entity {
   vx: number;
   vy: number;
@@ -14,7 +17,7 @@ export default class Entity {
     this.sprite = sprite;
   }
 
-  update() {
+  update(): void {
     let normalization = Math.sqrt(this.vx ** 2 + this.vy ** 2);
     normalization = normalization === 0 ? 1 : normalization;
 

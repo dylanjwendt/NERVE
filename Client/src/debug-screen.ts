@@ -20,8 +20,11 @@ export interface DebugScreenInfo {
   numEntities: number,
 }
 
-export default class DebugScreen {
-  static update(info: DebugScreenInfo) {
+/**
+ * Handles updating the debug screen by directly modifying HTML elements
+ */
+export class DebugScreen {
+  static update(info: DebugScreenInfo): void {
     Object.entries(info).forEach(([key, value]) => {
       const elem = $(`#debug-screen p[data-field-${key}]`);
       if (elem) {

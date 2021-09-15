@@ -10,6 +10,9 @@ import { ColyseusRoom } from "./colyseus/colyseus-room";
 import { INerveServer } from "./nerve-server.interface";
 import { NerveServer } from "./nerve-server";
 
+/**
+ * Sets up dependency injection for the server
+ */
 export class Startup {
     public static start(): INerveServer {
 

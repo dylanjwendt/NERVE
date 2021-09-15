@@ -9,6 +9,7 @@
   ],
   "compilerOptions": {
     "outDir": "build",
-    "declaration": true
+    "declaration": true,
+    "sourceMap": true
   },
 }

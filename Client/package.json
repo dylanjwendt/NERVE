@@ -2,7 +2,8 @@
   "name": "nerve-client",
   "version": "0.1.0",
   "description": ".io client\r - HTML5 Canvas\r - WebGL",
-  "main": "index.js",
+  "main": "src/index.ts",
+  "typedocMain": "src/index.ts",
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

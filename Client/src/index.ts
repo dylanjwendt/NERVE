@@ -1,7 +1,7 @@
 import './index.less';
 import * as PIXI from 'pixi.js';
 import { Sprite, Texture } from 'pixi.js';
-import DebugScreen from './debug-screen';
+import { DebugScreen } from './debug-screen';
 import { NerveServerCommon, GameState } from 'nerve-server';
 
 import Entity from './entity';
@@ -134,3 +134,5 @@ import Entity from './entity';
     }
   });
 }());
+
+export { DebugScreen };
