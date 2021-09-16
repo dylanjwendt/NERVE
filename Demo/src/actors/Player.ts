@@ -3,10 +3,10 @@ import { Actor, Engine } from "nerve-engine";
 const MAXHEALTH = 255;
 
 export default class Player extends Actor {
-    private maxSpeed;
     private health;
     private defaultTint;
-    private movemask: number;
+    protected maxSpeed;
+    protected movemask: number;
 
     constructor(id: number, eng: Engine, name = "") {
         super(id, name, Matter.Bodies.circle(0,0,24), eng);
@@ -23,11 +23,11 @@ export default class Player extends Actor {
         Matter.Body.setMass(this.body, 100000);
     }
 
-    getHealth () {
+    getHealth(): number {
         return this.health;
     }
 
-    decHealth (dmg: number) {
+    decHealth(dmg: number): void {
         this.health -= dmg;
         if (this.health <= 0) {
             this.health = MAXHEALTH;
