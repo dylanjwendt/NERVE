@@ -38,6 +38,7 @@
     "DemoHtmlClient"
   ],
   "dependencies": {
+    "module-alias": "^2.2.2",
     "nerve-server": "file:./Server"
   },
   "devDependencies": {

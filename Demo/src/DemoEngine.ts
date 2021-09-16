@@ -1,6 +1,5 @@
 import { Engine, GameLogic} from "nerve-engine";
 import DemoInputHandler from "./DemoInputHandler";
-import PlayerActor from "./actors/Player";
 import Player from "./actors/Player";
 import Blackhole from "./actors/Blackhole";
 import Matter from "matter-js";

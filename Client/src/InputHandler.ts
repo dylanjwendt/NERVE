@@ -1,4 +1,4 @@
-export const AcceptedInputHandlers = ["keyup", "keypress", "keydown", "mouseup", "mousemove", "mousedown"] as const
+export const AcceptedInputHandlers = ["keyup", "keypress", "keydown", "mouseup", "mousemove", "mousedown"] as const;
 export type InputHandlerFunction = typeof AcceptedInputHandlers[number]
 export type InputHandlerReturnType = string | [InputHandlerFunction, string] | null
 
@@ -16,13 +16,13 @@ export abstract class InputHandler {
   clientId: number
 
   constructor() {
-    this.keysDown = new Set<string>()
-    this.mousePos = [0, 0]
-    this.clientId = 0
+    this.keysDown = new Set<string>();
+    this.mousePos = [0, 0];
+    this.clientId = 0;
   }
 
   setClientId(clientId: number): void {
-    this.clientId = clientId
+    this.clientId = clientId;
   }
 
   /**

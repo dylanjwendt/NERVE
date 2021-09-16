@@ -40,6 +40,26 @@
             "error",
             "always"
         ],
-        "@typescript-eslint/lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }]
+        "@typescript-eslint/lines-between-class-members": [
+            "error",
+            "always",
+            {
+                "exceptAfterSingleLine": true
+            }
+        ]
+    },
+    "settings": {
+        "import/parsers": {
+            "@typescript-eslint/parser": [
+                ".ts",
+                ".tsx"
+            ]
+        },
+        "import/resolver": {
+            "typescript": {
+                "alwaysTryTypes": true,
+                "project": "./tsconfig.json"
+            }
+        }
     }
 }

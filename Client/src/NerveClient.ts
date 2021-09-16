@@ -1,15 +1,15 @@
 import * as PIXI from "pixi.js";
-import { Application } from "@pixi/app"
-import { ClientEntity } from "./ClientEntity"
-import { GameState, NerveServerCommon } from "nerve-server";
 import { Sprite, Texture } from "pixi.js";
-import { IEntity } from "./IEntity";
+import { Application } from "@pixi/app";
+import { GameState, NerveServerCommon } from "nerve-server";
+import { IEntity } from "@nerve-common/IEntity";
+import { ClientEntity } from "./ClientEntity";
 import { InputHandler, AcceptedInputHandlers } from "./InputHandler";
 import { DefaultInputHandler } from "./DefaultInputHandler";
-import type { InputHandlerFunction } from "./InputHandler"
+import type { InputHandlerFunction } from "./InputHandler";
 
 // keep rolling average of this many sync times
-const syncTimesWindow = 5
+const syncTimesWindow = 5;
 
 export type DebugInfo = {
   fps: number,
@@ -53,16 +53,16 @@ export class NerveClient {
       playerX: 0,
       playerY: 0,
       avgSyncTime: 0
-    }
+    };
 
-    this.clientId = 0
-    this.disableInput = false
+    this.clientId = 0;
+    this.disableInput = false;
     this.entities = new Map<number, ClientEntity>();
-    this.handler = handler || new DefaultInputHandler()
-    this.lastSync = 0
-    this.syncTimes = [0]
-    this.tickers = []
-    this.view = this.pixi.view
+    this.handler = handler || new DefaultInputHandler();
+    this.lastSync = 0;
+    this.syncTimes = [0];
+    this.tickers = [];
+    this.view = this.pixi.view;
 
     this.#setupDefaultTickers();
   }
@@ -70,26 +70,26 @@ export class NerveClient {
   async attachToServer(): Promise<void> {
     this.server = new NerveServerCommon();
     await this.server.connect("ws://localhost:2567");
-    this.server.onStateChange((state: GameState) => this.#syncServerState(state))
+    this.server.onStateChange((state: GameState) => this.#syncServerState(state));
     this.server.onMessage("getPlayerId", (message: number) => {
       this.clientId = message;
-      this.handler.setClientId(this.clientId)
+      this.handler.setClientId(this.clientId);
     });
   }
 
   attachEventListenersTo(target: Document | Element | Window): void {
     for (const type of AcceptedInputHandlers) {
-      this.#addEventListener(target, type)
+      this.#addEventListener(target, type);
     }
   }
 
   onDebugUpdate(callback: () => void): void {
-    this.#debugCallback = callback
+    this.#debugCallback = callback;
   }
 
   #addEventListener(target: Document | Element | Window, type: InputHandlerFunction): void {
     target.addEventListener(type, (e) => {
-      if(this.disableInput) { return; }
+      if (this.disableInput) { return; }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const data = this.handler[type](e as any);
       if (Array.isArray(data)) {
@@ -97,7 +97,7 @@ export class NerveClient {
       } else if (typeof data == "string") {
         this.server?.send(type, data);
       }
-    })
+    });
   }
 
   #setupDefaultTickers(): void {
@@ -112,7 +112,7 @@ export class NerveClient {
       };
 
       if (this.#debugCallback) {
-        this.#debugCallback()
+        this.#debugCallback();
       }
     });
 
@@ -120,7 +120,7 @@ export class NerveClient {
       this.entities.forEach((entity) => {
         this.pixi.renderer.render(entity.sprite);
       });
-    })
+    });
 
     // Client side prediction
     this.pixi.ticker.add(() => {
