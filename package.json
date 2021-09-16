@@ -11,7 +11,7 @@
     "lint": "npm run -s lint --workspaces",
     "lint:fix": "npm run -s lint:fix --workspaces",
     "prod": "npm run build && npm run start",
-    "dev": "concurrently \"npm run -s dev --workspace=Client\" \"nodemon ./Server/src/index.ts\"",
+    "dev": "concurrently \"npm run -s dev --workspace=DemoHtmlClient\" \"nodemon ./Server/src/index.ts\"",
     "doc": "typedoc"
   },
   "repository": {
@@ -34,7 +34,8 @@
     "Engine",
     "Demo",
     "Server",
-    "Client"
+    "Client",
+    "DemoHtmlClient"
   ],
   "dependencies": {
     "nerve-server": "file:./Server"

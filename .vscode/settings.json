@@ -4,7 +4,8 @@
         "Editor/",
         "Engine/",
         "Server/",
-        "Demo/"
+        "Demo/",
+        "DemoHtmlClient/"
     ],
     "files.eol": "\n",
     "files.exclude": {
