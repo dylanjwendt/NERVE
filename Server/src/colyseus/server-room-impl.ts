@@ -14,10 +14,15 @@ export class ServerRoomImpl {
     private socketEngineIdMap;
 
     constructor(@inject("Engine") engine: IEngine, 
-                @inject(delay(() => ColyseusRoom)) colyseusRoom: ColyseusRoom) {
+                @inject(delay(() => ColyseusRoom)) colyseusRoom: ColyseusRoom, 
+                socketEngineIdMap?: Map<string, number>) {
         this.engine = engine;
         this.colyseusRoom = colyseusRoom;
-        this.socketEngineIdMap = new Map<string, number>();
+        if (socketEngineIdMap) {
+            this.socketEngineIdMap = socketEngineIdMap;
+        } else {
+            this.socketEngineIdMap = new Map<string, number>();
+        }
     }
 
     public async onCreate(colyseusRoom: Room<GameState>): Promise<void> {
