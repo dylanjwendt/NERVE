@@ -1,6 +1,11 @@
 {
   "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@nerve-common/*": ["../Common/src/*"],
+      "@nerve-config": ["../nerve.config.json"]
+    },
     "outDir": "./build",
     "noImplicitAny": true,
     "module": "commonjs",
@@ -9,6 +14,7 @@
     "esModuleInterop": true,
     "sourceMap": true,
     "lib": ["DOM"],
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "resolveJsonModule": true
   }
 }

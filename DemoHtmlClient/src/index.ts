@@ -24,7 +24,7 @@ type FieldLocalizations = {
     playerX: "Player X",
     playerY: "Player Y",
     fps: "FPS",
-    syncRate: "Last sync",
+    avgSyncTime: "Average sync time",
     numEntities: "Entities",
   };
 

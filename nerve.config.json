@@ -1,0 +1,13 @@
+{
+  "client": {
+    "smoothing": 0.2
+  },
+  "server": {
+    "//": "Client root is relative to process.cwd() (which should be the root NERVE directory), not Server/src/index.ts",
+    "clientRoot": "DemoHtmlClient/dist",
+    "port": 3000
+  },
+  "engine": {
+
+  }
+}

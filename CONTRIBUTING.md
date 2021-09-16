@@ -14,6 +14,8 @@ Here are the basic steps to submit a pull request.
     * You can do this for all subprojects by running `npm run -s lint` or `npm run -s lint:fix` from the top level.
     * You can also do this for an individual subproject by running the same commands in that subproject's directory.
 
+1. Regenerate documentation by running `npm run -s doc`
+
 1. Push to your branch and submit a pull request. Include the issue number (ex. `Resolves #1`) in the PR description.
 
 1. Have another team member due a quick code review. If it checks out then we can merge it.

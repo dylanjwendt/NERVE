@@ -2,9 +2,11 @@ import { Startup } from "./startup";
 import Koa from "koa";
 import serve from "koa-static";
 import path from "path";
+import config from "@nerve-config";
 
-const clientRoot = path.join(__dirname, "../../DemoHtmlClient/dist");
-const PORT = 3000;
+// Client root is relative to process.cwd() (which should be the root NERVE directory), not Server/src/index.ts
+const clientRoot = path.resolve(process.cwd(), config.server.clientRoot);
+const PORT = config.server.port;
 
 (async function () {
     // start game server (websockets)

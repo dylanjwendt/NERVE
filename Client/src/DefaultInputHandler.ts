@@ -1,5 +1,5 @@
-import { InputHandler } from "./InputHandler"
-import type { InputHandlerReturnType } from "./InputHandler"
+import { InputHandler } from "./InputHandler";
+import type { InputHandlerReturnType } from "./InputHandler";
 
 /**
  * The default input handler for the client, which just propagates input
@@ -20,12 +20,12 @@ export class DefaultInputHandler extends InputHandler {
       this.keysDown.add(e.key);
       return JSON.stringify({ player: this.clientId, key: e.key });
     }
-    return null
+    return null;
   }
 
   mousemove(e: MouseEvent): InputHandlerReturnType {
-    this.mousePos = [e.clientX, e.clientY]
-    return null
+    this.mousePos = [e.clientX, e.clientY];
+    return null;
   }
 
   mouseup(e: MouseEvent): InputHandlerReturnType {

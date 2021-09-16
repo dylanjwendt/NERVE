@@ -1,6 +1,6 @@
 import { Client } from "colyseus";
 import { IEngine } from "../src/engine-interface/engine.interface";
-import { IEntity } from "../src/engine-interface/entity.interface";
+import { IEntity } from "@nerve-common/IEntity";
 import { mock, mockDeep } from "jest-mock-extended";
 import { ServerRoomImpl } from "../src/colyseus/server-room-impl";
 import { ColyseusRoom } from "../src/colyseus/colyseus-room";
@@ -53,7 +53,7 @@ describe("server room", () => {
 
     test("update should get engine world state", () => {
         const exampleEntity: IEntity = {
-            id: "",
+            id: 0,
             x: 0,
             y: 0,
             vx: 0,
