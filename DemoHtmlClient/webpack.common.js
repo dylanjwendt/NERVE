@@ -6,7 +6,7 @@ const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 
 const cwd = process.cwd().endsWith('Client') ? __dirname : path.resolve(__dirname, 'Client')
 
-console.log(`Running webpack in folder ${cwd}`)
+// console.log(`Running webpack in folder ${cwd}`)
 
 module.exports = {
   target: 'web',

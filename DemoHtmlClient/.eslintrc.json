@@ -27,8 +27,7 @@
     "rules": {
         "no-console": "off",
         "@typescript-eslint/lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
-        "linebreak-style": "off",
-        "quotes": [1, "double"]
+        "linebreak-style": "off"
     },
     "ignorePatterns": [
         "webpack.*.js"

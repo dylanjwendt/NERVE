@@ -3,7 +3,7 @@ import Koa from "koa";
 import serve from "koa-static";
 import path from "path";
 
-const clientRoot = path.join(__dirname, "../../Client/dist");
+const clientRoot = path.join(__dirname, "../../DemoHtmlClient/dist");
 const PORT = 3000;
 
 (async function () {

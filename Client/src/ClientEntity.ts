@@ -1,11 +1,11 @@
-import { Sprite } from 'pixi.js';
+import { Sprite } from "pixi.js";
 
 const smoothing = 0.2;
 
 /**
  * Simple entity data class for client-side prediction
  */
-export default class Entity {
+export class ClientEntity {
   vx: number;
   vy: number;
   sprite: Sprite;
