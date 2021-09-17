@@ -23,6 +23,8 @@
   "license": "MIT",
   "dependencies": {
     "nerve-server": "^0.1.0",
+    "pixi-cull": "^2.0.1",
+    "pixi-viewport": "^4.32.0",
     "pixi.js": "^6.0.0"
   },
   "devDependencies": {

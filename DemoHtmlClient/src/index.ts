@@ -16,7 +16,13 @@ type FieldLocalizations = {
   
   window.addEventListener('resize', () => {
     client.pixi.renderer.resize(window.innerWidth, window.innerHeight);
+    client.viewport.resize(window.innerWidth, window.innerHeight)
   });
+
+  client.pixi.view.style.position = 'fixed'
+  client.pixi.view.style.width = '100vw'
+  client.pixi.view.style.height = '100vh'
+  client.pixi.view.style.zIndex = '-5'
   
   document.body.appendChild(client.pixi.view);
   

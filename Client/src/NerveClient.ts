@@ -1,8 +1,11 @@
 import * as PIXI from "pixi.js";
 import { Sprite, Texture } from "pixi.js";
 import { Application } from "@pixi/app";
+import { Viewport } from "pixi-viewport";
+import { Simple } from "pixi-cull";
 import { GameState, NerveServerCommon } from "nerve-server";
 import { IEntity } from "@nerve-common/IEntity";
+import config from "@nerve-config";
 import { ClientEntity } from "./ClientEntity";
 import { InputHandler, AcceptedInputHandlers } from "./InputHandler";
 import { DefaultInputHandler } from "./DefaultInputHandler";
@@ -26,6 +29,7 @@ export type DebugInfo = {
  */
 export class NerveClient {
   clientId: number
+  #cull: Simple
   debugInfo: DebugInfo
   #debugCallback: (() => void) | undefined
   disableInput: boolean
@@ -33,10 +37,12 @@ export class NerveClient {
   handler: InputHandler
   lastSync: number
   pixi: Application
+  #player: Sprite | undefined
   server: NerveServerCommon | undefined
   syncTimes: number[] // rolling average of sync times
   tickers: (() => void)[]
   view: HTMLCanvasElement
+  viewport: Viewport
 
   constructor(handler?: InputHandler) {
     this.pixi = new PIXI.Application({
@@ -55,7 +61,15 @@ export class NerveClient {
       avgSyncTime: 0
     };
 
+    this.viewport = new Viewport({
+      worldWidth: config.engine.worldWidth,
+      worldHeight: config.engine.worldHeight,
+      passiveWheel: false,
+      interaction: this.pixi.renderer.plugins.interaction,
+    });
+
     this.clientId = 0;
+    this.#cull = new Simple();
     this.disableInput = false;
     this.entities = new Map<number, ClientEntity>();
     this.handler = handler || new DefaultInputHandler();
@@ -65,6 +79,21 @@ export class NerveClient {
     this.view = this.pixi.view;
 
     this.#setupDefaultTickers();
+
+    this.viewport.clamp({
+      left: false,
+      right: false,
+      top: false,
+      bottom: false,
+      direction: "all",
+      underflow: "center",
+    });
+
+    this.pixi.stage.addChild(this.viewport);
+    this.handler.setViewport(this.viewport);
+
+    this.#cull.addList(this.viewport.children);
+    this.#cull.cull(this.viewport.getVisibleBounds());
   }
 
   async attachToServer(): Promise<void> {
@@ -101,6 +130,7 @@ export class NerveClient {
   }
 
   #setupDefaultTickers(): void {
+    // Update debug information
     this.pixi.ticker.add(() => {
       const player = this.entities.get(this.clientId);
       this.debugInfo = {
@@ -116,10 +146,22 @@ export class NerveClient {
       }
     });
 
+    // Render entities
     this.pixi.ticker.add(() => {
       this.entities.forEach((entity) => {
         this.pixi.renderer.render(entity.sprite);
       });
+    });
+    
+    // Render viewport
+    this.pixi.ticker.add(() => { this.pixi.renderer.render(this.viewport); });
+
+    // Cull whenever the viewport moves
+    this.pixi.ticker.add(() => {
+      if (this.viewport.dirty) {
+        this.#cull.cull(this.viewport.getVisibleBounds());
+        this.viewport.dirty = false;
+      }
     });
 
     // Client side prediction
@@ -127,6 +169,7 @@ export class NerveClient {
       this.entities.forEach((entity) => entity.update());
     });
 
+    // Stop ticker by default, should be started after user inputs username and other game details
     this.pixi.ticker.stop();
   }
 
@@ -156,7 +199,19 @@ export class NerveClient {
         newSprite.x = e.x - e.width / 2;
         newSprite.y = e.y - e.height / 2;
         this.entities.set(e.id, new ClientEntity(e.vx, e.vy, newSprite));
-        this.pixi.stage.addChild(newSprite);
+        this.viewport.addChild(newSprite);
+      }
+
+      if(e.id == this.clientId) {
+        const player = this.entities.get(e.id);
+        if(player) {
+          this.#player = player.sprite;
+          this.viewport.follow(player.sprite, {
+            speed: 0,
+            acceleration: null,
+            radius: null
+          });
+        }
       }
     });
 
@@ -164,7 +219,7 @@ export class NerveClient {
     this.entities.forEach((entity, id) => {
       if (!entityList.find((e) => e.id === id)) {
         this.entities.delete(id);
-        this.pixi.stage.removeChild(entity.sprite);
+        this.viewport.removeChild(entity.sprite);
       }
     });
   }

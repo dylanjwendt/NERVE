@@ -24,7 +24,13 @@ export class DefaultInputHandler extends InputHandler {
   }
 
   mousemove(e: MouseEvent): InputHandlerReturnType {
-    this.mousePos = [e.clientX, e.clientY];
+    let x = 0;
+    let y = 0;
+    if(this.viewport) {
+      x = this.viewport.left;
+      y = this.viewport.top;
+    }
+    this.mousePos = [e.clientX + x, e.clientY + y];
     return null;
   }
 
