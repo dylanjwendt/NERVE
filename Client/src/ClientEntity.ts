@@ -1,7 +1,7 @@
 import { Sprite } from "pixi.js";
-import config from "@nerve-config";
+import { NerveConfig } from "nerve-common";
 
-const smoothing = config.client.smoothing;
+const smoothing = NerveConfig.client.smoothing;
 
 /**
  * Simple entity data class for client-side prediction

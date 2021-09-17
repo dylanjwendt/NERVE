@@ -8,14 +8,8 @@
     "tests/*"
   ],
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@nerve-common/*": ["../Common/src/*"],
-      "@nerve-config": ["../nerve.config.json"]
-    },
     "outDir": "build",
     "declaration": true,
-    "sourceMap": true,
-    "resolveJsonModule": true
+    "sourceMap": true
   },
 }

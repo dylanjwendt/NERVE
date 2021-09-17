@@ -12,7 +12,6 @@
     "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
-        "plugin:jest/recommended",
         "plugin:promise/recommended",
         "plugin:workspaces/recommended",
         "plugin:import/recommended",
@@ -43,9 +42,6 @@
             }
         ]
     },
-    "ignorePatterns": [
-        "webpack.*.js"
-    ],
     "settings": {
         "import/parsers": {
             "@typescript-eslint/parser": [

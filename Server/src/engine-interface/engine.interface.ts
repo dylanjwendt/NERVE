@@ -1,4 +1,4 @@
-import { IEntity } from "@nerve-common/IEntity";
+import { IEntity } from "nerve-common";
 import { IInputHandler } from "./input-handler.interface";
 
 export interface IEngine {

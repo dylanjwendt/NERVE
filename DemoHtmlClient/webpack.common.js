@@ -65,10 +65,6 @@ module.exports = {
     new NodePolyfillPlugin()
   ],
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.json'],
-    alias: Object.keys(tsconfig.compilerOptions.paths).reduce((aliases, aliasName) => {
-      aliases[aliasName] = path.resolve(__dirname, tsconfig.compilerOptions.paths[aliasName][0])
-      return aliases
-    }, {})
+    extensions: ['.ts', '.tsx', '.js', '.json']
   }
 }

@@ -1,14 +1,16 @@
 {
   "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist",
+    "outDir": "./build",
     "noImplicitAny": true,
     "module": "commonjs",
     "target": "es6",
     "allowJs": true,
     "esModuleInterop": true,
+    "declaration": true,
     "sourceMap": true,
     "lib": ["DOM"],
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "resolveJsonModule": true
   }
 }

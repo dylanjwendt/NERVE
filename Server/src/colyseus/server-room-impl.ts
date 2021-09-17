@@ -15,7 +15,7 @@ export class ServerRoomImpl {
 
     constructor(@inject("Engine") engine: IEngine, 
                 @inject(delay(() => ColyseusRoom)) colyseusRoom: ColyseusRoom, 
-                socketEngineIdMap?: Map<string, number>) {
+        socketEngineIdMap?: Map<string, number>) {
         this.engine = engine;
         this.colyseusRoom = colyseusRoom;
         if (socketEngineIdMap) {

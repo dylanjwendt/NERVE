@@ -2,7 +2,7 @@
   "name": "nerve-server",
   "version": "0.1.0",
   "description": "Handles matchmaking and turns over client actions to the engine",
-  "main": "build/Server/src/exports.js",
+  "main": "build/exports.js",
   "private": true,
   "scripts": {
     "start": "node build/index.js",
@@ -34,6 +34,7 @@
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
     "koa-static": "^5.0.0",
+    "nerve-common": "^0.1.0",
     "nerve-demo": "file:../Demo",
     "reflect-metadata": "^0.1.13",
     "tsyringe": "^4.6.0",

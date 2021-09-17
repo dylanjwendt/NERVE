@@ -1,7 +1,7 @@
 import Actor from "./actor";
 import GameLogic from "./game-logic";
 import Terminal from "./terminal";
-import { IEntity } from "@nerve-common/IEntity";
+import { IEntity } from "nerve-common";
 import InputHandler from "./input-handler";
 import Matter from "matter-js";
 

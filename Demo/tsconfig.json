@@ -7,16 +7,10 @@
     "tests/*"
   ],
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@nerve-common/*": ["../Common/src/*"],
-      "@nerve-config": ["../nerve.config.json"]
-    },
     "outDir": "build",
     "esModuleInterop": true,
     "declaration": true,
     "noImplicitAny": false,
-    "sourceMap": true,
-    "resolveJsonModule": true
+    "sourceMap": true
   }
 }

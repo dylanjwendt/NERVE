@@ -5,7 +5,8 @@
         "Engine/",
         "Server/",
         "Demo/",
-        "DemoHtmlClient/"
+        "DemoHtmlClient/",
+        "Common/"
     ],
     "files.eol": "\n",
     "files.exclude": {

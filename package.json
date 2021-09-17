@@ -31,6 +31,7 @@
   },
   "homepage": "https://github.com/dylanjwendt/NERVE#readme",
   "workspaces": [
+    "Common",
     "Engine",
     "Demo",
     "Server",
@@ -38,7 +39,6 @@
     "DemoHtmlClient"
   ],
   "dependencies": {
-    "module-alias": "^2.2.2",
     "nerve-server": "file:./Server"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
 import { DefaultInputHandler } from "nerve-client";
-import type { InputHandlerReturnType } from "nerve-client"
+import type { InputHandlerReturnType } from "nerve-client";
 
 /**
  * This is the input handler for the demo client. It extends DefaultInputHandler
@@ -18,11 +18,11 @@ export class DemoClientInputHandler extends DefaultInputHandler {
 
     // Special behavior: if key is "t", then fake a mousedown input
     // This amounts to autoclicking
-    if (e.key === 't') {
+    if (e.key === "t") {
       return ["mousedown", { mousePos: this.mousePos }];
     }
 
     // Otherwise don't send data back to the server
-    return null
+    return null;
   }
 }

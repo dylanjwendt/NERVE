@@ -1,20 +1,22 @@
 {
   "extends": "@tsconfig/node14/tsconfig.json",
+  "include": [
+    "src/**/*",
+    "types/**/*"
+  ],
+  "exclude": [
+    "tests/*"
+  ],
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@nerve-common/*": ["../Common/src/*"],
-      "@nerve-config": ["../nerve.config.json"]
-    },
     "outDir": "./build",
     "noImplicitAny": true,
     "module": "commonjs",
     "target": "es6",
     "allowJs": true,
     "esModuleInterop": true,
+    "declaration": true,
     "sourceMap": true,
     "lib": ["DOM"],
-    "experimentalDecorators": true,
-    "resolveJsonModule": true
+    "experimentalDecorators": true
   }
 }

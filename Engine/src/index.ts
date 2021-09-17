@@ -9,5 +9,3 @@ export { default as Actor } from "./actor";
 export { ActorInteraction } from "./actor";
 export { default as InputHandler } from "./input-handler";
 export { default as GameLogic } from "./game-logic";
-
-export { IEntity } from "@nerve-common/IEntity";

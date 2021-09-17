@@ -4,8 +4,7 @@ import { Application } from "@pixi/app";
 import { Viewport } from "pixi-viewport";
 import { Simple } from "pixi-cull";
 import { GameState, NerveServerCommon } from "nerve-server";
-import { IEntity } from "@nerve-common/IEntity";
-import config from "@nerve-config";
+import { IEntity, NerveConfig } from "nerve-common";
 import { ClientEntity } from "./ClientEntity";
 import { InputHandler, AcceptedInputHandlers } from "./InputHandler";
 import { DefaultInputHandler } from "./DefaultInputHandler";
@@ -74,8 +73,8 @@ export class NerveClient {
     };
 
     this.viewport = new Viewport({
-      worldWidth: config.engine.worldWidth,
-      worldHeight: config.engine.worldHeight,
+      worldWidth: NerveConfig.engine.worldWidth,
+      worldHeight: NerveConfig.engine.worldHeight,
       passiveWheel: false,
       interaction: this.pixi.renderer.plugins.interaction,
     });
@@ -147,9 +146,9 @@ export class NerveClient {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const data = this.inputHandler[type](e as any);
       if (Array.isArray(data)) {
-        this.server?.send(data[0], JSON.stringify({...data[1], clientId: this.clientId}));
+        this.server?.send(data[0], JSON.stringify({...data[1], player: this.clientId}));
       } else if (data != null) {
-        this.server?.send(type, JSON.stringify({...data, clientId: this.clientId}));
+        this.server?.send(type, JSON.stringify({...data, player: this.clientId}));
       }
     });
   }
@@ -194,8 +193,8 @@ export class NerveClient {
       const player = this.entities.get(this.clientId);
       if (!player) { return; }
       this.entities.forEach((entity) => {
-        if (entity.sprite.x - player.sprite.x < config.client["prediction-threshold"] &&
-            entity.sprite.y - player.sprite.y < config.client["prediction-threshold"]) {
+        if (entity.sprite.x - player.sprite.x < NerveConfig.client.predictionThreshold &&
+            entity.sprite.y - player.sprite.y < NerveConfig.client.predictionThreshold) {
           entity.update();
         }
       });

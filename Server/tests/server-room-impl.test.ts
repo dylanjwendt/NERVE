@@ -1,6 +1,6 @@
 import { Client } from "colyseus";
 import { IEngine } from "../src/engine-interface/engine.interface";
-import { IEntity } from "@nerve-common/IEntity";
+import { IEntity } from "nerve-common";
 import { mock, mockDeep } from "jest-mock-extended";
 import { ServerRoomImpl } from "../src/colyseus/server-room-impl";
 import { ColyseusRoom } from "../src/colyseus/colyseus-room";

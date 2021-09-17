@@ -7,11 +7,6 @@
         "tests/**/*"
     ],
     "compilerOptions": {
-        "baseUrl": ".",
-        "paths": {
-          "@nerve-common/*": ["../Common/src/*"],
-          "@nerve-config": ["../nerve.config.json"]
-        },
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "outDir": "build",

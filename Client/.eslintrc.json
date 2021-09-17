@@ -22,7 +22,8 @@
         "@typescript-eslint",
         "promise",
         "workspaces",
-        "import"
+        "import",
+        "jest"
     ],
     "rules": {
         "no-console": "off",

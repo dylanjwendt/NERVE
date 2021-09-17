@@ -1,6 +1,6 @@
-import './index.less'
-import { NerveClient } from 'nerve-client'
-import { DemoClientInputHandler } from './DemoClientInputHandler';
+import "./index.less";
+import { NerveClient } from "nerve-client";
+import { DemoClientInputHandler } from "./DemoClientInputHandler";
 
 // A way to translate the keys of the debug object to human readable text
 type FieldLocalizations = {
@@ -15,19 +15,19 @@ type FieldLocalizations = {
   // Create NerveClient
   const client = new NerveClient(new DemoClientInputHandler());
   client.attachEventListenersTo(document);
-  client.disableInput = true
+  client.disableInput = true;
   
   // Resize client when window resizes
-  window.addEventListener('resize', () => {
+  window.addEventListener("resize", () => {
     client.pixi.renderer.resize(window.innerWidth, window.innerHeight);
-    client.viewport.resize(window.innerWidth, window.innerHeight)
+    client.viewport.resize(window.innerWidth, window.innerHeight);
   });
 
   // Styling so that the client canvas is always full page
-  client.pixi.view.style.position = 'fixed'
-  client.pixi.view.style.width = '100vw'
-  client.pixi.view.style.height = '100vh'
-  client.pixi.view.style.zIndex = '-5'
+  client.pixi.view.style.position = "fixed";
+  client.pixi.view.style.width = "100vw";
+  client.pixi.view.style.height = "100vh";
+  client.pixi.view.style.zIndex = "-5";
   
   // Actually add client canvas to the HTML document
   document.body.appendChild(client.view);
@@ -51,21 +51,21 @@ type FieldLocalizations = {
         elem.textContent = `${fieldLocalizations[key]}: ${text.toString()}`;
       }
     });
-  })
+  });
 
   // Username handling
   let username: string;
-  $('#username')?.addEventListener('keyup', async (e) => {
-    const overlay = $('#overlay') as HTMLDivElement;
+  $("#username")?.addEventListener("keyup", async (e) => {
+    const overlay = $("#overlay") as HTMLDivElement;
     const evt = e as KeyboardEvent;
-    if (evt.key === 'Enter' && overlay) {
-      overlay.style.display = 'none';
-      username = ($('#username') as HTMLInputElement).innerText;
+    if (evt.key === "Enter" && overlay) {
+      overlay.style.display = "none";
+      username = ($("#username") as HTMLInputElement).innerText;
 
       // Connect to server and start client's ticker only after username has been entered
+      client.disableInput = false;
       await client.attachToServer();
       client.pixi.ticker.start();
-      client.disableInput = false
     }
   });
 }());
