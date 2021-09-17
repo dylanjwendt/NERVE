@@ -14,36 +14,49 @@ import type { InputHandlerFunction } from "./InputHandler";
 // keep rolling average of this many sync times
 const syncTimesWindow = 5;
 
+/**
+ * Object containing all debug information the client tracks.
+ */
 export type DebugInfo = {
   fps: number,
   numEntities: number,
   playerX: number,
   playerY: number,
+  /** Average milliseconds for the client to sync to the server. */
   avgSyncTime: number,
 }
 
 /**
  * Nerve client for interfacing with the server.
  * 
- * You would only use this class if you are writing a custom client.
+ * This class handles all the data logic, and you can import it into whatever front-end framework
+ * to create an interface for it.
  */
 export class NerveClient {
-  clientId: number
   #cull: Simple
-  debugInfo: DebugInfo
   #debugCallback: (() => void) | undefined
+  #syncTimes: number[]
+
+  clientId: number
+  debugInfo: DebugInfo
+
+  /** If true, do not send anything returned from input handlers to server */
   disableInput: boolean
   entities: Map<number, ClientEntity>
-  handler: InputHandler
+  inputHandler: InputHandler
   lastSync: number
   pixi: Application
   server: NerveServerCommon | undefined
-  syncTimes: number[] // rolling average of sync times
-  tickers: (() => void)[]
   view: HTMLCanvasElement
   viewport: Viewport
 
-  constructor(handler?: InputHandler) {
+  /**
+   * Constructs a NerveClient.
+   * 
+   * If inputHandler is not passed in, then the client will use {@link DefaultInputHandler}.
+   * @param inputHandler A custom input handler
+   */
+  constructor(inputHandler?: InputHandler) {
     this.pixi = new PIXI.Application({
       width: window.innerWidth,
       height: window.innerHeight,
@@ -71,10 +84,9 @@ export class NerveClient {
     this.#cull = new Simple();
     this.disableInput = false;
     this.entities = new Map<number, ClientEntity>();
-    this.handler = handler || new DefaultInputHandler();
+    this.inputHandler = inputHandler || new DefaultInputHandler();
     this.lastSync = 0;
-    this.syncTimes = [0];
-    this.tickers = [];
+    this.#syncTimes = [0];
     this.view = this.pixi.view;
 
     this.#setupDefaultTickers();
@@ -89,28 +101,42 @@ export class NerveClient {
     });
 
     this.pixi.stage.addChild(this.viewport);
-    this.handler.setViewport(this.viewport);
+    this.inputHandler.setViewport(this.viewport);
 
     this.#cull.addList(this.viewport.children);
     this.#cull.cull(this.viewport.getVisibleBounds());
   }
 
+  /**
+   * Attempt to connect this client to the game server. If successful, then the client will
+   * begin syncing to the server and will set {@link NerveClient.clientId} to the id returned by the server.
+   */
   async attachToServer(): Promise<void> {
     this.server = new NerveServerCommon();
     await this.server.connect("ws://localhost:2567");
     this.server.onStateChange((state: GameState) => this.#syncServerState(state));
     this.server.onMessage("getPlayerId", (message: number) => {
       this.clientId = message;
-      this.handler.setClientId(this.clientId);
     });
   }
 
+  /**
+   * Adds the event listeners from the input handler to the given target element.
+   * @param target The document/element/window you want to add event listeners to.
+   */
   attachEventListenersTo(target: Document | Element | Window): void {
     for (const type of AcceptedInputHandlers) {
       this.#addEventListener(target, type);
     }
   }
 
+  /**
+   * Called everytime the client updates its debug information.
+   * 
+   * This function acts more like a notification, your callback should look into {@link NerveClient.debugInfo}
+   * to actually read the updated information.
+   * @param callback Callback function
+   */
   onDebugUpdate(callback: () => void): void {
     this.#debugCallback = callback;
   }
@@ -119,11 +145,11 @@ export class NerveClient {
     target.addEventListener(type, (e) => {
       if (this.disableInput) { return; }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const data = this.handler[type](e as any);
+      const data = this.inputHandler[type](e as any);
       if (Array.isArray(data)) {
-        this.server?.send(data[0], data[1]);
-      } else if (typeof data == "string") {
-        this.server?.send(type, data);
+        this.server?.send(data[0], JSON.stringify({...data[1], clientId: this.clientId}));
+      } else if (data != null) {
+        this.server?.send(type, JSON.stringify({...data, clientId: this.clientId}));
       }
     });
   }
@@ -137,7 +163,7 @@ export class NerveClient {
         numEntities: this.entities.size,
         playerX: player ? player.sprite.x : -1,
         playerY: player ? player.sprite.y : -1,
-        avgSyncTime: this.syncTimes.reduce((acc, cur) => acc + cur, 0) / this.syncTimes.length,
+        avgSyncTime: this.#syncTimes.reduce((acc, cur) => acc + cur, 0) / this.#syncTimes.length,
       };
 
       if (this.#debugCallback) {
@@ -180,12 +206,12 @@ export class NerveClient {
   }
 
   #syncServerState(state: GameState): void {
-    // keep rolling average of sync times
-    this.syncTimes.push(Date.now() - this.lastSync);
-    if (this.syncTimes.length > syncTimesWindow) { this.syncTimes.shift(); }
+    // Keep rolling average of sync times
+    this.#syncTimes.push(Date.now() - this.lastSync);
+    if (this.#syncTimes.length > syncTimesWindow) { this.#syncTimes.shift(); }
     this.lastSync = Date.now();
 
-    // sync new entities
+    // Sync new entities
     const entityList: IEntity[] = JSON.parse(state.text);
     entityList.forEach((e) => {
       if (this.entities.has(e.id)) {
@@ -199,6 +225,7 @@ export class NerveClient {
           this.entities.set(e.id, entity);
         }
       } else {
+        // Create new entities
         const newSprite = new Sprite(Texture.from("../res/circle.png"));
         newSprite.scale.set(e.scale[0], e.scale[1]);
         newSprite.tint = e.tint;
@@ -208,6 +235,7 @@ export class NerveClient {
         this.viewport.addChild(newSprite);
       }
 
+      // Update viewport to follow player
       if(e.id == this.clientId) {
         const player = this.entities.get(e.id);
         if(player) {
@@ -220,7 +248,7 @@ export class NerveClient {
       }
     });
 
-    // prune removed entities
+    // Prune removed entities
     this.entities.forEach((entity, id) => {
       if (!entityList.find((e) => e.id === id)) {
         this.entities.delete(id);

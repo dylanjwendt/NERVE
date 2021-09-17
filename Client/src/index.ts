@@ -1,8 +1,6 @@
-/**
- * Top-level client exports
- * You can use these if you want to write a custom client,
- * for example, in order to use a different front-end framework.
- */
+// Top-level client exports
+// You can use these if you want to write a custom client,
+// for example, in order to use a different front-end framework.
 
 export { ClientEntity } from "./ClientEntity";
 export { NerveClient } from "./NerveClient";
