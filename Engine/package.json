@@ -2,7 +2,7 @@
   "name": "nerve-engine",
   "version": "0.1.0",
   "description": "NERVE engine handles all game logic",
-  "main": "build/index.js",
+  "main": "build/Engine/src/index.js",
   "private": true,
   "scripts": {
     "start": "node build/index.js",

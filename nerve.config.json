@@ -1,6 +1,7 @@
 {
   "client": {
-    "smoothing": 0.2
+    "smoothing": 0.2,
+    "prediction-threshold": 750
   },
   "server": {
     "//": "Client root is relative to process.cwd() (which should be the root NERVE directory), not Server/src/index.ts",
@@ -8,6 +9,7 @@
     "port": 3000
   },
   "engine": {
-
+    "worldWidth": 5000,
+    "worldHeight": 5000
   }
 }
