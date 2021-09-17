@@ -37,7 +37,6 @@ export class NerveClient {
   handler: InputHandler
   lastSync: number
   pixi: Application
-  #player: Sprite | undefined
   server: NerveServerCommon | undefined
   syncTimes: number[] // rolling average of sync times
   tickers: (() => void)[]
@@ -166,7 +165,14 @@ export class NerveClient {
 
     // Client side prediction
     this.pixi.ticker.add(() => {
-      this.entities.forEach((entity) => entity.update());
+      const player = this.entities.get(this.clientId);
+      if (!player) { return; }
+      this.entities.forEach((entity) => {
+        if (entity.sprite.x - player.sprite.x < config.client["prediction-threshold"] &&
+            entity.sprite.y - player.sprite.y < config.client["prediction-threshold"]) {
+          entity.update();
+        }
+      });
     });
 
     // Stop ticker by default, should be started after user inputs username and other game details
@@ -205,7 +211,6 @@ export class NerveClient {
       if(e.id == this.clientId) {
         const player = this.entities.get(e.id);
         if(player) {
-          this.#player = player.sprite;
           this.viewport.follow(player.sprite, {
             speed: 0,
             acceleration: null,
