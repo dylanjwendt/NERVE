@@ -2,7 +2,7 @@
   "name": "nerve-server",
   "version": "0.1.0",
   "description": "Handles matchmaking and turns over client actions to the engine",
-  "main": "build/exports.js",
+  "main": "build/Server/src/exports.js",
   "private": true,
   "scripts": {
     "start": "node build/index.js",
