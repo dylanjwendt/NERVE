@@ -55,17 +55,60 @@ type FieldLocalizations = {
 
   // Username handling
   let username: string;
+  let classValue = 0;
+  const overlay = $("#overlay") as HTMLDivElement;
   $("#username")?.addEventListener("keyup", async (e) => {
-    const overlay = $("#overlay") as HTMLDivElement;
     const evt = e as KeyboardEvent;
     if (evt.key === "Enter" && overlay) {
-      overlay.style.display = "none";
-      username = ($("#username") as HTMLInputElement).innerText;
-
       // Connect to server and start client's ticker only after username has been entered
-      client.disableInput = false;
-      await client.attachToServer();
-      client.pixi.ticker.start();
+      await connectToServer(overlay, ($("#username") as HTMLInputElement).innerText, client, classValue);
     }
   });
+
+  //Play button handling (Same thing as username handling on enter)
+  $("#btn_play")?.addEventListener("click", async (e) => {
+    await connectToServer(overlay, ($("#username") as HTMLInputElement).innerText, client, classValue);
+  });
+
+  // Game class handling
+  let disabledBtn = $("#btn_A") as HTMLButtonElement;
+  $("#btn_A")?.addEventListener("click", (e) => {
+    classValue = 0;
+    disabledBtn = changeDisabledBtn(disabledBtn, $("#btn_A")  as HTMLButtonElement);
+    console.log(classValue);
+  });
+  $("#btn_B")?.addEventListener("click", (e) => {
+    classValue = 1;
+    disabledBtn = changeDisabledBtn(disabledBtn, $("#btn_B")  as HTMLButtonElement);
+    console.log(classValue);
+  });
+  $("#btn_C")?.addEventListener("click", (e) => {
+    classValue = 2;
+    disabledBtn = changeDisabledBtn(disabledBtn, $("#btn_C")  as HTMLButtonElement);
+    console.log(classValue);
+  });
 }());
+
+//Hides the overlay and starts
+async function connectToServer(overlay : HTMLDivElement, username : string, client : NerveClient, classValue : number) {
+  //Connect to server
+  await client.attachToServer();
+
+  //Send the username and class to the server upon successful connection
+  client.server?.send("username", JSON.stringify({ player: client.clientId, name: username }));
+  client.server?.send("classValue", JSON.stringify({ player: client.clientId, classValue: classValue }));
+
+  //Remove overlay and enable inputs
+  overlay.style.display = "none";
+  client.disableInput = false;
+  
+  client.pixi.ticker.start();
+}
+
+//Re-enables the oldBtn and disables the newBtn. Returns the newBtn.
+function changeDisabledBtn(oldBtn : HTMLButtonElement, newBtn : HTMLButtonElement) {
+  oldBtn.disabled = false;
+  newBtn.disabled = true;
+
+  return newBtn;
+}
