@@ -28,7 +28,7 @@ export default class Bullet extends Actor {
         this.setWidth(16);
         this.setHeight(16);
         this.addInteraction(new Damage(this.#parent));
-        this.body.collisionFilter.mask = ~(0b1<<3); 
+        this.body.collisionFilter.mask = 0b1100; 
         this.body.collisionFilter.category = 0b1<<3;
         this.body.frictionAir = 0;
         this.creationTime = engine.timing.timestamp;

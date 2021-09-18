@@ -17,7 +17,7 @@ export default class Player extends Actor {
         this.health = MAXHEALTH;
         this.defaultTint = this.getTint();
         this.body.collisionFilter.mask = 0b1<<3; 
-        this.body.collisionFilter.category = 0b1<<1;
+        this.body.collisionFilter.category = 0b1<<3;
         this.body.frictionAir = 0;
         this.movemask = 0b0000;
         Matter.Body.setMass(this.body, 100000);

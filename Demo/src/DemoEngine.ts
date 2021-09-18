@@ -5,26 +5,29 @@ import Blackhole from "./actors/Blackhole";
 import Matter from "matter-js";
 import { BotPlayer } from "./actors/BotPlayer";
 
+const numBlackholes = 10;
+
 export default class DemoEngine extends Engine {
-    bh: Blackhole;
-    bh2: Blackhole;
+    blackholes: Blackhole[];
     bots: BotPlayer[];
     playerBotOwners: Map<number, number[]>;  // tracks which bots were added for each player that joined 
-    numBotsPerPlayer = 2;  // can be whatever we want
+    numBotsPerPlayer = 70;  // can be whatever we want
 
     constructor() {
         super((l: GameLogic) => new DemoInputHandler(l));
-        this.bh = new Blackhole(this.gameLogic.getValidID(), "bh1", this);
-        Matter.Body.setPosition(this.bh.body, Matter.Vector.create(500, 500));
+        this.blackholes = [];
 
-        this.bh.setOrigin([500, 500]);
-        this.gameLogic.addActor(this.bh.getID(), this.bh);
-
-        this.bh2 = new Blackhole(this.gameLogic.getValidID(), "bh2", this);
-        Matter.Body.setPosition(this.bh2.body, Matter.Vector.create(1000, 1000));
-
-        this.bh2.setOrigin([500, 500]);
-        this.gameLogic.addActor(this.bh2.getID(), this.bh2);
+        for(let i = 0; i < numBlackholes; i++) {
+            const x = Math.floor(Math.random() * 1000);
+            const y = Math.floor(Math.random() * 1000);
+            const vx = Math.floor(Math.random() * 1000);
+            const vy = Math.floor(Math.random() * 1000);
+            const bh = new Blackhole(this.gameLogic.getValidID(), `bh${i}`, this);
+            bh.setOrigin([x, y]);
+            Matter.Body.setPosition(bh.body, Matter.Vector.create(vx, vy));
+            this.gameLogic.addActor(bh.getID(), bh);
+            this.blackholes[i] = bh;
+        }
 
         (this.inputHandler as DemoInputHandler).setEngine(this);
         this.bots = new Array<BotPlayer>();
@@ -32,8 +35,7 @@ export default class DemoEngine extends Engine {
     }
 
     update(millisec: number): void {
-        this.bh.wander(millisec);
-        this.bh2.wander(millisec);
+        this.blackholes.forEach(bh => bh.wander(millisec));
         this.bots.forEach(bot => bot.update());
         super.update(millisec);
     }

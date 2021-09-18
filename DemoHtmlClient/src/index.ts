@@ -1,6 +1,8 @@
 import "./index.less";
+import * as PIXI from "pixi.js";
 import { NerveClient } from "nerve-client";
 import { DemoClientInputHandler } from "./DemoClientInputHandler";
+import { Viewport } from "pixi-viewport";
 
 // A way to translate the keys of the debug object to human readable text
 type FieldLocalizations = {
@@ -28,6 +30,8 @@ type FieldLocalizations = {
   client.pixi.view.style.width = "100vw";
   client.pixi.view.style.height = "100vh";
   client.pixi.view.style.zIndex = "-5";
+
+  stars(client.viewport, 30, 10);
   
   // Actually add client canvas to the HTML document
   document.body.appendChild(client.view);
@@ -111,4 +115,71 @@ function changeDisabledBtn(oldBtn : HTMLButtonElement, newBtn : HTMLButtonElemen
   newBtn.disabled = true;
 
   return newBtn;
+}
+
+// Stars function taken from pixi-viewport demo
+// https://davidfig.github.io/pixi-viewport/
+function overlap(x: number, y: number, viewport: Viewport, starSize = 30) {
+  const size = starSize;
+  for (const child of viewport.children) {
+      if (x < child.x + size &&
+          x + size > child.x &&
+          y < child.y + size &&
+          y + size > child.y) {
+          return true;
+      }
+  }
+  return false;
+}
+
+function stars(viewport: Viewport, starSize: number, border: number) {
+  const stars = (viewport.worldWidth * viewport.worldHeight) / Math.pow(starSize, 2) * 0.1;
+  for (let i = 0; i < stars; i++) {
+      const star = new PIXI.Sprite(PIXI.Texture.WHITE);
+      star.anchor.set(0.5);
+      star.tint = randomInt(0xffffff);
+      star.width = star.height = starSize;
+      star.alpha = range(0.25, 1, true);
+      let x, y;
+      do {
+          x = range(starSize / 2 + border, viewport.worldWidth - starSize - border);
+          y = range(border, viewport.worldHeight - border - starSize);
+      } while (overlap(x, y, viewport, starSize));
+      star.position.set(x, y);
+      viewport.addChild(star);
+  }
+}
+
+function randomInt(n: number) {
+  return Math.floor(Math.random() * n);
+}
+
+function randomFloat(n: number) {
+  return Math.random() * n;
+}
+
+function range(start: number, end: number, useFloat = false) {
+  // case where there is no range
+  if (end === start) {
+      return end;
+  }
+
+  if (useFloat) {
+      return randomFloat(end - start) + start;
+  } else {
+      let range;
+      if (start < 0 && end > 0) {
+          range = -start + end + 1;
+      } else if (start === 0 && end > 0) {
+          range = end + 1;
+      } else if (start < 0 && end === 0) {
+          range = start - 1;
+          start = 1;
+      } else if (start < 0 && end < 0) {
+          range = end - start - 1;
+      } else {
+          range = end - start + 1;
+      }
+      return randomInt(range) + start;
+  }
 }

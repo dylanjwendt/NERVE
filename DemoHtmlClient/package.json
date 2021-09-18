@@ -22,7 +22,10 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "nerve-client": "^0.1.0"
+    "nerve-client": "^0.1.0",
+    "pixi-cull": "^2.0.1",
+    "pixi-viewport": "^4.32.0",
+    "pixi.js": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",

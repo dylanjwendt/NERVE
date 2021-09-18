@@ -1,6 +1,7 @@
 import Matter from "matter-js";
-import {Engine } from "nerve-engine";
+import { Engine } from "nerve-engine";
 import Player from "./Player";
+import { NerveConfig } from "nerve-common";
 
 /**
  * this is a simple prototype version of a bot for our demo engine.
@@ -22,7 +23,7 @@ export class BotPlayer extends Player {
     private movementStepsTaken: number;
     private movementStepsCap: number;
     private MIN_MOVEMENT_STEPS = 10;
-    private MAX_MOVEMENT_STEPS = 100;
+    private MAX_MOVEMENT_STEPS = 150;
     private SECONDARY_MOVEMENT_FREQ = 0.75;  // 75% chance to have a secondary movement direction
 
     private isShooting: boolean;
@@ -31,15 +32,15 @@ export class BotPlayer extends Player {
     private mousePos: [number, number];
     private SHOOTING_INTERVAL = 12;  // number of updates to wait before firing another bullet
     private MIN_SHOOTING_STEPS = 0;
-    private MAX_SHOOTING_STEPS = 3;
+    private MAX_SHOOTING_STEPS = 10;
     private SHOOTING_FREQ = 0.005;  // there's a 0.5% chance the bot will decide to start shooting 
 
     private NO_MOVEMENT = "";
 
     // made up bounds to keep bots within the view of the game, otherwise they will wander away into infinity.
     // this should be changed when the engine has proper world boundaries(?)
-    private WORLD_BOUND_X = [-100, 1920];
-    private WORLD_BOUND_Y = [-100, 1080];
+    private WORLD_BOUND_X = [0, NerveConfig.engine.worldWidth];
+    private WORLD_BOUND_Y = [0, NerveConfig.engine.worldHeight];
 
     constructor(id: number, engine: Engine, name = "") {
         super(id, engine, name);
@@ -58,6 +59,13 @@ export class BotPlayer extends Player {
     public update(): void {
         this.moveRandomly();
         this.shootRandomly();
+        this.spawnWallRandomly();
+    }
+
+    private spawnWallRandomly(): void {
+        if(this.getRandomIntInclusive(0, 4000) <= 1) {
+            this.engine.inputHandler.handleKeyUp(this.getID(), " ");
+        }
     }
 
     private moveRandomly(): void {

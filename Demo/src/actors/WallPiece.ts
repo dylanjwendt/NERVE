@@ -2,7 +2,7 @@ import Matter from "matter-js";
 import { Actor } from "nerve-engine";
 import { DemoEngine } from "..";
 
-const maxAge = 5000;
+const maxAge = 6000;
 
 export default class WallPiece extends Actor {
     #deltaT: number;
@@ -13,14 +13,14 @@ export default class WallPiece extends Actor {
         this.setWidth(48);
         this.setHeight(48);
         this.#deltaT = 0;
-        this.body.collisionFilter.mask = 0b1<<1; 
-        this.body.collisionFilter.category = 0b1<<0;
+        this.body.collisionFilter.mask = 0b1<<3; 
+        this.body.collisionFilter.category = 0b1<<3;
         Matter.Body.setStatic(this.body, true);
         function decay(event: Matter.IEventTimestamped<Matter.Engine>, thisPiece: WallPiece) {
             const millisec = thisPiece.engine.engine.timing.lastDelta;
 
             if(thisPiece.#deltaT >= maxAge) {
-                thisPiece.destroy;
+                thisPiece.destroy();
                 return;
             }
             thisPiece.#deltaT += millisec;
