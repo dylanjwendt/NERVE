@@ -2,9 +2,11 @@ import { Startup } from "./startup";
 import Koa from "koa";
 import serve from "koa-static";
 import path from "path";
+import { NerveConfig } from "nerve-common";
 
-const clientRoot = path.join(__dirname, "../../Client/dist");
-const PORT = 3000;
+// Client root is relative to Server/
+const clientRoot = path.resolve(process.cwd(), NerveConfig.server.clientRoot);
+const PORT = NerveConfig.server.port;
 
 (async function () {
     // start game server (websockets)
@@ -17,5 +19,6 @@ const PORT = 3000;
     app.use(serve(clientRoot));
     app.listen(PORT, () => {
         console.log(`Started static server on localhost:${PORT}`);
+        console.log(`Serving client root: ${clientRoot}`);
     });
 })();

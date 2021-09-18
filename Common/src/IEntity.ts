@@ -1,3 +1,7 @@
+/**
+ * Represents an entity while it is being passed between
+ * engine, server, and client.
+ */
 export interface IEntity {
   id: number;
   x: number;

@@ -1,0 +1,5 @@
+{
+  "entryPoints": ["."],
+  "out": "docs",
+  "entryPointStrategy": "packages"
+}

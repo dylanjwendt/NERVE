@@ -8,8 +8,9 @@
   ],
   "compilerOptions": {
     "outDir": "build",
-    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "declaration": true,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "sourceMap": true
   }
 }

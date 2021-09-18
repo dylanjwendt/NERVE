@@ -3,6 +3,7 @@ const path = require('path')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
+const tsconfig = require("./tsconfig.json")
 
 const cwd = process.cwd().endsWith('Client') ? __dirname : path.resolve(__dirname, 'Client')
 
