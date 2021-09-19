@@ -116,9 +116,11 @@ async function connectToServer(overlay : HTMLDivElement, username : string, clie
   //Connect to server
   await client.attachToServer();
 
-  //Send the username and class to the server upon successful connection
-  client.server?.send("username", JSON.stringify({ player: client.clientId, name: username }));
-  client.server?.send("classValue", JSON.stringify({ player: client.clientId, classValue: classValue }));
+  client.server?.onMessage("requestUsername", (message: number) => {
+    client.clientId = message;
+    //Send the username and class to the server upon successful connection
+    client.server?.send("changeNameNClass", JSON.stringify({ player: client.clientId, name: username, classValue: classValue }));
+  });
 
   //Remove overlay and enable inputs
   overlay.style.display = "none";

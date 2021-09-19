@@ -60,6 +60,11 @@ export default class DemoEngine extends Engine {
         super.removeActor(id);
     }
 
+    changeUsernameAndClass(playerId: number, newName: string, newClass : number): void {
+        const player = (this.gameLogic.actors.get(playerId) as Player);
+        player.setName(newName);
+    }
+
     private removeBots(playerId: number): void {
         // if a player left, we will also remove the bots that joined for them
         if (this.playerBotOwners.has(playerId)) {

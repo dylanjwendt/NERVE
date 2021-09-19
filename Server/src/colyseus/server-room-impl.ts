@@ -42,10 +42,9 @@ export class ServerRoomImpl {
             this.engine.inputHandler.handleKeyUp(req.player, req.key); // Actor id MUST be equal to client id
         } else if(type === "mousedown") {
             this.engine.inputHandler.handleMouseDownInput(req.player, req.mousePos);
-        } else if (type === "username") {
-            console.log("Player " + req.player + " is now called " + req.name);
-        } else if (type === "classValue") {
-            console.log("Player " + req.player + " is part of " + req.classValue);
+        } else if (type === "changeNameNClass") {
+            console.log("Player " + req.player + "has change there name and class to be " + req.name + " , " + req.classValue);
+            this.engine.changeUsernameAndClass(req.player, req.name, req.classValue);
         }
     }
 
@@ -53,6 +52,7 @@ export class ServerRoomImpl {
         const id = this.engine.getValidId();
         this.engine.addPlayerActor(id);
         client.send("getPlayerId", id);
+        client.send("requestUsername", id);
         this.socketEngineIdMap.set(client.id, id);
         console.log(`[${new Date().toLocaleTimeString()}] Player joined with id ${id}`);
     }
