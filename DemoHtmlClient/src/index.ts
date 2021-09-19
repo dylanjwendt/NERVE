@@ -1,4 +1,5 @@
 import "./index.less";
+import * as PIXI from "pixi.js";
 import { NerveClient } from "nerve-client";
 import { DemoClientInputHandler } from "./DemoClientInputHandler";
 
@@ -54,20 +55,22 @@ type FieldLocalizations = {
   });
 
   // Username handling
-  let username: string;
+  let username = "";
   let classValue = 0;
   const overlay = $("#overlay") as HTMLDivElement;
   $("#username")?.addEventListener("keyup", async (e) => {
     const evt = e as KeyboardEvent;
     if (evt.key === "Enter" && overlay) {
       // Connect to server and start client's ticker only after username has been entered
-      await connectToServer(overlay, ($("#username") as HTMLInputElement).innerText, client, classValue);
+      username = ($("#username") as HTMLInputElement).value;
+      await connectToServer(overlay, username, client, classValue);
     }
   });
 
   //Play button handling (Same thing as username handling on enter)
   $("#btn_play")?.addEventListener("click", async (e) => {
-    await connectToServer(overlay, ($("#username") as HTMLInputElement).innerText, client, classValue);
+    username = ($("#username") as HTMLInputElement).value;
+    await connectToServer(overlay, username, client, classValue);
   });
 
   // Game class handling
@@ -86,6 +89,25 @@ type FieldLocalizations = {
     classValue = 2;
     disabledBtn = changeDisabledBtn(disabledBtn, $("#btn_C")  as HTMLButtonElement);
     console.log(classValue);
+  });
+
+  //Render username
+  const text = new PIXI.Text(username, {fontFamily: "Arial", fontSize: 24, fill : "black"});
+  text.anchor.set(0.5, 0.5);
+  client.viewport.addChild(text);
+
+  client.pixi.ticker.add(() => {
+    const xOffset = 20;
+    const yOffset = 30;
+    const player = client.entities.get(client.clientId);
+    if (player == undefined){
+      return;
+    }
+    text.text = username;
+    text.x = player.sprite.x + xOffset;
+    text.y = player.sprite.y - yOffset;
+    console.log("Rendering text at  (" + text.x + ", " + text.y + ") with color \"" + text.style.fill?.toString() + "\" with value \"" + username + "\"");
+    text.updateText(true);
   });
 }());
 
