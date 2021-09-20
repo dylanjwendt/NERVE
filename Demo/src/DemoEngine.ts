@@ -114,7 +114,7 @@ class DemoEntry implements IEntity {
         this.tint = actor.getTint();
         this.width = actor.getWidth();
         this.height = actor.getHeight();
-        if (actor as Player) {
+        if (actor instanceof Player) {
             this.gameData = (actor as Player).getName();
         } else {
             this.gameData = undefined;
