@@ -28,12 +28,10 @@ export default class Player extends Actor {
     //Changes the class of the player allowing for unique play.
     changeClass(classValue : number): void {
         this.classValue = classValue;
-        //Revent to default values
-        this.maxSpeed = 3;
 
         switch (this.classValue) {
         case 0:
-            this.maxSpeed = 5;
+            this.maxSpeed = 4;
             break;
         case 1:
             this.maxSpeed = 2;
@@ -42,6 +40,7 @@ export default class Player extends Actor {
             this.maxSpeed = 1;
             break;
         default:
+            this.maxSpeed = 3;
             break;
         }
     }
