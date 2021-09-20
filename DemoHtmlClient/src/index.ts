@@ -1,6 +1,6 @@
 import "./index.less";
 import * as PIXI from "pixi.js";
-import { NerveClient } from "nerve-client";
+import { ClientEntity, NerveClient } from "nerve-client";
 import { DemoClientInputHandler } from "./DemoClientInputHandler";
 import { Viewport } from "pixi-viewport";
 
@@ -58,20 +58,22 @@ type FieldLocalizations = {
   });
 
   // Username handling
-  let username: string;
+  let username = "";
   let classValue = 0;
   const overlay = $("#overlay") as HTMLDivElement;
   $("#username")?.addEventListener("keyup", async (e) => {
     const evt = e as KeyboardEvent;
     if (evt.key === "Enter" && overlay) {
       // Connect to server and start client's ticker only after username has been entered
-      await connectToServer(overlay, ($("#username") as HTMLInputElement).innerText, client, classValue);
+      username = ($("#username") as HTMLInputElement).value;
+      await connectToServer(overlay, username, client, classValue);
     }
   });
 
   //Play button handling (Same thing as username handling on enter)
   $("#btn_play")?.addEventListener("click", async (e) => {
-    await connectToServer(overlay, ($("#username") as HTMLInputElement).innerText, client, classValue);
+    username = ($("#username") as HTMLInputElement).value;
+    await connectToServer(overlay, username, client, classValue);
   });
 
   // Game class handling
@@ -91,6 +93,41 @@ type FieldLocalizations = {
     disabledBtn = changeDisabledBtn(disabledBtn, $("#btn_C")  as HTMLButtonElement);
     console.log(classValue);
   });
+
+  //Maps names to text
+  const entitiesToText : Map<ClientEntity, any> = new Map();
+
+  client.pixi.ticker.add(() => {
+    const xOffset = 20;
+    const yOffset = 30;
+    const notFoundEntities = new Set(entitiesToText.keys());
+    client.entities.forEach((e) => {
+      if (e.gameData !== undefined) {
+        const name = e.gameData as string;
+        let text = new PIXI.Text(name, {fontFamily: "Arial", fontSize: 24, fill : "black"});
+        if (entitiesToText.has(e)) {
+          text = entitiesToText.get(e);
+          text.text = e.gameData;
+          text.x = e.sprite.x + xOffset;
+          text.y = e.sprite.y - yOffset;
+        } else {
+          entitiesToText.set(e, text);
+          text = entitiesToText.get(e);
+          text.anchor.set(0.5, 0.5);
+          client.viewport.addChild(text);
+        }
+
+        if (text !== undefined){
+          text.updateText(true);
+        }
+        notFoundEntities.delete(e);
+      }
+    });
+    notFoundEntities.forEach((e) => {
+      entitiesToText.get(e).destroy();
+      entitiesToText.delete(e);
+    });
+  });
 }());
 
 //Hides the overlay and starts
@@ -98,9 +135,11 @@ async function connectToServer(overlay : HTMLDivElement, username : string, clie
   //Connect to server
   await client.attachToServer();
 
-  //Send the username and class to the server upon successful connection
-  client.server?.send("username", JSON.stringify({ player: client.clientId, name: username }));
-  client.server?.send("classValue", JSON.stringify({ player: client.clientId, classValue: classValue }));
+  client.server?.onMessage("requestUsername", (message: number) => {
+    client.clientId = message;
+    //Send the username and class to the server upon successful connection
+    client.server?.send("changeNameNClass", JSON.stringify({ player: client.clientId, name: username, classValue: classValue }));
+  });
 
   //Remove overlay and enable inputs
   overlay.style.display = "none";

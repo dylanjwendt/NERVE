@@ -94,6 +94,7 @@ class EntityEntry implements IEntity {
     tint: number;
     width: number;
     height: number;
+    gameData: any;
     update(): void {
         throw new Error("Method not implemented.");
     }
@@ -108,5 +109,6 @@ class EntityEntry implements IEntity {
         this.tint = actor.getTint();
         this.width = actor.getWidth();
         this.height = actor.getHeight();
+        this.gameData = undefined;
     }
 }

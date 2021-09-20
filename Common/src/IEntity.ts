@@ -12,5 +12,6 @@ export interface IEntity {
   tint: number;  // hexadecimal
   width: number;
   height: number;
+  gameData: any; //Holds extra information
   update(): void;
 }
