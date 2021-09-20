@@ -1,40 +1,59 @@
-import { Actor, Engine, GameLogic} from "nerve-engine";
+import { Body, Vector, Composite, Bodies } from "matter-js";
+import { Engine, GameLogic} from "nerve-engine";
+import { NerveConfig } from "nerve-common";
 import DemoInputHandler from "./DemoInputHandler";
 import Player from "./actors/Player";
 import Blackhole from "./actors/Blackhole";
-import { Body, Vector} from "matter-js";
 import { BotPlayer } from "./actors/BotPlayer";
-import { IEntity } from "nerve-common";
+
+const numBlackholes = 10;
 
 export default class DemoEngine extends Engine {
-    bh: Blackhole;
-    bh2: Blackhole;
+    blackholes: Blackhole[];
     bots: BotPlayer[];
     playerBotOwners: Map<number, number[]>;  // tracks which bots were added for each player that joined 
-    numBotsPerPlayer = 2;  // can be whatever we want
+    numBotsPerPlayer = 50;  // can be whatever we want
 
     constructor() {
         super((l: GameLogic) => new DemoInputHandler(l));
-        this.bh = new Blackhole(this.gameLogic.getValidID(), "bh1", this);
-        Body.setPosition(this.bh.body, Vector.create(500, 500));
+        this.blackholes = [];
 
-        this.bh.setOrigin([500, 500]);
-        this.gameLogic.addActor(this.bh.getID(), this.bh);
-
-        this.bh2 = new Blackhole(this.gameLogic.getValidID(), "bh2", this);
-        Body.setPosition(this.bh2.body, Vector.create(1000, 1000));
-
-        this.bh2.setOrigin([500, 500]);
-        this.gameLogic.addActor(this.bh2.getID(), this.bh2);
+        for(let i = 0; i < numBlackholes; i++) {
+            const x = Math.floor(Math.random() * 1000);
+            const y = Math.floor(Math.random() * 1000);
+            const vx = Math.floor(Math.random() * 1000);
+            const vy = Math.floor(Math.random() * 1000);
+            const bh = new Blackhole(this.gameLogic.getValidID(), `bh${i}`, this);
+            bh.setOrigin([x, y]);
+            Body.setPosition(bh.body, Vector.create(vx, vy));
+            this.gameLogic.addActor(bh.getID(), bh);
+            this.blackholes[i] = bh;
+        }
 
         (this.inputHandler as DemoInputHandler).setEngine(this);
         this.bots = new Array<BotPlayer>();
         this.playerBotOwners = new Map<number, number[]>();
+
+        // Create world border walls
+        const { worldWidth, worldHeight } = NerveConfig.engine;
+        const wallThickness = 100;
+        const wallOpts = {
+            isStatic: true,
+            collisionFilter: {
+                mask: -1,
+                category: -1
+            }
+        };
+        Composite.add(this.engine.world, [
+            Bodies.rectangle(worldWidth / 2, -wallThickness/2, worldWidth, wallThickness, wallOpts),
+            Bodies.rectangle(worldWidth / 2, worldHeight + wallThickness/2, worldWidth, wallThickness, wallOpts),
+            Bodies.rectangle(-wallThickness/2, worldHeight / 2, wallThickness, worldHeight, wallOpts),
+            Bodies.rectangle(worldHeight + wallThickness/2, worldHeight / 2, wallThickness, worldHeight, wallOpts)
+        ]);
     }
 
     update(millisec: number): void {
-        this.bh.wander(millisec);
-        this.bh2.wander(millisec);
+        this.blackholes.forEach(bh => bh.wander(millisec));
         this.bots.forEach(bot => bot.update());
         super.update(millisec);
     }

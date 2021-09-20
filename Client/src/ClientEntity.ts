@@ -7,12 +7,14 @@ const smoothing = NerveConfig.client.smoothing;
  * Simple entity data class for client-side prediction
  */
 export class ClientEntity {
+  id: number;
   vx: number;
   vy: number;
   sprite: Sprite;
   gameData: any; //Holds extra game data
 
-  constructor(vx: number, vy: number, sprite: Sprite, gameData: any) {
+  constructor(id: number, vx: number, vy: number, sprite: Sprite, gameData: any) {
+    this.id = id;
     this.vx = vx;
     this.vy = vy;
     this.sprite = sprite;

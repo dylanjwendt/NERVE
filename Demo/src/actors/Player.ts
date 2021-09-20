@@ -20,8 +20,8 @@ export default class Player extends Actor {
         this.classValue = 0;
         this.defaultTint = this.getTint();
         this.body.collisionFilter.mask = 0b1<<3; 
-        this.body.collisionFilter.category = 0b1<<1;
-        this.body.frictionAir = 0;
+        this.body.collisionFilter.category = 0b1<<3;
+        this.body.frictionAir = 0.01;
         this.movemask = 0b0000;
         Body.setMass(this.body, 100000);
         this.gameData = {
@@ -85,28 +85,28 @@ export default class Player extends Actor {
 
     updateDirection(key: string): void {
         // Note up/down directions are flipped for top-left origin
-        if(key == "w") {
+        if(key === "w") {
             this.movemask |= 0b1000;
         }
-        else if(key == "-w") {
+        else if(key === "-w") {
             this.movemask &= 0b0111;
         }
-        else if(key == "a") {
+        else if(key === "a") {
             this.movemask |= 0b0100;
         }
-        else if(key == "-a") {
+        else if(key === "-a") {
             this.movemask &= 0b1011;
         }
-        else if(key == "s") {
+        else if(key === "s") {
             this.movemask |= 0b0010;
         }
-        else if(key == "-s") {
+        else if(key === "-s") {
             this.movemask &= 0b1101;
         }
-        else if(key == "d") {
+        else if(key === "d") {
             this.movemask |= 0b0001;
         }
-        else if(key == "-d") {
+        else if(key === "-d") {
             this.movemask &= 0b1110;
         }
 
@@ -117,6 +117,9 @@ export default class Player extends Actor {
         if(this.movemask & 0b0100) vx -= 1;
         if(this.movemask & 0b0010) vy += 1;
         if(this.movemask & 0b0001) vx += 1;
+
+        // If player is not holding a key, apply friction
+        this.body.frictionAir = (this.movemask === 0b0000) ? 0.05 : 0;
 
         Body.setVelocity(this.body, Vector.create(vx*this.maxSpeed, vy*this.maxSpeed));
     }

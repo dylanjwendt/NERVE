@@ -231,8 +231,8 @@ export class NerveClient {
         newSprite.tint = e.tint;
         newSprite.x = e.x - e.width / 2;
         newSprite.y = e.y - e.height / 2;
-        this.entities.set(e.id, new ClientEntity(e.vx, e.vy, newSprite, e.gameData));
-        console.log(e.gameData);
+        this.entities.set(e.id, new ClientEntity(e.id, e.vx, e.vy, newSprite, e.gameData));
+        // console.log(e.gameData);
         this.viewport.addChild(newSprite);
       }
 
@@ -254,6 +254,7 @@ export class NerveClient {
       if (!entityList.find((e) => e.id === id)) {
         this.entities.delete(id);
         this.viewport.removeChild(entity.sprite);
+        entity.sprite.destroy();
       }
     });
   }
