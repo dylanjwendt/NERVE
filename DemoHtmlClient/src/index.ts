@@ -104,6 +104,7 @@ type FieldLocalizations = {
         let text = new PIXI.Text(name, {fontFamily: "Arial", fontSize: 24, fill : "black"});
         if (entitiesToText.has(e)) {
           text = entitiesToText.get(e);
+          text.text = e.gameData;
           text.x = e.sprite.x + xOffset;
           text.y = e.sprite.y - yOffset;
         } else {
