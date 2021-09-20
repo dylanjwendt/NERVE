@@ -1,6 +1,5 @@
-import Matter from "matter-js";
-import { Engine } from "nerve-engine";
 import Player from "./Player";
+import { Engine } from "nerve-engine";
 import { NerveConfig } from "nerve-common";
 
 /**
