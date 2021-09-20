@@ -92,22 +92,52 @@ type FieldLocalizations = {
   });
 
   //Render username
-  const text = new PIXI.Text(username, {fontFamily: "Arial", fontSize: 24, fill : "black"});
-  text.anchor.set(0.5, 0.5);
-  client.viewport.addChild(text);
+  // const text = new PIXI.Text(username, {fontFamily: "Arial", fontSize: 24, fill : "black"});
+  // text.anchor.set(0.5, 0.5);
+  // client.viewport.addChild(text);
+
+  // client.pixi.ticker.add(() => {
+  //   const xOffset = 20;
+  //   const yOffset = 30;
+  //   const player = client.entities.get(client.clientId);
+  //   if (player == undefined){
+  //     return;
+  //   }
+  //   text.text = username;
+  //   text.x = player.sprite.x + xOffset;
+  //   text.y = player.sprite.y - yOffset;
+  //   console.log("Rendering text at  (" + text.x + ", " + text.y + ") with color \"" + text.style.fill?.toString() + "\" with value \"" + username + "\"");
+  //   text.updateText(true);
+  // });
+
+  //Maps names to text
+  const namesToText : Map<string, any> = new Map();
 
   client.pixi.ticker.add(() => {
     const xOffset = 20;
     const yOffset = 30;
-    const player = client.entities.get(client.clientId);
-    if (player == undefined){
-      return;
-    }
-    text.text = username;
-    text.x = player.sprite.x + xOffset;
-    text.y = player.sprite.y - yOffset;
-    console.log("Rendering text at  (" + text.x + ", " + text.y + ") with color \"" + text.style.fill?.toString() + "\" with value \"" + username + "\"");
-    text.updateText(true);
+    client.entities.forEach((e) => {
+      if (e.gameData !== undefined) {
+        const name = e.gameData as string;
+        let text = new PIXI.Text(name, {fontFamily: "Arial", fontSize: 24, fill : "black"});
+        if (namesToText.has(name)) {
+          text = namesToText.get(name);
+          text.x = e.sprite.x + xOffset;
+          text.y = e.sprite.y - yOffset;
+        } else {
+          namesToText.set(name, text);
+          text = namesToText.get(name);
+          text.anchor.set(0.5, 0.5);
+          client.viewport.addChild(text);
+        }
+
+        if (text !== undefined){
+          text.updateText(true);
+        }
+      } else {
+        //console.log("Game data is undefined");
+      }
+    });
   });
 }());
 

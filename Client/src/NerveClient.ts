@@ -221,6 +221,7 @@ export class NerveClient {
           entity.vx = e.vx;
           entity.vy = e.vy;
           entity.sprite.tint = e.tint;
+          entity.gameData = e.gameData;
           this.entities.set(e.id, entity);
         }
       } else {
@@ -230,7 +231,8 @@ export class NerveClient {
         newSprite.tint = e.tint;
         newSprite.x = e.x - e.width / 2;
         newSprite.y = e.y - e.height / 2;
-        this.entities.set(e.id, new ClientEntity(e.vx, e.vy, newSprite));
+        this.entities.set(e.id, new ClientEntity(e.vx, e.vy, newSprite, e.gameData));
+        console.log(e.gameData);
         this.viewport.addChild(newSprite);
       }
 
