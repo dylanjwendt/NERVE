@@ -11,6 +11,7 @@ const DECISIONINTERVAL = 2000;
 
 export default class Blackhole extends Actor {
     private entityCount;
+    private attr;
     #origin: [number, number];
     #deltaT: number;
     #tgt: {x: number, y: number};
@@ -23,7 +24,7 @@ export default class Blackhole extends Actor {
         this.setTint(0x000000);
         this.entityCount = 0;
         this.addInteraction(new Impact());
-        new Attractor(this.engine.gameLogic.getValidID(), "", eng, this);
+        this.attr = new Attractor(this.engine.gameLogic.getValidID(), "", eng, this);
         this.#origin = [0,0];
         this.#deltaT = DECISIONINTERVAL+1;
         this.body.collisionFilter.mask = 0b1<<3;
@@ -77,5 +78,10 @@ export default class Blackhole extends Actor {
 
     setOrigin(newOrigin: [number, number]): void {
         this.#origin = newOrigin;
+    }
+
+    destroy(): void {
+        super.destroy();
+        this.engine.removeActor(this.attr);
     }
 }
