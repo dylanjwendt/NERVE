@@ -1,9 +1,10 @@
-import { Engine, GameLogic} from "nerve-engine";
+import { Actor, Engine, GameLogic} from "nerve-engine";
 import DemoInputHandler from "./DemoInputHandler";
 import Player from "./actors/Player";
 import Blackhole from "./actors/Blackhole";
 import Matter from "matter-js";
 import { BotPlayer } from "./actors/BotPlayer";
+import { IEntity } from "nerve-common";
 
 export default class DemoEngine extends Engine {
     bh: Blackhole;
@@ -47,7 +48,7 @@ export default class DemoEngine extends Engine {
         const botsForPlayer = new Array<number>();
         for (let i = 0; i < this.numBotsPerPlayer; i++) {
             const botId = this.getValidId();
-            const bot = new BotPlayer(botId, this, "name");
+            const bot = new BotPlayer(botId, this, "bot" + botId);
             this.bots.push(bot);
             botsForPlayer.push(botId);
             super.addActor(botId, bot);
@@ -58,6 +59,12 @@ export default class DemoEngine extends Engine {
     removeActor(id: number): void {
         this.removeBots(id);
         super.removeActor(id);
+    }
+
+    changeUsernameAndClass(playerId: number, newName: string, newClass : number): void {
+        const player = (this.gameLogic.actors.get(playerId) as Player);
+        player.setName(newName);
+        player.changeClass(newClass);
     }
 
     private removeBots(playerId: number): void {
@@ -72,5 +79,45 @@ export default class DemoEngine extends Engine {
     getValidId(): number {
         return this.gameLogic.getValidID();
     }
+
+    getWorldState(): IEntity[] {
+        const retArr: IEntity[] = [];
+        this.gameLogic.actors.forEach((actor) => {
+            retArr.push(new DemoEntry(actor));
+        });
+        return retArr;
+    }
 }
 
+class DemoEntry implements IEntity {
+    id: number;
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    scale: [number, number];
+    tint: number;
+    width: number;
+    height: number;
+    gameData: any;
+    update(): void {
+        throw new Error("Method not implemented.");
+    }
+
+    constructor(actor: Actor){
+        this.id = actor.getID();
+        this.x = actor.body.position.x;
+        this.y = actor.body.position.y;
+        this.vx = actor.body.velocity.x;
+        this.vy = actor.body.velocity.y;
+        this.scale = actor.getScale();
+        this.tint = actor.getTint();
+        this.width = actor.getWidth();
+        this.height = actor.getHeight();
+        if (actor instanceof Player) {
+            this.gameData = (actor as Player).getName();
+        } else {
+            this.gameData = undefined;
+        }
+    }
+}

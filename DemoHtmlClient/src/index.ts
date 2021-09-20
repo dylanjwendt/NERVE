@@ -1,5 +1,6 @@
 import "./index.less";
-import { NerveClient } from "nerve-client";
+import * as PIXI from "pixi.js";
+import { ClientEntity, NerveClient } from "nerve-client";
 import { DemoClientInputHandler } from "./DemoClientInputHandler";
 
 // A way to translate the keys of the debug object to human readable text
@@ -54,18 +55,100 @@ type FieldLocalizations = {
   });
 
   // Username handling
-  let username: string;
+  let username = "";
+  let classValue = 0;
+  const overlay = $("#overlay") as HTMLDivElement;
   $("#username")?.addEventListener("keyup", async (e) => {
-    const overlay = $("#overlay") as HTMLDivElement;
     const evt = e as KeyboardEvent;
     if (evt.key === "Enter" && overlay) {
-      overlay.style.display = "none";
-      username = ($("#username") as HTMLInputElement).innerText;
-
       // Connect to server and start client's ticker only after username has been entered
-      client.disableInput = false;
-      await client.attachToServer();
-      client.pixi.ticker.start();
+      username = ($("#username") as HTMLInputElement).value;
+      await connectToServer(overlay, username, client, classValue);
     }
   });
+
+  //Play button handling (Same thing as username handling on enter)
+  $("#btn_play")?.addEventListener("click", async (e) => {
+    username = ($("#username") as HTMLInputElement).value;
+    await connectToServer(overlay, username, client, classValue);
+  });
+
+  // Game class handling
+  let disabledBtn = $("#btn_A") as HTMLButtonElement;
+  $("#btn_A")?.addEventListener("click", (e) => {
+    classValue = 0;
+    disabledBtn = changeDisabledBtn(disabledBtn, $("#btn_A")  as HTMLButtonElement);
+    console.log(classValue);
+  });
+  $("#btn_B")?.addEventListener("click", (e) => {
+    classValue = 1;
+    disabledBtn = changeDisabledBtn(disabledBtn, $("#btn_B")  as HTMLButtonElement);
+    console.log(classValue);
+  });
+  $("#btn_C")?.addEventListener("click", (e) => {
+    classValue = 2;
+    disabledBtn = changeDisabledBtn(disabledBtn, $("#btn_C")  as HTMLButtonElement);
+    console.log(classValue);
+  });
+
+  //Maps names to text
+  const entitiesToText : Map<ClientEntity, any> = new Map();
+
+  client.pixi.ticker.add(() => {
+    const xOffset = 20;
+    const yOffset = 30;
+    const notFoundEntities = new Set(entitiesToText.keys());
+    client.entities.forEach((e) => {
+      if (e.gameData !== undefined) {
+        const name = e.gameData as string;
+        let text = new PIXI.Text(name, {fontFamily: "Arial", fontSize: 24, fill : "black"});
+        if (entitiesToText.has(e)) {
+          text = entitiesToText.get(e);
+          text.text = e.gameData;
+          text.x = e.sprite.x + xOffset;
+          text.y = e.sprite.y - yOffset;
+        } else {
+          entitiesToText.set(e, text);
+          text = entitiesToText.get(e);
+          text.anchor.set(0.5, 0.5);
+          client.viewport.addChild(text);
+        }
+
+        if (text !== undefined){
+          text.updateText(true);
+        }
+        notFoundEntities.delete(e);
+      }
+    });
+    notFoundEntities.forEach((e) => {
+      entitiesToText.get(e).destroy();
+      entitiesToText.delete(e);
+    });
+  });
 }());
+
+//Hides the overlay and starts
+async function connectToServer(overlay : HTMLDivElement, username : string, client : NerveClient, classValue : number) {
+  //Connect to server
+  await client.attachToServer();
+
+  client.server?.onMessage("requestUsername", (message: number) => {
+    client.clientId = message;
+    //Send the username and class to the server upon successful connection
+    client.server?.send("changeNameNClass", JSON.stringify({ player: client.clientId, name: username, classValue: classValue }));
+  });
+
+  //Remove overlay and enable inputs
+  overlay.style.display = "none";
+  client.disableInput = false;
+  
+  client.pixi.ticker.start();
+}
+
+//Re-enables the oldBtn and disables the newBtn. Returns the newBtn.
+function changeDisabledBtn(oldBtn : HTMLButtonElement, newBtn : HTMLButtonElement) {
+  oldBtn.disabled = false;
+  newBtn.disabled = true;
+
+  return newBtn;
+}

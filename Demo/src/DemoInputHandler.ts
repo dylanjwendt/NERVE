@@ -63,7 +63,16 @@ export default class DemoInputHandler extends InputHandler {
         const player = this.logic.actors.get(actorId);
         if (!player) return;
         const pcoords = player.body.position;
-        const bullet = new Bullet(id, player as Player, [pcoords.x, pcoords.y], pos, this.engine!.engine, this.logic, this.engine!);
+        const playerActor = player as Player;
+        const bullet = new Bullet(id, playerActor, [pcoords.x, pcoords.y], pos, this.engine!.engine, this.logic, this.engine!);
+        if (playerActor.getClass() == 2){
+            const id1 = this.logic.getValidID();
+            const id2 = this.logic.getValidID();
+            const bullet1 = new Bullet(id, player as Player, [pcoords.x-5, pcoords.y-5], pos, this.engine!.engine, this.logic, this.engine!);
+            const bullet2 = new Bullet(id, player as Player, [pcoords.x+5, pcoords.y+5], pos, this.engine!.engine, this.logic, this.engine!);
+            this.logic.addActor(id1, bullet1);
+            this.logic.addActor(id2, bullet2);
+        }
         this.logic.addActor(id, bullet);
     }
 

@@ -5,6 +5,7 @@ const MAXHEALTH = 255;
 export default class Player extends Actor {
     private health;
     private defaultTint;
+    private classValue;
     protected maxSpeed;
     protected movemask: number;
 
@@ -15,12 +16,37 @@ export default class Player extends Actor {
         this.setWidth(48);
         this.setHeight(48);
         this.health = MAXHEALTH;
+        this.classValue = 0;
         this.defaultTint = this.getTint();
         this.body.collisionFilter.mask = 0b1<<3; 
         this.body.collisionFilter.category = 0b1<<1;
         this.body.frictionAir = 0;
         this.movemask = 0b0000;
         Matter.Body.setMass(this.body, 100000);
+    }
+
+    //Changes the class of the player allowing for unique play.
+    changeClass(classValue : number): void {
+        this.classValue = classValue;
+
+        switch (this.classValue) {
+        case 0:
+            this.maxSpeed = 4;
+            break;
+        case 1:
+            this.maxSpeed = 2;
+            break;
+        case 2:
+            this.maxSpeed = 1;
+            break;
+        default:
+            this.maxSpeed = 3;
+            break;
+        }
+    }
+
+    getClass(): number {
+        return this.classValue;
     }
 
     getHealth(): number {

@@ -10,11 +10,13 @@ export class ClientEntity {
   vx: number;
   vy: number;
   sprite: Sprite;
+  gameData: any; //Holds extra game data
 
-  constructor(vx: number, vy: number, sprite: Sprite) {
+  constructor(vx: number, vy: number, sprite: Sprite, gameData: any) {
     this.vx = vx;
     this.vy = vy;
     this.sprite = sprite;
+    this.gameData = gameData;
   }
 
   /**

@@ -10,7 +10,14 @@
     <div id="overlay">
       <div class="overlay-center">
         <p>What's your name?</p>
-        <input id="username" type="text">
+        <input id="username" type="text" placeholder="Name" maxlength="20">
+        <button id="btn_play">Play</button>
+        <p>What's your class?</p>
+        <div class="overlay-container">
+          <button id="btn_A" class="overlay-button" disabled>A</button>
+          <button id="btn_B" class="overlay-button">B</button>
+          <button id="btn_C" class="overlay-button">C</button>
+        </div>
       </div>
     </div>
     <div id="debug-screen">
