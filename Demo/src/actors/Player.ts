@@ -1,4 +1,4 @@
-import Matter from "matter-js";
+import { Bodies, Body, Vector } from "matter-js";
 import { Actor, Engine } from "nerve-engine";
 const MAXHEALTH = 255;
 
@@ -10,7 +10,7 @@ export default class Player extends Actor {
     protected movemask: number;
 
     constructor(id: number, eng: Engine, name = "") {
-        super(id, name, Matter.Bodies.circle(0,0,24), eng);
+        super(id, name, Bodies.circle(0,0,24), eng);
         this.maxSpeed = 3;
         this.setScale([1.5, 1.5]);
         this.setWidth(48);
@@ -22,7 +22,7 @@ export default class Player extends Actor {
         this.body.collisionFilter.category = 0b1<<1;
         this.body.frictionAir = 0;
         this.movemask = 0b0000;
-        Matter.Body.setMass(this.body, 100000);
+        Body.setMass(this.body, 100000);
     }
 
     //Changes the class of the player allowing for unique play.
@@ -101,6 +101,6 @@ export default class Player extends Actor {
         if(this.movemask & 0b0010) vy += 1;
         if(this.movemask & 0b0001) vx += 1;
 
-        Matter.Body.setVelocity(this.body, Matter.Vector.create(vx*this.maxSpeed, vy*this.maxSpeed));
+        Body.setVelocity(this.body, Vector.create(vx*this.maxSpeed, vy*this.maxSpeed));
     }
 }

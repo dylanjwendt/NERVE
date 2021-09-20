@@ -1,4 +1,4 @@
-import Matter from "matter-js";
+import { Bodies, Body, Vector } from "matter-js";
 import { Actor,} from "nerve-engine";
 import { DemoEngine } from "..";
 import Impact from "../interactions/bhImpact";
@@ -15,7 +15,7 @@ export default class Blackhole extends Actor {
     #tgt: {x: number, y: number};
 
     constructor(id: number, name = "", eng: DemoEngine) {
-        super(id, name, Matter.Bodies.circle(0,0,24), eng);
+        super(id, name, Bodies.circle(0,0,24), eng);
         this.setScale([1.5, 1.5]);
         this.setWidth(48);
         this.setHeight(48);
@@ -57,7 +57,7 @@ export default class Blackhole extends Actor {
             const deltay = this.#tgt.y-this.body.position.y;
             const vx = deltax/((2*DECISIONINTERVAL - this.#deltaT)/1000);
             const vy = deltay/((2*DECISIONINTERVAL - this.#deltaT)/1000);
-            Matter.Body.setVelocity(this.body, Matter.Vector.create(vx, vy));
+            Body.setVelocity(this.body, Vector.create(vx, vy));
         }
     }
 
