@@ -1,8 +1,9 @@
+import { Body, Vector, Composite, Bodies } from "matter-js";
 import { Engine, GameLogic} from "nerve-engine";
+import { NerveConfig } from "nerve-common";
 import DemoInputHandler from "./DemoInputHandler";
 import Player from "./actors/Player";
 import Blackhole from "./actors/Blackhole";
-import { Body, Vector} from "matter-js";
 import { BotPlayer } from "./actors/BotPlayer";
 
 const numBlackholes = 10;
@@ -32,6 +33,23 @@ export default class DemoEngine extends Engine {
         (this.inputHandler as DemoInputHandler).setEngine(this);
         this.bots = new Array<BotPlayer>();
         this.playerBotOwners = new Map<number, number[]>();
+
+        // Create world border walls
+        const { worldWidth, worldHeight } = NerveConfig.engine;
+        const wallThickness = 100;
+        const wallOpts = {
+            isStatic: true,
+            collisionFilter: {
+                mask: -1,
+                category: -1
+            }
+        };
+        Composite.add(this.engine.world, [
+            Bodies.rectangle(worldWidth / 2, -wallThickness/2, worldWidth, wallThickness, wallOpts),
+            Bodies.rectangle(worldWidth / 2, worldHeight + wallThickness/2, worldWidth, wallThickness, wallOpts),
+            Bodies.rectangle(-wallThickness/2, worldHeight / 2, wallThickness, worldHeight, wallOpts),
+            Bodies.rectangle(worldHeight + wallThickness/2, worldHeight / 2, wallThickness, worldHeight, wallOpts)
+        ]);
     }
 
     update(millisec: number): void {

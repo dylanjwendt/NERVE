@@ -62,7 +62,7 @@ export class BotPlayer extends Player {
     }
 
     private spawnWallRandomly(): void {
-        if(this.getRandomIntInclusive(0, 4000) <= 1) {
+        if(this.getRandomIntInclusive(0, 5000) <= 1) {
             this.engine.inputHandler.handleKeyUp(this.getID(), " ");
         }
     }
