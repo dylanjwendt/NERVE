@@ -31,6 +31,7 @@ export default class Bullet extends Actor {
         this.body.collisionFilter.mask = ~(0b1<<3); 
         this.body.collisionFilter.category = 0b1<<3;
         this.body.frictionAir = 0;
+        this.body.mass = 0.01;
         this.creationTime = engine.timing.timestamp;
         this.logic = logic;
         this.LIFETIME = life;
@@ -39,10 +40,10 @@ export default class Bullet extends Actor {
     }
 
     maintainSpeed(event: Matter.IEventTimestamped<Matter.Engine>, bull: Bullet): void {
-        const normalization = Math.sqrt(bull.body.velocity.x * bull.body.velocity.x + bull.body.velocity.y * bull.body.velocity.y);
-        const vx = (bull.body.velocity.x / normalization) * speed;
-        const vy = (bull.body.velocity.y / normalization) * speed;
-        Body.setVelocity(bull.body, Vector.create(vx, vy));
+        //const normalization = Math.sqrt(bull.body.velocity.x * bull.body.velocity.x + bull.body.velocity.y * bull.body.velocity.y);
+        //const vx = (bull.body.velocity.x / normalization) * speed;
+        //const vy = (bull.body.velocity.y / normalization) * speed;
+        //Body.setVelocity(bull.body, Vector.create(vx, vy));
         if(this.engine.engine.timing.timestamp - bull.creationTime > bull.LIFETIME) {
             bull.destroy();
         }
