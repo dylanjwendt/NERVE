@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "nerve-engine": "file:../Engine",
+    "nerve-common": "^0.1.0",
     "postal": "^2.0.5"
   }
 }

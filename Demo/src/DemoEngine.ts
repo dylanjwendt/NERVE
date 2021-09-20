@@ -48,7 +48,7 @@ export default class DemoEngine extends Engine {
         const botsForPlayer = new Array<number>();
         for (let i = 0; i < this.numBotsPerPlayer; i++) {
             const botId = this.getValidId();
-            const bot = new BotPlayer(botId, this, "name");
+            const bot = new BotPlayer(botId, this, "bot" + botId);
             this.bots.push(bot);
             botsForPlayer.push(botId);
             super.addActor(botId, bot);
