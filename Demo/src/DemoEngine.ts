@@ -2,7 +2,7 @@ import { Actor, Engine, GameLogic} from "nerve-engine";
 import DemoInputHandler from "./DemoInputHandler";
 import Player from "./actors/Player";
 import Blackhole from "./actors/Blackhole";
-import Matter from "matter-js";
+import { Body, Vector} from "matter-js";
 import { BotPlayer } from "./actors/BotPlayer";
 import { IEntity } from "nerve-common";
 
@@ -16,13 +16,13 @@ export default class DemoEngine extends Engine {
     constructor() {
         super((l: GameLogic) => new DemoInputHandler(l));
         this.bh = new Blackhole(this.gameLogic.getValidID(), "bh1", this);
-        Matter.Body.setPosition(this.bh.body, Matter.Vector.create(500, 500));
+        Body.setPosition(this.bh.body, Vector.create(500, 500));
 
         this.bh.setOrigin([500, 500]);
         this.gameLogic.addActor(this.bh.getID(), this.bh);
 
         this.bh2 = new Blackhole(this.gameLogic.getValidID(), "bh2", this);
-        Matter.Body.setPosition(this.bh2.body, Matter.Vector.create(1000, 1000));
+        Body.setPosition(this.bh2.body, Vector.create(1000, 1000));
 
         this.bh2.setOrigin([500, 500]);
         this.gameLogic.addActor(this.bh2.getID(), this.bh2);
@@ -40,7 +40,7 @@ export default class DemoEngine extends Engine {
     }
 
     addPlayerActor(playerId: number): void {
-        super.addActor(playerId, new Player(playerId, this, "todo"));
+        super.addActor(playerId, new Player(playerId, this, ""));
         this.addBotsForPlayer(playerId);
     }
 
@@ -80,44 +80,9 @@ export default class DemoEngine extends Engine {
         return this.gameLogic.getValidID();
     }
 
-    getWorldState(): IEntity[] {
-        const retArr: IEntity[] = [];
-        this.gameLogic.actors.forEach((actor) => {
-            retArr.push(new DemoEntry(actor));
-        });
-        return retArr;
-    }
-}
-
-class DemoEntry implements IEntity {
-    id: number;
-    x: number;
-    y: number;
-    vx: number;
-    vy: number;
-    scale: [number, number];
-    tint: number;
-    width: number;
-    height: number;
-    gameData: any;
-    update(): void {
-        throw new Error("Method not implemented.");
-    }
-
-    constructor(actor: Actor){
-        this.id = actor.getID();
-        this.x = actor.body.position.x;
-        this.y = actor.body.position.y;
-        this.vx = actor.body.velocity.x;
-        this.vy = actor.body.velocity.y;
-        this.scale = actor.getScale();
-        this.tint = actor.getTint();
-        this.width = actor.getWidth();
-        this.height = actor.getHeight();
-        if (actor instanceof Player) {
-            this.gameData = (actor as Player).getName();
-        } else {
-            this.gameData = undefined;
-        }
+    culling(): void {
+        //When culling is implemented, do not cull players.
+        //Bind them to real world
+        // if dead, do not bind. Let them be.
     }
 }

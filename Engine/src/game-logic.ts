@@ -1,8 +1,7 @@
 import System from "./system";
 import Actor from "./actor";
-import * as crypto from "crypto";
 import { Engine } from ".";
-import Matter from "matter-js";
+import { Common } from "matter-js";
 
 export default class GameLogic extends System {
   public actors: Map<number, Actor>;
@@ -30,6 +29,6 @@ export default class GameLogic extends System {
   }
 
   public getValidID(): number {
-      return Matter.Common.nextId();
+      return Common.nextId();
   }
 }

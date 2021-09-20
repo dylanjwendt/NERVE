@@ -1,4 +1,4 @@
-import Matter from "matter-js";
+import { Bodies } from "matter-js";
 import * as postal from "postal";
 import { Engine } from ".";
 
@@ -12,6 +12,7 @@ export default class Actor {
     #height: number;
     public body: Matter.Body;
     public engine: Engine;
+    public gameData: any;
 
     constructor(id: number, name = "", body: Matter.Body, eng: Engine) { 
         this.#name = name;
@@ -23,7 +24,7 @@ export default class Actor {
         this.#height = 16;
         //Default as circle at x = 0, y = 0, radius 5.
         if(!body) {
-            body = Matter.Bodies.circle(0, 0, 5, {id: this.#id});
+            body = Bodies.circle(0, 0, 5, {id: this.#id});
         }
         this.body = body;
         this.body.id = +id;
