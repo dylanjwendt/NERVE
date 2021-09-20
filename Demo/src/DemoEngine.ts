@@ -63,6 +63,7 @@ export default class DemoEngine extends Engine {
     changeUsernameAndClass(playerId: number, newName: string, newClass : number): void {
         const player = (this.gameLogic.actors.get(playerId) as Player);
         player.setName(newName);
+        player.changeClass(newClass);
     }
 
     private removeBots(playerId: number): void {
