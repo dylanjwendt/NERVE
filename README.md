@@ -1,9 +1,8 @@
 # NERVE
 
-NERVE is a realtime non-Euclidean multiplayer game engine with integrated an integrated client/server.
+NERVE is a realtime  multiplayer game engine with an integrated client/server.
 The goal of NERVE is to make developing .io games easier by providing a single comprehensive API and taking over tasks
-such as netcode and state synchronization. The non-Euclidean aspect is to give developers greater creative liberties in
-implementing their games.
+such as netcode and state synchronization.
 
 ## Getting started
 
@@ -30,6 +29,8 @@ The demo game should now be running!
    `npm run -s build` from the top level and then `npm run -s start` to start the server again.
    
    Developers should read the [contributing guidelines](./CONTRIBUTING.md).
+
+6. You can find NERVE's API documentation here: https://dylanjwendt.github.io/NERVE/modules.html
 
 ### Overview of scripts
 You can run these npm scripts by running `npm run -s <script-name>` at the root level.
