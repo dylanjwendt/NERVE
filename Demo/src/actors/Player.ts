@@ -3,11 +3,12 @@ import { Actor, Engine } from "nerve-engine";
 const MAXHEALTH = 255;
 
 export default class Player extends Actor {
-    private health;
-    private defaultTint;
-    private classValue;
-    protected maxSpeed;
+    private health: number;
+    private defaultTint: number;
+    private classValue: number;
+    protected maxSpeed: number;
     protected movemask: number;
+    public gameData: PlayerState;
 
     constructor(id: number, eng: Engine, name = "") {
         super(id, name, Bodies.circle(0,0,24), eng);
@@ -23,6 +24,22 @@ export default class Player extends Actor {
         this.body.frictionAir = 0;
         this.movemask = 0b0000;
         Body.setMass(this.body, 100000);
+        this.gameData = {
+            hp: this.health,
+            isAlive: true,
+            name: name
+        };
+    }
+
+    respawn(): void {
+        this.health = MAXHEALTH;
+        this.body.position = {x: 100, y: 100};
+        this.body.collisionFilter.mask = 0b1<<3; 
+    }
+
+    setName(name: string): void {
+        this.gameData.name = name;
+        super.setName(name);
     }
 
     //Changes the class of the player allowing for unique play.
@@ -103,4 +120,16 @@ export default class Player extends Actor {
 
         Body.setVelocity(this.body, Vector.create(vx*this.maxSpeed, vy*this.maxSpeed));
     }
+
+    kill(): void {
+        this.body.position = {x: -5000, y: -5000};
+        this.body.collisionFilter.mask = 0;
+        this.gameData.isAlive = false;
+    }
+}
+
+interface PlayerState {
+    isAlive: boolean,
+    hp: number,
+    name: string
 }

@@ -100,11 +100,11 @@ type FieldLocalizations = {
     const notFoundEntities = new Set(entitiesToText.keys());
     client.entities.forEach((e) => {
       if (e.gameData !== undefined) {
-        const name = e.gameData as string;
+        const name = e.gameData.name as string;
         let text = new PIXI.Text(name, {fontFamily: "Arial", fontSize: 24, fill : "black"});
         if (entitiesToText.has(e)) {
           text = entitiesToText.get(e);
-          text.text = e.gameData;
+          text.text = e.gameData.name;
           text.x = e.sprite.x + xOffset;
           text.y = e.sprite.y - yOffset;
         } else {

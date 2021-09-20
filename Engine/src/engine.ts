@@ -109,6 +109,6 @@ class EntityEntry implements IEntity {
         this.tint = actor.getTint();
         this.width = actor.getWidth();
         this.height = actor.getHeight();
-        this.gameData = undefined;
+        this.gameData = actor.gameData;
     }
 }

@@ -91,7 +91,7 @@ export default class DemoInputHandler extends InputHandler {
         for(let i = 0; i < numEnt; i++) {
             const theta = ((360/numEnt)*i)*Math.PI/180;
             const pos = [parent.body.position.x + (Math.cos(theta)*dist), parent.body.position.y + (Math.sin(theta)*dist)] as [number, number];
-            const piece = new WallPiece(this.logic.getValidID(), "todo", this.engine);
+            const piece = new WallPiece(this.logic.getValidID(), "", this.engine);
             Body.setPosition(piece.body, Vector.create(pos[0], pos[1]));
             piece.setTint(0xa1a1a1);
             this.logic.addActor(piece.getID(), piece);

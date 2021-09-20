@@ -40,7 +40,7 @@ export default class DemoEngine extends Engine {
     }
 
     addPlayerActor(playerId: number): void {
-        super.addActor(playerId, new Player(playerId, this, "todo"));
+        super.addActor(playerId, new Player(playerId, this, ""));
         this.addBotsForPlayer(playerId);
     }
 
@@ -80,44 +80,9 @@ export default class DemoEngine extends Engine {
         return this.gameLogic.getValidID();
     }
 
-    getWorldState(): IEntity[] {
-        const retArr: IEntity[] = [];
-        this.gameLogic.actors.forEach((actor) => {
-            retArr.push(new DemoEntry(actor));
-        });
-        return retArr;
-    }
-}
-
-class DemoEntry implements IEntity {
-    id: number;
-    x: number;
-    y: number;
-    vx: number;
-    vy: number;
-    scale: [number, number];
-    tint: number;
-    width: number;
-    height: number;
-    gameData: any;
-    update(): void {
-        throw new Error("Method not implemented.");
-    }
-
-    constructor(actor: Actor){
-        this.id = actor.getID();
-        this.x = actor.body.position.x;
-        this.y = actor.body.position.y;
-        this.vx = actor.body.velocity.x;
-        this.vy = actor.body.velocity.y;
-        this.scale = actor.getScale();
-        this.tint = actor.getTint();
-        this.width = actor.getWidth();
-        this.height = actor.getHeight();
-        if (actor instanceof Player) {
-            this.gameData = (actor as Player).getName();
-        } else {
-            this.gameData = undefined;
-        }
+    culling(): void {
+        //When culling is implemented, do not cull players.
+        //Bind them to real world
+        // if dead, do not bind. Let them be.
     }
 }
