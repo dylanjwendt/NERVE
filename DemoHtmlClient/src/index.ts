@@ -144,15 +144,12 @@ type FieldLocalizations = {
 
         //Play sounds based on who shot the bullet
         if (!shooters.has(parentId)) {
-          shooters.set(parentId, new Audio("../res/SFX_shot7.wav"));
-        }
-
-        //Check to see if player is in range to hear sounds from shooters
-        if (client.clientId !== parentId) {
-          const disX = Math.abs(parent?.sprite.x - player?.sprite.x);
-          const disY = Math.abs(parent?.sprite.y - player?.sprite.y);
-          if (disX > 300 && disY > 300) {
-            return;
+          if (parentId == client.clientId) {
+            shooters.set(parentId, new Audio("../res/SFX_shot8.wav"));
+            console.log("Added sound for player.");
+          } else {
+            shooters.set(parentId, new Audio("../res/SFX_shot7.wav"));
+            shooters.get(parentId).volume = 0.6;
           }
         }
 
