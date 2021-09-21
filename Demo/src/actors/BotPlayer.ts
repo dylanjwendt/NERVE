@@ -41,6 +41,12 @@ export class BotPlayer extends Player {
     private WORLD_BOUND_X = [0, NerveConfig.engine.worldWidth];
     private WORLD_BOUND_Y = [0, NerveConfig.engine.worldHeight];
 
+    /**
+     * 
+     * @param id Numeric ID Value of bot. Only use the getValidID() function of engine to get values for this.
+     * @param engine Reference to the DemoEngine
+     * @param name Name of object for display
+     */
     constructor(id: number, engine: Engine, name = "") {
         super(id, engine, name);
         this.movementInput = "";
@@ -54,19 +60,29 @@ export class BotPlayer extends Player {
         this.mousePos = [0, 0];
     }
 
-    // called every time the engine updates 
+    /**
+     * Run update-order functions on the bot.
+     * called every time the engine updates 
+     */ 
     public update(): void {
         this.moveRandomly();
         this.shootRandomly();
         this.spawnWallRandomly();
     }
 
+    /**
+     * Spawn Walls on random intervals.
+     */
     private spawnWallRandomly(): void {
         if(this.getRandomIntInclusive(0, 5000) <= 1) {
             this.engine.inputHandler.handleKeyUp(this.getID(), " ");
         }
     }
 
+    /**
+     * Randomly move bot in space.
+     * @returns No return value
+     */
     private moveRandomly(): void {
         if (this.isShooting) {
             // wait to finish shooting before we move (this makes the bots easier to hit)
@@ -83,6 +99,9 @@ export class BotPlayer extends Player {
         }
     }
 
+    /**
+     * Shoot in random direction at random intervals.
+     */
     private shootRandomly(): void {
         if (this.isShooting) {
             if (this.shootingStepsTaken > (this.shootingStepsCap * this.SHOOTING_INTERVAL)) {
@@ -99,6 +118,9 @@ export class BotPlayer extends Player {
         } 
     }
 
+    /**
+     * Stop moving and begin firing in random direction.
+     */
     private startShooting(): void {
         this.stopMoving();
         this.isShooting = true;
@@ -107,6 +129,9 @@ export class BotPlayer extends Player {
         this.mousePos = this.chooseRandomMousePos();
     }
 
+    /**
+     * Continue to fire
+     */
     private continueShooting(): void {
         // do modulo division to check if it's been x many updates since the last time we shot
         if (this.shootingStepsTaken % this.SHOOTING_INTERVAL == 0) {
@@ -115,10 +140,17 @@ export class BotPlayer extends Player {
         this.shootingStepsTaken++;
     }
 
+    /**
+     * Stop firing actiton
+     */
     private stopShooting(): void {
         this.isShooting = false;
     }
 
+    /**
+     * Determine if thte position of the body is within world bounds.
+     * @returns true if in valid world-position, false otherwise.
+     */
     private isWithinBounds(): boolean {
         const isWithinX: boolean = this.body.position.x >= this.WORLD_BOUND_X[0] 
                                 && this.body.position.x <= this.WORLD_BOUND_X[1];
@@ -127,6 +159,9 @@ export class BotPlayer extends Player {
         return isWithinX && isWithinY;
     }
 
+    /**
+     * Begin move script.
+     */
     private startMoving(): void {
         this.isMoving = true;
         this.movementStepsCap = this.getRandomIntInclusive(this.MIN_MOVEMENT_STEPS, this.MAX_MOVEMENT_STEPS);
@@ -144,6 +179,9 @@ export class BotPlayer extends Player {
         this.engine.inputHandler.handleKeyDown(this.getID(), this.secondMovementInput);
     }
 
+    /**
+     * Handle movement and constrain to in-bounds.
+     */
     private continueMoving(): void {
         if (!this.isWithinBounds()) {
             // move in the opposite direction to try to get back inside bounds
@@ -152,6 +190,9 @@ export class BotPlayer extends Player {
         this.movementStepsTaken++;
     }
 
+    /**
+     * Stop moving the bot.
+     */
     private stopMoving(): void {
         this.engine.inputHandler.handleKeyUp(this.getID(), this.movementInput);
         this.engine.inputHandler.handleKeyUp(this.getID(), this.secondMovementInput);
@@ -162,9 +203,11 @@ export class BotPlayer extends Player {
         this.secondMovementInput = this.NO_MOVEMENT;
     }
 
-    // this is kind of a weird hack. i did it this way because the bot 
-    // mimics keyboard inputs, it doesn't do any of its own math calculations,
-    // it just defers to Player for that stuff
+    /**  
+     * this is kind of a weird hack. i did it this way because the bot 
+     * mimics keyboard inputs, it doesn't do any of its own math calculations,
+     * it just defers to Player for that stuff
+     */
     private moveAwayFromBoundary(): void {
         // stop moving
         this.engine.inputHandler.handleKeyUp(this.getID(), this.movementInput);
@@ -182,12 +225,22 @@ export class BotPlayer extends Player {
         this.engine.inputHandler.handleKeyDown(this.getID(), this.movementInput);
     }
 
+    /**
+     * Random-int with custom boundings
+     * @param min Minimum possible value
+     * @param max Maximum possible value
+     * @returns Random number between min and max
+     */
     private getRandomIntInclusive(min: number, max: number): number {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1) + min); 
     }
 
+    /**
+     * Create a random x,y coordinate for mouse position.
+     * @returns Random 2d coordinate within the world bounds
+     */
     private chooseRandomMousePos(): [number, number] {
         const randomX = this.getRandomIntInclusive(this.WORLD_BOUND_X[0], this.WORLD_BOUND_X[1]);
         const randomY = this.getRandomIntInclusive(this.WORLD_BOUND_Y[0], this.WORLD_BOUND_Y[1]);
@@ -195,6 +248,10 @@ export class BotPlayer extends Player {
         return mousePos;
     }
 
+    /**
+     * Choose a random direction to move, or stagnate.
+     * @returns w, a, s, or d, or no_movement. Randomly Chosen
+     */
     private chooseRandomKeyPress(): string {
         // "" (meaning NO_MOVEMENT) is added twice to the options so that the bots will pause more often
         const keyOptions = ["w", "a", "s", "d", this.NO_MOVEMENT, this.NO_MOVEMENT];

@@ -43,6 +43,10 @@ export default abstract class Engine {
         Events.on(this.engine, "collisionEnd", (e) => handleEvent(e, this.gameLogic.actors, "End"));
     }
 
+    /**
+     * Fetch a list of all actors and relevent data for display
+     * @returns List of IEntity Objects containing information of current objects.
+     */
     getWorldState(): IEntity[] {
         const retArr: IEntity[] = [];
         this.gameLogic.actors.forEach((actor) => {
@@ -51,11 +55,21 @@ export default abstract class Engine {
         return retArr;
     }
 
+    /**
+     * 
+     * @param id ID of actor to Add. Only use the getValidID() function of engine to get values for this.
+     * @param actor Reference to Actor to add
+     */
     addActor(id: number, actor: Actor): void  {
         this.gameLogic.addActor(id, actor);
         Composite.add(this.engine.world, actor.body);
     }
 
+    /**
+     * 
+     * @param id ID of actor to Remove.
+     * @returns No Return Value
+     */
     removeActor(id: number): void {
         if(!this.gameLogic.actors.has(id)) return;
         const body = this.gameLogic.actors.get(id)!.body;
@@ -63,22 +77,42 @@ export default abstract class Engine {
         Composite.remove(this.engine.world, body);
     }
 
+    /**
+     * Move engine forward by provided delta Time
+     * @param millisec Duration since last update
+     */
     update(millisec: number): void {
         MatterEngine.update(this.engine, millisec);
     }
 
+    /**
+     * DEPRECATED FUNCTION
+     * @param show Boolean to send output to terminal log.
+     */
     showData(show: boolean): void {
         this.#term.showData(show);
     }
 
+    /**
+     * Add a Matter.js body for simulation
+     * @param body Body to register with the world.
+     */
     addBody(body: Matter.Body): void {
         World.add(this.engine.world, body);
     }
 
+    /**
+     * Remove a Matter.js body from simulation
+     * @param body Register to remove from world.
+     */
     removeBody(body: Matter.Body): void {
         World.remove(this.engine.world, body);
     }
 
+    /**
+     * Get a valid ID from the GameLogic
+     * @returns valid Numeric ID of object.
+     */
     getValidId(): number {
         return this.gameLogic.getValidID();
     }
