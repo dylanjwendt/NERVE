@@ -7,6 +7,12 @@ const maxAge = 6000;
 export default class WallPiece extends Actor {
     #deltaT: number;
 
+    /**
+     * 
+     * @param id Numeric ID value of WallPiece. Only use the getValidID() function of engine to get values for this.
+     * @param name Name of piece to be displayed
+     * @param engine reference to DemoEngine
+     */
     constructor(id: number, name = "", engine: DemoEngine) {
         super(id, name, Bodies.circle(0,0,24), engine);
         this.setScale([1.5, 1.5]);

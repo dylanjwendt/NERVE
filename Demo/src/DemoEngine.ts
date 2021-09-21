@@ -52,17 +52,29 @@ export default class DemoEngine extends Engine {
         ]);
     }
 
+    /**
+     * Move engine forward by provided delta Time
+     * @param millisec Duration since last update
+     */
     update(millisec: number): void {
         this.blackholes.forEach(bh => bh.wander(millisec));
         this.bots.forEach(bot => bot.update());
         super.update(millisec);
     }
 
+    /**
+     * Add a new player actor to the game
+     * @param playerId Numeric ID Value of player. Only use the getValidID() function of engine to get values for this.
+     */
     addPlayerActor(playerId: number): void {
         super.addActor(playerId, new Player(playerId, this, ""));
         this.addBotsForPlayer(playerId);
     }
 
+    /**
+     * Number of bots is set by increasing number of players.
+     * @param playerId ID of creating player
+     */
     private addBotsForPlayer(playerId: number): void {
         const botsForPlayer = new Array<number>();
         for (let i = 0; i < this.numBotsPerPlayer; i++) {
@@ -75,19 +87,32 @@ export default class DemoEngine extends Engine {
         this.playerBotOwners.set(playerId, botsForPlayer);
     }
 
+    /**
+     * Remove an actor from the engine by ID.
+     * @param id ID of actor to remove
+     */
     removeActor(id: number): void {
         this.removeBots(id);
         super.removeActor(id);
     }
 
+    /**
+     * 
+     * @param playerId ID of player being changed
+     * @param newName New name of player
+     * @param newClass New class value of player
+     */
     changeUsernameAndClass(playerId: number, newName: string, newClass : number): void {
         const player = (this.gameLogic.actors.get(playerId) as Player);
         player.setName(newName);
         player.changeClass(newClass);
     }
 
+    /**
+     * If a player left, we will also remove the bots that joined for them
+     * @param playerId ID of leaving player
+     */
     private removeBots(playerId: number): void {
-        // if a player left, we will also remove the bots that joined for them
         if (this.playerBotOwners.has(playerId)) {
             const botsToRemove = this.playerBotOwners.get(playerId);
             botsToRemove?.forEach(botId => super.removeActor(botId));
@@ -95,6 +120,10 @@ export default class DemoEngine extends Engine {
         }
     }
 
+    /**
+     * Polls the gameLogic for a new valid ID
+     * @returns Valid Numeric ID
+     */
     getValidId(): number {
         return this.gameLogic.getValidID();
     }

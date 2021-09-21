@@ -7,6 +7,10 @@ export default class GameLogic extends System {
   public actors: Map<number, Actor>;
   private engine: Engine;
 
+  /**
+   * 
+   * @param engine Reference to parent Engine
+   */
   constructor(engine: Engine) {
       super();
       this.sysName = "GameLogic";
@@ -14,6 +18,11 @@ export default class GameLogic extends System {
       this.engine = engine;
   }
 
+  /**
+   * 
+   * @param id Numberic ID of actor to add. Only use the getValidID() function of engine to get values for this.
+   * @param actor Reference to Actor to add
+   */
   addActor(id: number, actor: Actor): void {
       if(!this.actors.has(id)) {
           this.actors.set(id, actor);
@@ -21,6 +30,10 @@ export default class GameLogic extends System {
       }
   }
 
+  /**
+   * 
+   * @param id ID of actor to remove
+   */
   removeActor(id: number): void {
       if(this.actors.has(id)) {
           this.engine.removeBody(this.actors.get(id)!.body);
@@ -28,6 +41,10 @@ export default class GameLogic extends System {
       }
   }
 
+  /**
+   * 
+   * @returns Valid Numeric ID that is safe to use in engine.
+   */
   public getValidID(): number {
       return Common.nextId();
   }
