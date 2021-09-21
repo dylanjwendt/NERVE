@@ -94,9 +94,20 @@ type FieldLocalizations = {
     console.log(classValue);
   });
 
+  //Game music, off until game connects
+  const GameMusic = new Audio("../res/test_music.ogg");
+  GameMusic.loop = true;
+
+  //All that are currently on the server
+  const bullets: Set<number> = new Set();
+
+  //Keep track of all possible shooters and there sounds
+  const shooters: Map<number, any> = new Map();
+
   // Maps names to text
   // Outside of ticker to keep track of deleted entities
   const entitiesToText: Map<number, any> = new Map();
+
   client.pixi.ticker.add(() => {
     // Maps names to text
     const xOffset = 20;
@@ -119,8 +130,37 @@ type FieldLocalizations = {
         entitiesToText.set(clientEntity.id, text);
         client.viewport.addChild(text);
       }
-    });
 
+      //Play sounds for each bullet we have never seen before
+      if (!bullets.has(clientEntity.id) && clientEntity.gameData.parentId) {
+        const parentId = clientEntity.gameData.parentId;
+        const parent = client.entities.get(parentId);
+        const player = client.entities.get(client.clientId);
+
+        //If either parent or player are undefine, do not process that sound
+        if (parent === undefined || player === undefined) {
+          return;
+        }
+
+        //Play sounds based on who shot the bullet
+        if (!shooters.has(parentId)) {
+          shooters.set(parentId, new Audio("../res/SFX_shot7.wav"));
+        }
+
+        //Check to see if player is in range to hear sounds from shooters
+        if (client.clientId !== parentId) {
+          const disX = Math.abs(parent?.sprite.x - player?.sprite.x);
+          const disY = Math.abs(parent?.sprite.y - player?.sprite.y);
+          if (disX > 300 && disY > 300) {
+            return;
+          }
+        }
+
+        //Play shoot sounds
+        shooters.get(parentId).play();
+        bullets.add(clientEntity.id);
+      }
+    });
 
     entitiesToText.forEach((text, id) => {
       // Entity not in NerveClient's map, must delete ours
@@ -128,6 +168,13 @@ type FieldLocalizations = {
         client.viewport.removeChild(text);
         text.destroy();
         entitiesToText.delete(id);
+      }
+    });
+
+    //Remove bullets and there souunds.
+    bullets.forEach((id) =>{
+      if (!client.entities.has(id)) {
+        bullets.delete(id);
       }
     });
   });
@@ -146,6 +193,9 @@ type FieldLocalizations = {
     //Remove overlay and enable inputs
     overlay.style.display = "none";
     client.disableInput = false;
+
+    //Start game music
+    GameMusic.play();
 
     client.pixi.ticker.start();
   }
