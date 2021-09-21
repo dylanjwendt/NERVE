@@ -1,5 +1,6 @@
 import "./index.less";
 import * as PIXI from "pixi.js";
+import * as PIXIAUDIO from "@pixi/sound";
 import { ClientEntity, NerveClient } from "nerve-client";
 import { DemoClientInputHandler } from "./DemoClientInputHandler";
 import { Viewport } from "pixi-viewport";
@@ -11,6 +12,14 @@ type FieldLocalizations = {
 
 // Async IIFE wraps all demo code to prevent it from polluting the global scope
 (async function start() {
+
+  //All The sounds used for the game add the the sound library
+  PIXIAUDIO.sound.add({
+    music: "../res/test_music.ogg",
+    playerShoot: "./res/SFX_shot11.wav",
+    enemyShoot: "../res/SFX_shot7.wav",
+  });
+
   // Convenience function to look up DOM elements
   const $ = (x: string) => document.querySelector(x);
 
@@ -93,16 +102,9 @@ type FieldLocalizations = {
     disabledBtn = changeDisabledBtn(disabledBtn, $("#btn_C") as HTMLButtonElement);
     console.log(classValue);
   });
-
-  //Game music, off until game connects
-  const GameMusic = new Audio("../res/test_music.ogg");
-  GameMusic.loop = true;
-
+  
   //All that are currently on the server
   const bullets: Set<number> = new Set();
-
-  //Keep track of all possible shooters and there sounds
-  const shooters: Map<number, any> = new Map();
 
   // Maps names to text
   // Outside of ticker to keep track of deleted entities
@@ -134,27 +136,19 @@ type FieldLocalizations = {
       //Play sounds for each bullet we have never seen before
       if (!bullets.has(clientEntity.id) && clientEntity.gameData.isBullet) {
         const parentId = clientEntity.gameData.parentId;
-        const parent = client.entities.get(parentId);
-        const player = client.entities.get(client.clientId);
 
-        //If either parent or player are undefine, do not process that sound
-        if (parent === undefined || player === undefined) {
-          return;
+        //Play souds based on who shot the bullet
+        if (parentId == client.clientId) {
+          PIXIAUDIO.sound.play("playerShoot", {
+            volume: 0.5
+          });
+        } else {
+          PIXIAUDIO.sound.play("enemyShoot", {
+            volume: 0.3
+          });
         }
 
-        //Play different sounds based on who shot the bullet
-        if (!shooters.has(parentId)) {
-          if (parentId == client.clientId) {
-            shooters.set(parentId, new Audio("../res/SFX_shot11.wav"));
-            console.log("Added sound for player.");
-          } else {
-            shooters.set(parentId, new Audio("../res/SFX_shot7.wav"));
-            shooters.get(parentId).volume = 0.6;
-          }
-        }
-
-        //Play shoot sounds
-        shooters.get(parentId).play();
+        //Make sure the bullet never triggers the same sound again
         bullets.add(clientEntity.id);
       }
     });
@@ -192,7 +186,9 @@ type FieldLocalizations = {
     client.disableInput = false;
 
     //Start game music
-    GameMusic.play();
+    PIXIAUDIO.sound.play("music", {
+      loop: true
+    });
 
     client.pixi.ticker.start();
   }
