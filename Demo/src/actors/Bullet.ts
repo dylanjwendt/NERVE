@@ -35,6 +35,9 @@ export default class Bullet extends Actor {
         this.logic = logic;
         this.LIFETIME = life;
         this.addInteraction(new Damage(parent));
+        this.gameData = {
+            parentId: parent?.getID()
+        };
         Events.on(engine, "afterUpdate", (e) => this.maintainSpeed(e, this));
     }
 
