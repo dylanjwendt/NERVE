@@ -10,6 +10,12 @@ export default class Player extends Actor {
     protected movemask: number;
     public gameData: PlayerState;
 
+    /**
+     * 
+     * @param id Numeric ID of player
+     * @param eng Reference to DemoEngine
+     * @param name Name of Player to Display
+     */
     constructor(id: number, eng: Engine, name = "") {
         super(id, name, Bodies.circle(0,0,24), eng);
         this.maxSpeed = 3;
@@ -31,18 +37,29 @@ export default class Player extends Actor {
         };
     }
 
+    /**
+     * Reset player into a living state
+     */
     respawn(): void {
         this.health = MAXHEALTH;
         this.body.position = {x: 100, y: 100};
         this.body.collisionFilter.mask = 0b1<<3; 
     }
 
+    /**
+     * Set name of player
+     * @param name New Name of Player
+     */
     setName(name: string): void {
         this.gameData.name = name;
         super.setName(name);
     }
 
-    //Changes the class of the player allowing for unique play.
+
+    /**
+     * Changes the class of the player allowing for unique play.
+     * @param classValue Integer value between 0 and 2 representing selectable classes
+     */
     changeClass(classValue : number): void {
         this.classValue = classValue;
 
@@ -62,14 +79,24 @@ export default class Player extends Actor {
         }
     }
 
+    /**
+     * @returns Current value of class
+     */
     getClass(): number {
         return this.classValue;
     }
 
+    /**
+     * @returns Current value of Health
+     */
     getHealth(): number {
         return this.health;
     }
 
+    /**
+     * Deal damage to player, and set dead state if necessary.
+     * @param dmg Amount of damage to deal
+     */
     decHealth(dmg: number): void {
         this.health -= dmg;
         if (this.health <= 0) {
@@ -83,6 +110,10 @@ export default class Player extends Actor {
         this.setTint(tint);
     }
 
+    /**
+     * Handle input to determine player movement
+     * @param key Input key pressed
+     */
     updateDirection(key: string): void {
         // Note up/down directions are flipped for top-left origin
         if(key === "w") {
@@ -124,6 +155,9 @@ export default class Player extends Actor {
         Body.setVelocity(this.body, Vector.create(vx*this.maxSpeed, vy*this.maxSpeed));
     }
 
+    /**
+     * Set player in dead state, and remove from play area
+     */
     kill(): void {
         this.body.position = {x: -5000, y: -5000};
         this.body.collisionFilter.mask = 0;

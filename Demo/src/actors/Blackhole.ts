@@ -14,6 +14,12 @@ export default class Blackhole extends Actor {
     #deltaT: number;
     #tgt: {x: number, y: number};
 
+    /**
+     * 
+     * @param id Numeric ID Value of black hole. Only use the getValidID() function of engine to get values for this.
+     * @param name Name of object for display
+     * @param eng Reference to the DemoEngine
+     */
     constructor(id: number, name = "", eng: DemoEngine) {
         super(id, name, Bodies.circle(0,0,24), eng);
         this.setScale([1.5, 1.5]);
@@ -29,6 +35,10 @@ export default class Blackhole extends Actor {
         this.#tgt = {x: 0,y: 0};
     }
 
+    /**
+     * Destroy bullet objects which hits the blackhole. Explodes when a critical threshold is met.
+     * @param other Object which impacts the blackhole
+     */
     objectImpact(other: Actor): void {
         if(other instanceof Bullet) {
             other.destroy();
@@ -42,6 +52,10 @@ export default class Blackhole extends Actor {
         }
     }
 
+    /**
+     * Move randomly within local region
+     * @param millisec Duration in time since last wander operation
+     */
     wander(millisec: number): void {
         this.#deltaT += millisec;
         if(this.#deltaT >= DECISIONINTERVAL)
@@ -61,6 +75,9 @@ export default class Blackhole extends Actor {
         }
     }
 
+    /**
+     * Fire a set of bullets outwards from center.
+     */
     explode(): void {
         const bhPos = [this.body.position.x, this.body.position.y] as [number, number];
         for(let i = 0; i < THRESHOLD; i++) {
@@ -73,6 +90,10 @@ export default class Blackhole extends Actor {
         }
     }
 
+    /**
+     * Change tether position the black hole wanders around.
+     * @param newOrigin set of 2 numbers representing the x,y position for tether.
+     */
     setOrigin(newOrigin: [number, number]): void {
         this.#origin = newOrigin;
     }

@@ -6,19 +6,31 @@ import Player from "./actors/Player";
 import WallPiece from "./actors/WallPiece";
 
 export default class DemoInputHandler extends InputHandler {
-    private logic;
+    private logic: GameLogic;
     private engine: DemoEngine | null;
 
+    /**
+     * @param logic Reference to Engine's GameLogic
+     */
     constructor(logic: GameLogic) {
         super();
         this.logic = logic;
         this.engine = null;
     }
     
+    /**
+     * Set the engine of this Handler
+     * @param engine Reference to DemoEngine
+     */
     setEngine(engine: DemoEngine): void {
         this.engine = engine;
     }
 
+    /**
+     * 
+     * @param actorId ID of Player recieving input
+     * @param key string of input key being pressed
+     */
     handleKeyDown(actorId: number, key: string): void {
         const actor = this.logic.actors.get(actorId);
         if(actor instanceof Player) {
@@ -37,6 +49,11 @@ export default class DemoInputHandler extends InputHandler {
         }
     }
 
+    /**
+     * 
+     * @param actorId ID of Player recieving input
+     * @param key string of input key being released
+     */
     handleKeyUp(actorId: number, key: string): void {
         const actor = this.logic.actors.get(actorId);
         if(actor instanceof Player) {
@@ -58,6 +75,12 @@ export default class DemoInputHandler extends InputHandler {
         }
     }
 
+    /**
+     * 
+     * @param actorId ID of Player recieving input
+     * @param pos 2d coordinate of mouse click position
+     * @returns No return value.
+     */
     handleMouseDownInput(actorId: number, pos: [number, number]): void {
         const id = this.logic.getValidID();
         const player = this.logic.actors.get(actorId);
@@ -84,6 +107,11 @@ export default class DemoInputHandler extends InputHandler {
         // TODO:
     }
 
+    /**
+     * Spawns a ring of walls around the player
+     * @param parent Reference to Parent PlayerActor
+     * @returns No Return Value
+     */
     spawnWall(parent: Actor): void {
         if(this.engine === null) return;
         const numEnt = 15;
