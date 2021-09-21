@@ -29,6 +29,9 @@ export default abstract class Engine {
                 const pair = pairs[i];
                 const id1 = pair.bodyA.id;
                 const id2 = pair.bodyB.id;
+                if (pair.bodyA.isSensor || pair.bodyB.isSensor) {
+                    console.log("Sensoring");
+                }
                 const actorA = actors.get(id1);
                 const actorB = actors.get(id2);
                 if(!actorA || !actorB) {

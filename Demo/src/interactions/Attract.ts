@@ -1,4 +1,4 @@
-import { Body, Bodies, Vector, Events } from "matter-js";
+import { Body, Bodies, Vector, Events, Composite } from "matter-js";
 import { Actor, ActorInteraction } from "nerve-engine";
 import Bullet from "../actors/Bullet";
 import { DemoEngine } from "..";
@@ -13,6 +13,7 @@ export class Attract extends ActorInteraction {
     }
 
     trigger(self: Actor, other: Actor, type: string): void {
+        console.log("woo");
         if(other instanceof Bullet && !((other as Bullet).isNullParent())) {
             const dx = (self.body.position.x - other.body.position.x);
             const dy = (self.body.position.y - other.body.position.y);
@@ -30,17 +31,25 @@ export class Attract extends ActorInteraction {
 }
 
 export default class Attractor extends Actor {  
+    private parent: Actor;
 
     constructor(id: number, name = "", eng: DemoEngine, parent: Actor, radius = 100, strength = 10) {
-        super(id, name, Bodies.circle(parent.body.position.x, parent.body.position.y, radius, {isSensor: true}), eng);
-        this.setScale([0, 0]);
-        this.setWidth(0);
-        this.setHeight(0);
-        Body.setParts(parent.body, parent.body.parts.concat(this.body));
-        console.log(parent.body.parts);
-        this.body.collisionFilter.mask = 0b1<<3;
+        super(id, name, Bodies.circle(parent.body.position.x, parent.body.position.y, radius, {isSensor: false}), eng);
+        this.setScale([2, 2]);
+        this.setWidth(70);
+        this.setHeight(70);
+        //Body.setParts(parent.body, parent.body.parts.concat(this.body));
+        //console.log(parent.body.parts);
+        this.body.collisionFilter.mask = ~0b0;
         this.body.collisionFilter.category = 0;
         this.addInteraction(new Attract(this, strength, this.body));
-        this.engine.addActor(this.getID(), this);
+        this.engine.gameLogic.addActor(this.body.id, this);
+        Composite.add(this.engine.engine.world, this.body);
+        this.parent = parent;
+        Events.on(this.engine.engine, "afterUpdate", () => this.attach(this));
+    }
+
+    attach(attr: Attractor): void {
+        Body.setPosition(attr.body, attr.parent.body.position);
     }
 }
