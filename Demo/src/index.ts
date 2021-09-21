@@ -3,7 +3,7 @@
  */
 
 export { default as DemoEngine } from "./DemoEngine";
-export { default as DemoInputHandler } from "./DemoEngine";
+export { default as DemoInputHandler } from "./DemoInputHandler";
 export { default as Blackhole} from "./actors/Blackhole";
 export { default as BotPlayer} from "./actors/BotPlayer";
 export { default as Bullet} from "./actors/Bullet";
