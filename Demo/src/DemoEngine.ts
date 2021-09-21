@@ -4,7 +4,7 @@ import { NerveConfig } from "nerve-common";
 import DemoInputHandler from "./DemoInputHandler";
 import Player from "./actors/Player";
 import Blackhole from "./actors/Blackhole";
-import { BotPlayer } from "./actors/BotPlayer";
+import BotPlayer from "./actors/BotPlayer";
 
 const numBlackholes = 10;
 
@@ -12,7 +12,7 @@ export default class DemoEngine extends Engine {
     blackholes: Blackhole[];
     bots: BotPlayer[];
     playerBotOwners: Map<number, number[]>;  // tracks which bots were added for each player that joined 
-    numBotsPerPlayer = 50;  // can be whatever we want
+    numBotsPerPlayer = 10;  // can be whatever we want
 
     constructor() {
         super((l: GameLogic) => new DemoInputHandler(l));
@@ -26,7 +26,7 @@ export default class DemoEngine extends Engine {
             const bh = new Blackhole(this.gameLogic.getValidID(), `bh${i}`, this);
             bh.setOrigin([x, y]);
             Body.setPosition(bh.body, Vector.create(vx, vy));
-            this.gameLogic.addActor(bh.getID(), bh);
+            this.addActor(bh.getID(), bh);
             this.blackholes[i] = bh;
         }
 
@@ -68,6 +68,8 @@ export default class DemoEngine extends Engine {
         for (let i = 0; i < this.numBotsPerPlayer; i++) {
             const botId = this.getValidId();
             const bot = new BotPlayer(botId, this, "bot" + botId);
+            const { worldWidth, worldHeight } = NerveConfig.engine;
+            Body.setPosition(bot.body, Vector.create(Math.floor(Math.random() * worldWidth), Math.floor(Math.random() * worldHeight)));
             this.bots.push(bot);
             botsForPlayer.push(botId);
             super.addActor(botId, bot);
