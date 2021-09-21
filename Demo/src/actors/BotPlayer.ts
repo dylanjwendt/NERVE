@@ -10,7 +10,7 @@ import { NerveConfig } from "nerve-common";
  * Bot extends Player because in a .io game bots are supposed to appear just like 
  * players and so they have the same rules/behavior. 
  */
-export class BotPlayer extends Player {
+export default class BotPlayer extends Player {
 
     // the bot maintains a lot of state variables to make "smarter decisions".
     // e.g. moving in the same direction across multiple engine updates rather than 
@@ -67,7 +67,7 @@ export class BotPlayer extends Player {
     public update(): void {
         this.moveRandomly();
         this.shootRandomly();
-        this.spawnWallRandomly();
+        //this.spawnWallRandomly();
     }
 
     /**
