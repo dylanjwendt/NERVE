@@ -132,7 +132,7 @@ type FieldLocalizations = {
       }
 
       //Play sounds for each bullet we have never seen before
-      if (!bullets.has(clientEntity.id) && clientEntity.gameData.parentId) {
+      if (!bullets.has(clientEntity.id) && clientEntity.gameData.isBullet) {
         const parentId = clientEntity.gameData.parentId;
         const parent = client.entities.get(parentId);
         const player = client.entities.get(client.clientId);
@@ -142,10 +142,10 @@ type FieldLocalizations = {
           return;
         }
 
-        //Play sounds based on who shot the bullet
+        //Play different sounds based on who shot the bullet
         if (!shooters.has(parentId)) {
           if (parentId == client.clientId) {
-            shooters.set(parentId, new Audio("../res/SFX_shot8.wav"));
+            shooters.set(parentId, new Audio("../res/SFX_shot11.wav"));
             console.log("Added sound for player.");
           } else {
             shooters.set(parentId, new Audio("../res/SFX_shot7.wav"));
