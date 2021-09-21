@@ -85,6 +85,20 @@ type FieldLocalizations = {
     await connectToServer(overlay, username, client, classValue);
   });
 
+  //Mute 
+  $("#btn_mute")?.addEventListener("click", (e) => {
+    PIXIAUDIO.sound.muteAll();
+    ($("#btn_mute") as HTMLButtonElement).hidden = true;
+    ($("#btn_unmute") as HTMLButtonElement).hidden = false;
+  });
+
+  //Unmute 
+  $("#btn_unmute")?.addEventListener("click", (e) => {
+    PIXIAUDIO.sound.unmuteAll();
+    ($("#btn_mute") as HTMLButtonElement).hidden = false;
+    ($("#btn_unmute") as HTMLButtonElement).hidden = true;
+  });
+
   // Game class handling
   let disabledBtn = $("#btn_A") as HTMLButtonElement;
   $("#btn_A")?.addEventListener("click", (e) => {
