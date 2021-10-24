@@ -15,13 +15,15 @@ export default class Damage extends ActorInteraction {
 
     /**
      * 
+     * Triggers when a bullet hits another actor and deals damage to the player
+     * 
      * @param self Reference to Damage's owner
      * @param other Reference to Other actor which will be damaged
      * @param type Type of interaction (Start, Active, or End)
      */
     trigger(self: Actor, other: Actor, type: string): void {
         if(other instanceof Player && (this.#parent === null || other.getID() !== this.#parent.getID())) {
-            other.decHealth(10);
+            other.decHealth(10, self);
             this.#parent = other;
         }
     }
