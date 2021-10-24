@@ -1,5 +1,6 @@
 import { Bodies, Body, Vector } from "matter-js";
 import { Actor, Engine } from "nerve-engine";
+import { NerveConfig } from "nerve-common";
 const MAXHEALTH = 255;
 
 export default class Player extends Actor {
@@ -97,10 +98,13 @@ export default class Player extends Actor {
      * Deal damage to player, and set dead state if necessary.
      * @param dmg Amount of damage to deal
      */
-    decHealth(dmg: number): void {
+    decHealth(dmg: number, owner: Actor): void {
         this.health -= dmg;
         if (this.health <= 0) {
             this.health = MAXHEALTH;
+            //Respawn the player
+            const { worldWidth, worldHeight } = NerveConfig.engine;
+            Body.setPosition(this.body, Vector.create(Math.floor(Math.random() * worldWidth), Math.floor(Math.random() * worldHeight)));
         }
 
         let tint = this.defaultTint;
