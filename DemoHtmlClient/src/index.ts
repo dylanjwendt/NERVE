@@ -135,13 +135,21 @@ type FieldLocalizations = {
       // Entity exists in our map, must update
       if (entitiesToText.has(clientEntity.id)) {
         const text = entitiesToText.get(clientEntity.id);
-        text.text = clientEntity.gameData.name;
+        const name = clientEntity.gameData.name as string;
+        const killCount = clientEntity.gameData.killCount as string;
+        const displayText = name + " " + killCount;
+
+        text.text = displayText;
         text.x = clientEntity.sprite.x + xOffset;
         text.y = clientEntity.sprite.y - yOffset;
-      } else {
+      } else if (clientEntity.gameData.isAlive) {
         // Entity not in our map but in NerveClient's, must create
+        // Only add player entities
         const name = clientEntity.gameData.name as string;
-        const text = new PIXI.Text(name, { fontFamily: "Arial", fontSize: 24, fill: "black" });
+        const killCount = clientEntity.gameData.killCount as string;
+        const displayText = name + " " + killCount;
+        const text = new PIXI.Text(displayText, { fontFamily: "Arial", fontSize: 24, fill: "black" });
+
         text.anchor.set(0.5, 0.5);
         entitiesToText.set(clientEntity.id, text);
         client.viewport.addChild(text);
