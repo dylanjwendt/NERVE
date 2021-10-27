@@ -4,11 +4,11 @@ import { Client } from "colyseus.js";  // "client-side" client
 import { container } from "tsyringe";
 import { ServerRoomImpl } from "./colyseus/server-room-impl";
 import { DemoEngine } from "nerve-demo";
-import * as Config from "./config.json";
 import { ServerConfig } from "./server-config";
 import { ColyseusRoom } from "./colyseus/colyseus-room";
 import { INerveServer } from "./nerve-server.interface";
 import { NerveServer } from "./nerve-server";
+import { NerveConfig } from "nerve-common";
 
 /**
  * Sets up dependency injection for the server
@@ -17,7 +17,7 @@ export class Startup {
     public static start(): INerveServer {
 
         // register interfaces
-        const serverConfig: ServerConfig = {host: Config.host, port: Config.port};
+        const serverConfig: ServerConfig = {host: NerveConfig.server.hostName, port: NerveConfig.server.port};
         container.register("Config", {useValue: serverConfig});
 
         const colyseusClient = new Client(`ws://${serverConfig.host}:${serverConfig.port}`);
