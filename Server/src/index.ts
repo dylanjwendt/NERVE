@@ -5,8 +5,8 @@ import path from "path";
 import { NerveConfig } from "nerve-common";
 
 // Client root is relative to Server/
-const clientRoot = path.resolve(process.cwd(), NerveConfig.server.clientRoot);
-const PORT = NerveConfig.server.port;
+const clientRoot = path.resolve(process.cwd(), NerveConfig.clientServer.clientRoot);
+const PORT = NerveConfig.clientServer.port;
 
 (async function () {
     // start game server (websockets)
