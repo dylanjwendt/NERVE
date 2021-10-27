@@ -54,6 +54,15 @@ export default class Player extends Actor {
         Body.setPosition(this.body, Vector.create(Math.floor(Math.random() * worldWidth), Math.floor(Math.random() * worldHeight)));
         this.killCount = 0;
         this.body.collisionFilter.mask = 0b1<<3; 
+        this.updateGameData();
+    }
+    
+    /**
+     * Update hp and killCount in the game data
+     */
+    updateGameData() : void {
+        this.gameData.hp = this.health;
+        this.gameData.killCount = this.killCount;
     }
 
     /**
@@ -100,6 +109,7 @@ export default class Player extends Actor {
      */
     incKillCount(): void {
         this.killCount += 1;
+        this.gameData.killCount = this.killCount;
     }
 
     /**
@@ -136,13 +146,14 @@ export default class Player extends Actor {
 
             //Increase the killCount of the actor who killed the player if they are also a player
             //Also health the attacker
-            if (other instanceof Player){
+            if (other != null){
                 other.incKillCount();
                 other.incHealth(20);
             }
         }
 
         this.updateTint();
+        this.gameData.hp = this.health;
     }
 
     /**
@@ -161,6 +172,7 @@ export default class Player extends Actor {
         }
 
         this.updateTint();
+        this.gameData.hp = this.health;
     }
 
     /**
