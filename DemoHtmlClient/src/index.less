@@ -17,19 +17,24 @@ button {
   width: 100%;
   background-color: rgba(0,0,0,0.7);
   z-index: 1000;
+  display: flex;
+  flex-direction: row;
 }
 
 .overlay-center {
   border: 1em solid white;
   border-radius: 3%;
+  /* vertical | horizontal */
   margin: 10vmax 30vmax;
   height: 25em;
+  width: 60%;
   background-color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   box-shadow: 0em 0em 3em rgb(0, 0, 0);
+  float: center;
 }
 
 #btn_play {
@@ -79,6 +84,54 @@ button {
   border: 3px solid #2e2e2e;
   font-size: 24px;
   width: 40%;
+}
+
+.overlay-right {
+  border: 1em solid white;
+  border-radius: 3%;
+  position: absolute;
+  align-items: right;
+  justify-content: right;
+  float: right;
+  right: 0;
+  width: 10vmax;
+  height: 48vmax;
+  background-color: white;
+  /* top | right | bottom | left */
+  margin: 2em 1em 2em auto;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0em 0em 3em rgb(0, 0, 0);
+}
+
+.label .room-cell {
+  border: 0.2em solid black;
+  height: 3em;
+  padding: 0.3em;
+  margin: 1em 0em;
+}
+
+.room-cell p {
+  margin: 0.2em 0.2em;
+}
+
+// these CSS rules allow us to create a list of divs that function like radio buttons
+.labl {
+  display: block;
+  width: 9em;
+}
+.labl > input{ /* HIDE RADIO */
+  visibility: hidden; /* Makes input not-clickable */
+//   position: absolute; /* Remove input from document flow */
+}
+.labl > input + div{ /* DIV STYLES */
+  cursor: pointer;
+  border: 2px solid black;
+  background-color: rgb(133, 133, 255);
+}
+.labl > input:checked + div{ /* (RADIO CHECKED) DIV STYLES */
+  background-color: rgb(255, 82, 82);
+  border: 2px solid black;
 }
 
 #debug-screen {

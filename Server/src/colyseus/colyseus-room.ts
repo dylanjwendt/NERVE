@@ -21,6 +21,13 @@ export class ColyseusRoom extends Room<GameState> {
     }
 
     async onJoin(client: Client, options: any): Promise<void> {
+        if (options.isObserver) {
+            // allow "observers" to look at the room without joining as a player
+            // observers can update the room name and player count
+            this.room.setRoomName(options.roomName);
+            this.room.updateRoomInfo();
+            return;
+        }
         await this.room.onJoin(client);
     }
 
@@ -30,5 +37,9 @@ export class ColyseusRoom extends Room<GameState> {
 
     update(deltaTime: number): void {
         this.room.update(deltaTime);
+    }
+
+    public getPlayerCount(): number {
+        return this.room.getPlayerCount();
     }
 }

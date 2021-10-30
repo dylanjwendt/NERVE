@@ -52,6 +52,7 @@ type FieldLocalizations = {
     fps: "FPS",
     avgSyncTime: "Average sync time",
     numEntities: "Entities",
+    room: "Room"
   };
 
   // Everytime the client has a debug update, go through all debug info,
@@ -64,6 +65,11 @@ type FieldLocalizations = {
         elem.textContent = `${fieldLocalizations[key]}: ${text.toString()}`;
       }
     });
+    // update room name displayed in top left
+    const roomNameElement = $("#debug-screen p[data-field-room]");
+    if (roomNameElement) {
+        roomNameElement.textContent = `Room: ${client.roomInfo}`;
+    }
   });
 
   // Username handling
@@ -78,6 +84,46 @@ type FieldLocalizations = {
       await connectToServer(overlay, username, client, classValue);
     }
   });
+
+  // room selection handling
+  let roomName = "default";
+  // first, get available rooms from the server
+  fetch("api/listRooms", {
+      method: "GET"
+  })
+  .then(response => response.json())
+  .then(jsonData => {
+    const availableRooms = jsonData;  // array of room objects (name, players, capacity)
+    availableRooms.forEach((room: any) => {
+      const newRoomCell = document.createElement("label");
+      newRoomCell.className = "labl";
+      newRoomCell.innerHTML = `<input type="radio" name="radioname" value="${room.name}" />
+                               <div class="room-cell">
+                               <p>${room.name}</p>
+                               <p>${room.playerCount} / ${room.capacity} players</p>
+                               </div>`;
+      const roomsNode = $(".rooms");
+      if (roomsNode && newRoomCell) {
+        roomsNode.appendChild(newRoomCell);
+      }
+    });
+
+    // attach listeners
+   // second, set up event listeners for each room option
+    const rooms = $(".rooms") as HTMLDivElement;
+    rooms.childNodes.forEach((roomCell: ChildNode) => {
+      if (roomCell instanceof HTMLLabelElement) {
+        const roomCellLabel = roomCell as HTMLLabelElement;
+        const roomCellInput = roomCellLabel.children.item(0) as HTMLInputElement;
+        const cellRoomName = roomCellInput.value;
+        roomCellInput.addEventListener("click", (e) => {
+          roomName = roomCellInput.value;
+        });
+      }
+    }); 
+    return;
+  })
+  .catch((error: any) => console.log(error));
 
   //Play button handling (Same thing as username handling on enter)
   $("#btn_play")?.addEventListener("click", async (e) => {
@@ -195,7 +241,9 @@ type FieldLocalizations = {
   // Hides the overlay and starts
   async function connectToServer(overlay: HTMLDivElement, username: string, client: NerveClient, classValue: number) {
     //Connect to server
-    await client.attachToServer();
+    await client.attachToServer(roomName);
+
+
 
     client.server?.onMessage("requestUsername", (message: number) => {
       client.clientId = message;

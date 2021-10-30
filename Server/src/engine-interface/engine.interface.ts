@@ -9,4 +9,5 @@ export interface IEngine {
     update(millisec: number): void;
     getWorldState(): IEntity[];
     getValidId(): number;
+    getPlayerCount(): number;
 }
