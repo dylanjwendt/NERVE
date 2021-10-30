@@ -4,12 +4,15 @@ import { GameState } from "../colyseus/game-state";
 export class NerveServerCommon {
     private room?: Room;
     private colyseusClient?: Client;
-    private ROOM_NAME = "mainroom";
 
-    async connect(endpoint: string): Promise<void> {
+    async connect(endpoint: string, room: string): Promise<void> {
         console.log(`connecting to game server at ${endpoint}...`);
         this.colyseusClient = new Client(endpoint);
-        this.room = await this.colyseusClient.joinOrCreate<GameState>(this.ROOM_NAME);
+        console.log(`joining room ${room}`);
+        if (room.includes("default")) {
+            room = await this.findLeastPopulatedRoom();
+        }
+        this.room = await this.colyseusClient.joinOrCreate<GameState>(room);
         console.log("connected");
     }
 
@@ -34,5 +37,19 @@ export class NerveServerCommon {
 
     leave(consented: boolean): void {
         throw new Error("Method not implemented.");
+    }
+
+    private async findLeastPopulatedRoom(): Promise<string> {
+        const response = await fetch("api/listRooms");
+        const availableRooms = await response.json();
+        let minRoom = "";
+        let minSize = 100;  // just any large number
+        availableRooms.forEach(room => {
+            if (room.playerCount < minSize) {
+                minRoom = room.name;
+                minSize = room.playerCount;
+            }
+        });
+        return minRoom;
     }
 }

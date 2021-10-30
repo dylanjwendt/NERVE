@@ -67,6 +67,7 @@ describe("server room", () => {
             tint: 0,
             width: 0,
             height: 0,
+            gameData: "",
             update: function (): void {
                 throw new Error("Function not implemented.");
             }

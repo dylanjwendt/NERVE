@@ -7,6 +7,7 @@ import { GameState } from "./colyseus/game-state";
 import { inject, injectable } from "tsyringe";
 import { ColyseusRoom } from "./colyseus/colyseus-room";
 import { ServerConfig } from "./server-config";
+import { RoomManager } from "./colyseus/room-manager";
 
 /**
  * The primary nerve server
@@ -19,6 +20,7 @@ export class NerveServer implements INerveServer {
     private isInitialized: boolean;
     private room?: Room;
     private ROOM_NAME = "mainroom";
+    private roomManager: RoomManager;
 
     constructor(@inject("ColyseusClient") colyseusClient: Client, 
                 @inject("ColyseusServer") colyseusServer: Server, 
@@ -28,6 +30,7 @@ export class NerveServer implements INerveServer {
         this.config = config;
         this.room = undefined;
         this.isInitialized = false;
+        this.roomManager = new RoomManager(this.colyseusServer, this.colyseusClient);
     }
 
     async init(): Promise<void> {
@@ -36,7 +39,7 @@ export class NerveServer implements INerveServer {
                 server: http.createServer()
             })
         });
-        this.colyseusServer.define(this.ROOM_NAME, ColyseusRoom);
+        this.roomManager.initRooms();
         this.colyseusServer.listen(this.config.port, this.config.host);
         console.log(`listening on ws://${this.config.host}:${this.config.port}`);
     }
@@ -76,5 +79,9 @@ export class NerveServer implements INerveServer {
 
     onDispose(): void {
         this.colyseusServer.gracefullyShutdown();
+    }
+
+    async listRooms(): Promise<any[]> {
+        return await this.roomManager.listRooms();
     }
 }
