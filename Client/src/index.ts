@@ -6,5 +6,8 @@ export { ClientEntity } from "./ClientEntity";
 export { NerveClient } from "./NerveClient";
 export { DefaultInputHandler } from "./DefaultInputHandler";
 export { InputHandler, AcceptedInputHandlers } from "./InputHandler";
+export { getLocalizer, getTemplateLocalizer } from "./Internationalization";
+
 export type { InputHandlerReturnType, InputHandlerFunction } from "./InputHandler";
 export type { DebugInfo } from "./NerveClient";
+export type { LocalizerFunction } from "./Internationalization";

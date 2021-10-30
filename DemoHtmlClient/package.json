@@ -22,16 +22,17 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "@pixi/sound": "^4.0.0",
     "nerve-client": "^0.1.0",
     "pixi-cull": "^2.0.1",
     "pixi-viewport": "^4.32.0",
-    "pixi.js": "^6.0.0",
-    "@pixi/sound": "^4.0.0"
+    "pixi.js": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
     "@tsconfig/node14": "^1.0.1",
+    "@types/node": "^16.11.6",
     "@types/webpack-env": "^1.16.2",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
     "babel-loader": "^8.2.2",

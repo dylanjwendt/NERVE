@@ -47,7 +47,8 @@ You can run these npm scripts by running `npm run -s <script-name>` at the root 
 
 The development environment runs the client on `http://localhost:3001` and will live reload the client whenever the
 client code is changed. Whenever server code is changed, it will rebuild and restart the server. When the server
-restarts you will have to reload the client to reconnect.
+restarts you will have to reload the client to reconnect. Furthermore, changing static assets in your client
+(like textures and sounds) will not cause a page refresh, you will have to do that yourself to see the changes.
 
 P.S You can run a script on an individual subproject by adding `--workspace=<Client|Server|Engine|Demo>` to the end of
 the `npm run` command. This can be useful if you only want to rebuild one of them!

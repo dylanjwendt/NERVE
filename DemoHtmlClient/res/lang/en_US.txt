@@ -1,0 +1,6 @@
+home.name_prompt=What's your name?
+home.class_prompt=What's your class?
+debug.num_entities=Entities
+debug.avg_sync=Average Sync Time
+debug.playerX=Player X
+debug.playerY=Player Y
