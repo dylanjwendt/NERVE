@@ -83,6 +83,7 @@ export class DefaultInputHandler extends InputHandler {
    * @returns The last recorded mouse position.
    */
   mousedown(e: MouseEvent): InputHandlerReturnType {
+    this.mousemove(e); //Prevents the bullet from firing at another locations the intended
     return { mousePos: this.mousePos };
   }
 }
