@@ -1,7 +1,7 @@
 import "./index.less";
 import * as PIXI from "pixi.js";
 import * as PIXIAUDIO from "@pixi/sound";
-import { NerveClient, getLocalizer, getTemplateLocalizer } from "nerve-client";
+import { NerveClient, getTemplateLocalizer } from "nerve-client";
 import { DemoClientInputHandler } from "./DemoClientInputHandler";
 import { Viewport } from "pixi-viewport";
 
@@ -12,9 +12,7 @@ type FieldLocalizations = {
 
 // Async IIFE wraps all demo code to prevent it from polluting the global scope
 (async function start() {
-
-  const localize = await getLocalizer("en_US");
-  const tl = await getTemplateLocalizer("fr_FR");
+  const tl = await getTemplateLocalizer("en_US");
 
   // All The sounds used for the game add the the sound library
   PIXIAUDIO.sound.add({
@@ -50,13 +48,34 @@ type FieldLocalizations = {
   document.body.appendChild(client.view);
 
   // Just a lookup dict for translating debug keys to human readable text
-  const fieldLocalizations: FieldLocalizations = {
+  // Fields are localized to currently selected language
+  let fieldLocalizations: FieldLocalizations = {
     playerX: tl`debug.playerX`,
     playerY: tl`debug.playerY`,
     fps: "FPS",
     avgSyncTime: tl`debug.avg_sync`,
     numEntities: tl`debug.num_entities`,
   };
+
+  // Re-translate when language is changed
+  $("#lang-selector")?.addEventListener("change", async () => {
+    const lang = ($("#lang-selector") as HTMLSelectElement).value;
+    const tl2 = await getTemplateLocalizer(lang);
+    fieldLocalizations = {
+      playerX: tl2`debug.playerX`,
+      playerY: tl2`debug.playerY`,
+      fps: "FPS",
+      avgSyncTime: tl2`debug.avg_sync`,
+      numEntities: tl2`debug.num_entities`,
+    };
+
+    const langText = $("#lang-text");
+    const muteBtn = $("#btn_mute");
+    const unmuteBtn = $("#btn_unmute");
+    if (langText) { langText.textContent = tl2`debug.language`; }
+    if (muteBtn) { muteBtn.innerHTML = tl2`demo.mute`; }
+    if (unmuteBtn) { unmuteBtn.innerHTML = tl2`demo.unmute`; }
+  });
 
   // Everytime the client has a debug update, go through all debug info,
   // translate it to human text, then update the corresponding DOM element.
@@ -218,7 +237,8 @@ type FieldLocalizations = {
 
     return newBtn;
   }
-
+  
+  // === END Nerve Demo
   // Stars function taken from pixi-viewport demo
   // https:// davidfig.github.io/pixi-viewport/
   function overlap(x: number, y: number, viewport: Viewport, starSize = 30) {
