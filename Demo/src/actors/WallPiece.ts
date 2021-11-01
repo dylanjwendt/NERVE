@@ -14,7 +14,7 @@ export default class WallPiece extends Actor {
      * @param engine reference to DemoEngine
      */
     constructor(id: number, name = "", engine: DemoEngine) {
-        super(id, name, Bodies.circle(0,0,24), engine);
+        super(id, name, Bodies.circle(0,0,24), engine, "bot_player.png");
         this.setScale([1.5, 1.5]);
         this.setWidth(48);
         this.setHeight(48);

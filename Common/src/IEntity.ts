@@ -12,6 +12,9 @@ export interface IEntity {
   tint: number;  // hexadecimal
   width: number;
   height: number;
-  gameData: any; //Holds extra information
+  texture: string;
   update(): void;
+  
+  // eslint-disable-next-line
+  gameData: any; // Holds extra game information
 }

@@ -25,6 +25,7 @@ export default class Player extends Actor {
         this.health = MAXHEALTH;
         this.classValue = 0;
         this.defaultTint = this.getTint();
+        this.texture = "circle.png";
         this.body.collisionFilter.mask = 0b1<<3; 
         this.body.collisionFilter.category = 0b1<<3;
         this.body.frictionAir = 0.01;
@@ -66,15 +67,19 @@ export default class Player extends Actor {
         switch (this.classValue) {
         case 0:
             this.maxSpeed = 4;
+            this.texture = "player_typeA.png";
             break;
         case 1:
             this.maxSpeed = 2;
+            this.texture = "player_typeB.png";
             break;
         case 2:
             this.maxSpeed = 1;
+            this.texture = "player_typeC.png";
             break;
         default:
             this.maxSpeed = 3;
+            this.texture = "circle.png";
             break;
         }
     }

@@ -220,19 +220,28 @@ export class NerveClient {
           entity.sprite.y = e.y - e.height / 2;
           entity.vx = e.vx;
           entity.vy = e.vy;
-          entity.sprite.tint = e.tint;
+          if (entity.hasTexture) {
+            entity.sprite.tint = e.tint;
+          }
           entity.gameData = e.gameData;
           this.entities.set(e.id, entity);
         }
       } else {
         // Create new entities
-        const newSprite = new Sprite(Texture.from("../res/circle.png"));
+        if (!e.texture) {
+          let msg = `Entity with id ${e.id} has no texture.`;
+          msg += "If it should be invisible, give it an invisible texture.";
+          console.error(msg);
+          e.texture = "NOTEXTURE.png";
+          e.tint = 0xFFFFFF;
+        }
+
+        const newSprite = new Sprite(Texture.from("../res/" + e.texture));
         newSprite.scale.set(e.scale[0], e.scale[1]);
         newSprite.tint = e.tint;
         newSprite.x = e.x - e.width / 2;
         newSprite.y = e.y - e.height / 2;
-        this.entities.set(e.id, new ClientEntity(e.id, e.vx, e.vy, newSprite, e.gameData));
-        // console.log(e.gameData);
+        this.entities.set(e.id, new ClientEntity(e.id, e.vx, e.vy, newSprite, e.gameData, e.texture != "NOTEXTURE.png"));
         this.viewport.addChild(newSprite);
       }
 

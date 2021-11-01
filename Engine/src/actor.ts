@@ -10,9 +10,10 @@ export default class Actor {
     #tint: number;
     #width: number;
     #height: number;
+    public texture: string;
     public body: Matter.Body;
     public engine: Engine;
-    public gameData: any;
+    public gameData: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     /**
      * 
@@ -21,7 +22,7 @@ export default class Actor {
      * @param body Matter.JS body to use in physics
      * @param eng Reference to Engine
      */
-    constructor(id: number, name = "", body: Matter.Body, eng: Engine) { 
+    constructor(id: number, name = "", body: Matter.Body, eng: Engine, texture="invis.png") { 
         this.#name = name;
         this.#interactions = [];
         this.#id = id;
@@ -29,7 +30,9 @@ export default class Actor {
         this.#tint = 0x00efff;
         this.#width = 16;
         this.#height = 16;
-        //Default as circle at x = 0, y = 0, radius 5.
+        this.texture = texture;
+
+        // Default as circle at x = 0, y = 0, radius 5.
         if(!body) {
             body = Bodies.circle(0, 0, 5, {id: this.#id});
         }

@@ -126,11 +126,13 @@ class EntityEntry implements IEntity {
     vy: number;
     scale: [number, number];
     tint: number;
+    texture: string;
     width: number;
     height: number;
-    gameData: any;
+    gameData: any; // eslint-disable-line
     update(): void {
-        throw new Error("Method not implemented.");
+        // IEntity only serves to pass data between engine and client
+        throw new Error("Cannot update IEntity from backend. This method should only be called on the client.");
     }
 
     constructor(actor: Actor){
@@ -144,5 +146,6 @@ class EntityEntry implements IEntity {
         this.width = actor.getWidth();
         this.height = actor.getHeight();
         this.gameData = actor.gameData;
+        this.texture = actor.texture;
     }
 }

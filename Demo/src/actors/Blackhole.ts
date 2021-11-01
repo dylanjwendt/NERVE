@@ -21,7 +21,7 @@ export default class Blackhole extends Actor {
      * @param eng Reference to the DemoEngine
      */
     constructor(id: number, name = "", eng: DemoEngine) {
-        super(id, name, Bodies.circle(0,0,24), eng);
+        super(id, name, Bodies.circle(0,0,24), eng, "circle.png");
         this.setScale([1.5, 1.5]);
         this.setWidth(48);
         this.setHeight(48);

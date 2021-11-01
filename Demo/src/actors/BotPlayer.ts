@@ -1,6 +1,7 @@
 import Player from "./Player";
 import { Engine } from "nerve-engine";
 import { NerveConfig } from "nerve-common";
+import { Bodies } from "matter-js";
 
 /**
  * this is a simple prototype version of a bot for our demo engine.
@@ -58,6 +59,9 @@ export default class BotPlayer extends Player {
         this.shootingStepsTaken = 0;
         this.shootingStepsCap = 0;
         this.mousePos = [0, 0];
+
+        this.texture = "bot_player.png";
+        this.setTint(0xFF0000);
     }
 
     /**
