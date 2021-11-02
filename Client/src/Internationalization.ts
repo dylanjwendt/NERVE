@@ -2,7 +2,40 @@ type TranslationDict = {
   [key: string]: string
 }
 
+/**
+ * Localizing tagged template literal, takes in translation key and optional substitions
+ * and returns the translated string.
+ * 
+ * Example:
+ * If your lang file is like this:
+ * ```text
+ * text.hello=Hello %1
+ * ```
+ * 
+ * You can get the translation like this:
+ * ```javascript
+ * const param = "World";
+ * tl`text.hello ${param}`;
+ * // Return value: "Hello World"
+ * ```
+ */
 export type TemplateLocalizerFunction = (strings: TemplateStringsArray, ...substitutions: string[]) => string
+
+/**
+ * Localizer function, takes in translation key and optional substitions and returns the translated string.
+ * 
+ * Example:
+ * If your lang file is like this:
+ * ```text
+ * text.hello=Hello %1
+ * ```
+ * 
+ * You can get the translation like this:
+ * ```javascript
+ * localize("text.hello", "World");
+ * // Return value: "Hello World"
+ * ```
+ */
 export type LocalizerFunction = (translationKey: string, ...substitutions: string[]) => string
 
 function localize(translations: TranslationDict, key: string, substitutions: string[]): string {
@@ -38,6 +71,20 @@ async function fetchLangFile(locale: string, path?: string): Promise<Translation
   return translations;
 }
 
+/**
+ * Fetches the given locale's language file and returns a tagged template literal localizer.
+ * You can use the returned function to translate strings using a localization key, and also substitute
+ * parameters in the translation like this:
+ * 
+ * ```javascript
+ * const tl = getTemplateLocalizer("en_US");
+ * const translation = tl`your.translation.key ${param1} ${param2}`
+ * ```
+ * 
+ * @param locale The lang file to fetch
+ * @param path The path to retrieve the lang file from. Defaults to /res/lang
+ * @returns Template localizer
+ */
 export async function getTemplateLocalizer(locale: string, path?: string): Promise<TemplateLocalizerFunction> {
   const translations = await fetchLangFile(locale, path);
 
@@ -47,6 +94,20 @@ export async function getTemplateLocalizer(locale: string, path?: string): Promi
   };
 }
 
+/**
+ * Fetches the given locale's language file and returns a translation function.
+ * You can use the returned function to translate strings using a localization key, and also substitute
+ * parameters in the translation like this:
+ * 
+ * ```javascript
+ * const localize = getTemplateLocalizer("en_US");
+ * const translation = localize("your.translation.key", param1, param2)
+ * ```
+ * 
+ * @param locale The lang file to fetch
+ * @param path The path to retrieve the lang file from. Defaults to /res/lang
+ * @returns Template localizer
+ */
 export async function getLocalizer(locale: string, path?: string): Promise<LocalizerFunction> {
   const translations = await fetchLangFile(locale, path);
 

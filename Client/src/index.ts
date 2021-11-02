@@ -10,4 +10,4 @@ export { getLocalizer, getTemplateLocalizer } from "./Internationalization";
 
 export type { InputHandlerReturnType, InputHandlerFunction } from "./InputHandler";
 export type { DebugInfo } from "./NerveClient";
-export type { LocalizerFunction } from "./Internationalization";
+export type { LocalizerFunction, TemplateLocalizerFunction } from "./Internationalization";
