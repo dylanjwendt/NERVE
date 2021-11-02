@@ -1,6 +1,7 @@
 import { Bodies, Body, Vector } from "matter-js";
 import { Actor,} from "nerve-engine";
 import { DemoEngine } from "..";
+import Attractor from "../interactions/Attract";
 import Impact from "../interactions/bhImpact";
 import Bullet from "./Bullet";
 
@@ -28,6 +29,7 @@ export default class Blackhole extends Actor {
         this.setTint(0x000000);
         this.entityCount = 0;
         this.addInteraction(new Impact());
+        this.addInteraction(new Attractor(this));
         this.#origin = [0,0];
         this.#deltaT = DECISIONINTERVAL+1;
         this.body.collisionFilter.mask = 0b1<<3;

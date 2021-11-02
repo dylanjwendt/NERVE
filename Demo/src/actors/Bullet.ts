@@ -10,6 +10,7 @@ export default class Bullet extends Actor {
     private creationTime: number;
     private logic: GameLogic;
     private LIFETIME: number;
+    public speed: number;
 
     /**
      * 
@@ -49,6 +50,7 @@ export default class Bullet extends Actor {
             parentId: parent?.getID(),
             isBullet: true
         };
+        this.speed = speed;
         Events.on(engine, "afterUpdate", (e) => this.maintainSpeed(e, this));
     }
 
