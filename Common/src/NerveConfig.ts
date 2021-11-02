@@ -17,6 +17,7 @@ export const NerveConfig = {
   engine: {
     worldWidth: 5000,
     worldHeight: 5000,
-    numBotsPerPlayer: 5
+    numBotsPerPlayer: 5,
+    numBlackHoles: 10
   }
 };

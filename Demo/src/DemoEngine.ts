@@ -6,7 +6,7 @@ import Player from "./actors/Player";
 import Blackhole from "./actors/Blackhole";
 import BotPlayer from "./actors/BotPlayer";
 
-const numBlackholes = 5;
+const numBlackholes = NerveConfig.engine.numBlackHoles;
 
 export default class DemoEngine extends Engine {
     blackholes: Blackhole[];
