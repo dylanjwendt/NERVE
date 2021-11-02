@@ -41,6 +41,7 @@ export type LocalizerFunction = (translationKey: string, ...substitutions: strin
 function localize(translations: TranslationDict, key: string, substitutions: string[]): string {
   let template = translations[key];
   if (!template) {
+    console.error(`Warning: ${key} is missing translation in current locale.`);
     return key;
   }
 

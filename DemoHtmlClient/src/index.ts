@@ -317,7 +317,7 @@ type FieldLocalizations = {
       star.anchor.set(0.5);
       star.tint = randomInt(0xffffff);
       star.width = star.height = starSize;
-      star.alpha = range(0.25, 1, true);
+      star.alpha = range(0.05, 0.35, true);
       let x, y;
       do {
         x = range(starSize / 2 + border, viewport.worldWidth - starSize - border);
