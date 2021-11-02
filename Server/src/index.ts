@@ -22,7 +22,13 @@ const app = new Koa();
     app.use(serve(clientRoot));
     app.context.gameServer = server;  // add reference to colyseus game server inside koa context
     app.listen(PORT, () => {
-        console.log(`Started static server on localhost:${PORT}`);
+        // Don't print message in dev mode, dev server runs on 3001
+        if (process.env.NODE_ENV == "development") {
+            console.log("Server running in development mode");
+        } else {
+            console.log(`Started static server on localhost:${PORT}`);
+        }
+
         console.log(`Serving client root: ${clientRoot}`);
     });
 })();

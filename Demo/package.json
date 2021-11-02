@@ -25,6 +25,7 @@
   "devDependencies": {
     "@tsconfig/node14": "^1.0.0",
     "@types/jest": "^27.0.1",
+    "@types/node": "^16.11.6",
     "@types/postal": "^1.0.30",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.16.1",
@@ -40,8 +41,8 @@
     "typescript": "^4.2.2"
   },
   "dependencies": {
-    "nerve-engine": "file:../Engine",
     "nerve-common": "^0.1.0",
+    "nerve-engine": "file:../Engine",
     "postal": "^2.0.5"
   }
 }

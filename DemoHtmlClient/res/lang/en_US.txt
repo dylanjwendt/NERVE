@@ -1,0 +1,10 @@
+home.name_prompt=What's your name?
+home.class_prompt=What's your class?
+debug.language=Language
+debug.num_entities=Entities
+debug.avg_sync=Average Sync Time
+debug.playerX=Player X
+debug.playerY=Player Y
+debug.room=Room: %1
+demo.mute=Mute
+demo.unmute=Unmute

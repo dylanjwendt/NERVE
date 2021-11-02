@@ -11,14 +11,19 @@ export class ClientEntity {
   vx: number;
   vy: number;
   sprite: Sprite;
-  gameData: any; //Holds extra game data
+  hasTexture: boolean;
 
-  constructor(id: number, vx: number, vy: number, sprite: Sprite, gameData: any) {
+  // Holds extra game data
+  gameData: any; // eslint-disable-line
+
+  // eslint-disable-next-line
+  constructor(id: number, vx: number, vy: number, sprite: Sprite, gameData: any, hasTexture = false) {
     this.id = id;
     this.vx = vx;
     this.vy = vy;
     this.sprite = sprite;
     this.gameData = gameData;
+    this.hasTexture = hasTexture;
   }
 
   /**

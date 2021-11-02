@@ -31,6 +31,7 @@ export default class Player extends Actor {
         this.health = this.MAXHEALTH;
         this.classValue = 0;
         this.defaultTint = this.getTint();
+        this.texture = "circle.png";
         this.body.collisionFilter.mask = 0b1<<3; 
         this.body.collisionFilter.category = 0b1<<3;
         this.body.frictionAir = 0.01;
@@ -83,20 +84,24 @@ export default class Player extends Actor {
         this.classValue = classValue;
 
         switch (this.classValue) {
-        case 0: //Faster movement, but lower overall health
+        case 0: // Faster movement, but lower overall health
             this.maxSpeed = 4;
+            this.texture = "player_typeA.png";
             this.MAXHEALTH = CL0_MAXHEALTH;
             break;
-        case 1: //Regerates more after each kill
+        case 1: // Regenerates more after each kill
             this.maxSpeed = 2;
+            this.texture = "player_typeB.png";
             this.MAXHEALTH = DEF_MAXHEALTH;
             break;
-        case 2: //Has far more max health and bullet deal slightly damage
+        case 2: // Has far more max health and bullet deal slightly damage
             this.maxSpeed = 1;
+            this.texture = "player_typeC.png";
             this.MAXHEALTH = CL2_MAXHEALTH;
             break;
         default:
             this.maxSpeed = 3;
+            this.texture = "circle.png";
             this.MAXHEALTH = DEF_MAXHEALTH;
             break;
         }

@@ -1,7 +1,7 @@
 import "./index.less";
 import * as PIXI from "pixi.js";
 import * as PIXIAUDIO from "@pixi/sound";
-import { ClientEntity, NerveClient } from "nerve-client";
+import { NerveClient, getTemplateLocalizer } from "nerve-client";
 import { DemoClientInputHandler } from "./DemoClientInputHandler";
 import { Viewport } from "pixi-viewport";
 
@@ -12,8 +12,9 @@ type FieldLocalizations = {
 
 // Async IIFE wraps all demo code to prevent it from polluting the global scope
 (async function start() {
+  let tl = await getTemplateLocalizer("en_US");
 
-  //All The sounds used for the game add the the sound library
+  // All The sounds used for the game add the the sound library
   PIXIAUDIO.sound.add({
     music: "../res/test_music.ogg",
     playerShoot: "./res/SFX_shot11.wav",
@@ -40,20 +41,44 @@ type FieldLocalizations = {
   client.pixi.view.style.height = "100vh";
   client.pixi.view.style.zIndex = "-5";
 
+  // Draw background squares
   stars(client.viewport, 30, 10);
 
   // Actually add client canvas to the HTML document
   document.body.appendChild(client.view);
 
   // Just a lookup dict for translating debug keys to human readable text
-  const fieldLocalizations: FieldLocalizations = {
-    playerX: "Player X",
-    playerY: "Player Y",
+  // Fields are localized to currently selected language
+  let fieldLocalizations: FieldLocalizations = {
+    playerX: tl`debug.playerX`,
+    playerY: tl`debug.playerY`,
     fps: "FPS",
-    avgSyncTime: "Average sync time",
-    numEntities: "Entities",
-    room: "Room"
+    avgSyncTime: tl`debug.avg_sync`,
+    numEntities: tl`debug.num_entities`,
+    room: tl`debug.room`
   };
+
+  // Re-translate when language is changed
+  $("#lang-selector")?.addEventListener("change", async () => {
+    const lang = ($("#lang-selector") as HTMLSelectElement).value;
+    tl = await getTemplateLocalizer(lang);
+    const roomtl = roomName || "--";
+    fieldLocalizations = {
+      playerX: tl`debug.playerX`,
+      playerY: tl`debug.playerY`,
+      fps: "FPS",
+      avgSyncTime: tl`debug.avg_sync`,
+      numEntities: tl`debug.num_entities`,
+      room: tl`debug.room ${roomtl}`
+    };
+
+    const langText = $("#lang-text");
+    const muteBtn = $("#btn_mute");
+    const unmuteBtn = $("#btn_unmute");
+    if (langText) { langText.textContent = tl`debug.language`; }
+    if (muteBtn) { muteBtn.innerHTML = tl`demo.mute`; }
+    if (unmuteBtn) { unmuteBtn.innerHTML = tl`demo.unmute`; }
+  });
 
   // Everytime the client has a debug update, go through all debug info,
   // translate it to human text, then update the corresponding DOM element.
@@ -68,7 +93,7 @@ type FieldLocalizations = {
     // update room name displayed in top left
     const roomNameElement = $("#debug-screen p[data-field-room]");
     if (roomNameElement) {
-        roomNameElement.textContent = `Room: ${client.roomInfo}`;
+        roomNameElement.textContent = tl`debug.room ${client.roomInfo}`;
     }
   });
 
@@ -131,14 +156,14 @@ type FieldLocalizations = {
     await connectToServer(overlay, username, client, classValue);
   });
 
-  //Mute 
+  // Mute 
   $("#btn_mute")?.addEventListener("click", (e) => {
     PIXIAUDIO.sound.muteAll();
     ($("#btn_mute") as HTMLButtonElement).hidden = true;
     ($("#btn_unmute") as HTMLButtonElement).hidden = false;
   });
 
-  //Unmute 
+  // Unmute 
   $("#btn_unmute")?.addEventListener("click", (e) => {
     PIXIAUDIO.sound.unmuteAll();
     ($("#btn_mute") as HTMLButtonElement).hidden = false;
@@ -163,7 +188,7 @@ type FieldLocalizations = {
     console.log(classValue);
   });
   
-  //All that are currently on the server
+  // All that are currently on the server
   const bullets: Set<number> = new Set();
 
   // Maps names to text
@@ -201,11 +226,11 @@ type FieldLocalizations = {
         client.viewport.addChild(text);
       }
 
-      //Play sounds for each bullet we have never seen before
+      // Play sounds for each bullet we have never seen before
       if (!bullets.has(clientEntity.id) && clientEntity.gameData.isBullet) {
         const parentId = clientEntity.gameData.parentId;
 
-        //Play souds based on who shot the bullet
+        // Play souds based on who shot the bullet
         if (parentId == client.clientId) {
           PIXIAUDIO.sound.play("playerShoot", {
             volume: 0.5
@@ -216,7 +241,7 @@ type FieldLocalizations = {
           });
         }
 
-        //Make sure the bullet never triggers the same sound again
+        // Make sure the bullet never triggers the same sound again
         bullets.add(clientEntity.id);
       }
     });
@@ -230,7 +255,7 @@ type FieldLocalizations = {
       }
     });
 
-    //Remove bullets and there souunds.
+    // Remove bullets and there souunds.
     bullets.forEach((id) =>{
       if (!client.entities.has(id)) {
         bullets.delete(id);
@@ -240,22 +265,20 @@ type FieldLocalizations = {
 
   // Hides the overlay and starts
   async function connectToServer(overlay: HTMLDivElement, username: string, client: NerveClient, classValue: number) {
-    //Connect to server
+    // Connect to server
     await client.attachToServer(roomName);
-
-
 
     client.server?.onMessage("requestUsername", (message: number) => {
       client.clientId = message;
-      //Send the username and class to the server upon successful connection
+      // Send the username and class to the server upon successful connection
       client.server?.send("changeNameNClass", JSON.stringify({ player: client.clientId, name: username, classValue: classValue }));
     });
 
-    //Remove overlay and enable inputs
+    // Remove overlay and enable inputs
     overlay.style.display = "none";
     client.disableInput = false;
 
-    //Start game music
+    // Start game music
     PIXIAUDIO.sound.play("music", {
       loop: true
     });
@@ -263,16 +286,17 @@ type FieldLocalizations = {
     client.pixi.ticker.start();
   }
 
-  //Re-enables the oldBtn and disables the newBtn. Returns the newBtn.
+  // Re-enables the oldBtn and disables the newBtn. Returns the newBtn.
   function changeDisabledBtn(oldBtn: HTMLButtonElement, newBtn: HTMLButtonElement) {
     oldBtn.disabled = false;
     newBtn.disabled = true;
 
     return newBtn;
   }
-
+  
+  // === END Nerve Demo
   // Stars function taken from pixi-viewport demo
-  // https://davidfig.github.io/pixi-viewport/
+  // https:// davidfig.github.io/pixi-viewport/
   function overlap(x: number, y: number, viewport: Viewport, starSize = 30) {
     const size = starSize;
     for (const child of viewport.children) {
@@ -293,7 +317,7 @@ type FieldLocalizations = {
       star.anchor.set(0.5);
       star.tint = randomInt(0xffffff);
       star.width = star.height = starSize;
-      star.alpha = range(0.25, 1, true);
+      star.alpha = range(0.05, 0.35, true);
       let x, y;
       do {
         x = range(starSize / 2 + border, viewport.worldWidth - starSize - border);

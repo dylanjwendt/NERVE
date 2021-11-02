@@ -10,6 +10,7 @@ export default class Bullet extends Actor {
     private creationTime: number;
     private logic: GameLogic;
     private LIFETIME: number;
+    public speed: number;
 
     /**
      * 
@@ -23,7 +24,7 @@ export default class Bullet extends Actor {
      * @param life duration in ms of bullet's life before disappearing
      */
     constructor(id: number, parent: Player | null, pos1: [number, number], pos2: [number, number], engine: Matter.Engine, logic: GameLogic, eng: Engine, life = 3000) {
-        super(id, "Bullet", Bodies.circle(0,0,8), eng);
+        super(id, "Bullet", Bodies.circle(0,0,8), eng, "circle.png");
         this.#parent = parent;
         const normalization = Math.sqrt((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2);
         const offset = 35;
@@ -38,7 +39,7 @@ export default class Bullet extends Actor {
         this.setWidth(16);
         this.setHeight(16);
         this.addInteraction(new Damage(this.#parent));
-        this.body.collisionFilter.mask = 0b1100; 
+        this.body.collisionFilter.mask = 0b1100;
         this.body.collisionFilter.category = 0b1<<3;
         this.body.frictionAir = 0;
         this.creationTime = engine.timing.timestamp;
@@ -49,6 +50,7 @@ export default class Bullet extends Actor {
             parentId: parent?.getID(),
             isBullet: true
         };
+        this.speed = speed;
         Events.on(engine, "afterUpdate", (e) => this.maintainSpeed(e, this));
     }
 

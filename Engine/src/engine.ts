@@ -27,12 +27,32 @@ export default abstract class Engine {
             const pairs = event.pairs;
             for (let i = 0; i < pairs.length; i++) {
                 const pair = pairs[i];
-                const id1 = pair.bodyA.id;
-                const id2 = pair.bodyB.id;
-                const actorA = actors.get(id1);
-                const actorB = actors.get(id2);
+                let actorA: Actor | undefined;
+                let actorB: Actor | undefined;
+                if (pair.bodyA.isSensor && pair.bodyB.isSensor) 
+                {
+                    continue;
+                }
+                else if (pair.bodyA.isSensor) {
+                    const id1 = +pair.bodyA.label;
+                    const id2 = pair.bodyB.id;
+                    actorA = actors.get(id1);
+                    actorB = actors.get(id2);
+                }
+                else if (pair.bodyB.isSensor) {
+                    const id1 = pair.bodyA.id;
+                    const id2 = +pair.bodyB.label;
+                    actorA = actors.get(id1);
+                    actorB = actors.get(id2);
+                }
+                else {
+                    const id1 = pair.bodyA.id;
+                    const id2 = pair.bodyB.id;
+                    actorA = actors.get(id1);
+                    actorB = actors.get(id2);
+                }
                 if(!actorA || !actorB) {
-                    return;
+                    continue;
                 }
                 actorA.triggerInteractions(actorB, type);
                 actorB.triggerInteractions(actorA, type);
@@ -83,7 +103,7 @@ export default abstract class Engine {
      */
     update(millisec: number): void {
         MatterEngine.update(this.engine, millisec);
-    }
+    }   
 
     /**
      * DEPRECATED FUNCTION
@@ -126,11 +146,13 @@ class EntityEntry implements IEntity {
     vy: number;
     scale: [number, number];
     tint: number;
+    texture: string;
     width: number;
     height: number;
-    gameData: any;
+    gameData: any; // eslint-disable-line
     update(): void {
-        throw new Error("Method not implemented.");
+        // IEntity only serves to pass data between engine and client
+        throw new Error("Cannot update IEntity from backend. This method should only be called on the client.");
     }
 
     constructor(actor: Actor){
@@ -144,5 +166,6 @@ class EntityEntry implements IEntity {
         this.width = actor.getWidth();
         this.height = actor.getHeight();
         this.gameData = actor.gameData;
+        this.texture = actor.texture;
     }
 }

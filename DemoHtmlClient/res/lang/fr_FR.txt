@@ -1,0 +1,10 @@
+home.name_prompt=Comment t'appelles-tu?
+home.class_prompt=Quelle classe es-tu?
+debug.language=Langue
+debug.num_entities=Entités
+debug.avg_sync=Temps moyen de synchronisation
+debug.playerX=Joueur X
+debug.playerY=Joueur Y
+debug.room=Serveur: %1
+demo.mute=Couper le son
+demo.unmute=Rétablir le son
