@@ -163,6 +163,15 @@ export abstract class ActorInteraction {
   
     abstract trigger(self: Actor, other: Actor, type: string): void;
 }
+
+export abstract class ActorSensor extends ActorInteraction{
+    triggerDistance: number;
+
+    constructor(dist = 10) {
+        super();
+        this.triggerDistance = dist;
+    }
+}
   
 export class DefaultInteraction extends ActorInteraction {
     #channel = postal.channel();
