@@ -3,10 +3,12 @@ import Koa from "koa";
 import serve from "koa-static";
 import path from "path";
 import { NerveConfig } from "nerve-common";
+import { getRoutes } from "./controllers/routes";
 
 // Client root is relative to Server/
-const clientRoot = path.resolve(process.cwd(), NerveConfig.server.clientRoot);
-const PORT = NerveConfig.server.port;
+const clientRoot = path.resolve(process.cwd(), NerveConfig.clientServer.clientRoot);
+const PORT = NerveConfig.clientServer.port;
+const app = new Koa();
 
 (async function () {
     // start game server (websockets)
@@ -14,9 +16,11 @@ const PORT = NerveConfig.server.port;
     await server.init();
     console.log("Started game server");
 
-    // start koa router (http)
-    const app = new Koa();
+    // setup middleware and start koa router (http) 
+    const routes = await getRoutes();
+    app.use(routes);
     app.use(serve(clientRoot));
+    app.context.gameServer = server;  // add reference to colyseus game server inside koa context
     app.listen(PORT, () => {
         // Don't print message in dev mode, dev server runs on 3001
         if (process.env.NODE_ENV == "development") {
@@ -28,3 +32,5 @@ const PORT = NerveConfig.server.port;
         console.log(`Serving client root: ${clientRoot}`);
     });
 })();
+
+export = app;  // export koa 

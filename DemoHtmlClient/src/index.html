@@ -19,6 +19,20 @@
           <button id="btn_C" class="overlay-button">C</button>
         </div>
       </div>
+      <div class="overlay-right">
+        <div class="rooms">
+          <div class="room-cell">
+            select game room
+          </div>
+          <label class="labl">
+            <input type="radio" name="radioname" value="default" checked="checked" />
+            <div class="room-cell">
+              <p>default (auto)</p>
+              <p>              </p>
+            </div>
+          </label>
+        </div>
+      </div>
     </div>
     <div id="debug-screen">
       <p id="lang-text" style="display: inline-block">Language: </p>
@@ -31,6 +45,7 @@
       <p data-field-fps>FPS: </p>
       <p data-field-numEntities>Entities: </p>
       <p style="display: inline; padding-right: 0; margin-right: 0;" data-field-avgSyncTime>Last sync:</p>ms.
+      <p data-field-room>Room: </p>
       <br>
       <button id="btn_mute">Mute</button>
       <button id="btn_unmute" hidden>Unmute</button>

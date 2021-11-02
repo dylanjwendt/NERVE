@@ -12,7 +12,7 @@ type FieldLocalizations = {
 
 // Async IIFE wraps all demo code to prevent it from polluting the global scope
 (async function start() {
-  const tl = await getTemplateLocalizer("en_US");
+  let tl = await getTemplateLocalizer("en_US");
 
   // All The sounds used for the game add the the sound library
   PIXIAUDIO.sound.add({
@@ -55,26 +55,29 @@ type FieldLocalizations = {
     fps: "FPS",
     avgSyncTime: tl`debug.avg_sync`,
     numEntities: tl`debug.num_entities`,
+    room: tl`debug.room`
   };
 
   // Re-translate when language is changed
   $("#lang-selector")?.addEventListener("change", async () => {
     const lang = ($("#lang-selector") as HTMLSelectElement).value;
-    const tl2 = await getTemplateLocalizer(lang);
+    tl = await getTemplateLocalizer(lang);
+    const roomtl = roomName || "--";
     fieldLocalizations = {
-      playerX: tl2`debug.playerX`,
-      playerY: tl2`debug.playerY`,
+      playerX: tl`debug.playerX`,
+      playerY: tl`debug.playerY`,
       fps: "FPS",
-      avgSyncTime: tl2`debug.avg_sync`,
-      numEntities: tl2`debug.num_entities`,
+      avgSyncTime: tl`debug.avg_sync`,
+      numEntities: tl`debug.num_entities`,
+      room: tl`debug.room ${roomtl}`
     };
 
     const langText = $("#lang-text");
     const muteBtn = $("#btn_mute");
     const unmuteBtn = $("#btn_unmute");
-    if (langText) { langText.textContent = tl2`debug.language`; }
-    if (muteBtn) { muteBtn.innerHTML = tl2`demo.mute`; }
-    if (unmuteBtn) { unmuteBtn.innerHTML = tl2`demo.unmute`; }
+    if (langText) { langText.textContent = tl`debug.language`; }
+    if (muteBtn) { muteBtn.innerHTML = tl`demo.mute`; }
+    if (unmuteBtn) { unmuteBtn.innerHTML = tl`demo.unmute`; }
   });
 
   // Everytime the client has a debug update, go through all debug info,
@@ -87,6 +90,11 @@ type FieldLocalizations = {
         elem.textContent = `${fieldLocalizations[key]}: ${text.toString()}`;
       }
     });
+    // update room name displayed in top left
+    const roomNameElement = $("#debug-screen p[data-field-room]");
+    if (roomNameElement) {
+        roomNameElement.textContent = tl`debug.room ${client.roomInfo}`;
+    }
   });
 
   // Username handling
@@ -102,7 +110,47 @@ type FieldLocalizations = {
     }
   });
 
-  // Play button handling (Same thing as username handling on enter)
+  // room selection handling
+  let roomName = "default";
+  // first, get available rooms from the server
+  fetch("api/listRooms", {
+      method: "GET"
+  })
+  .then(response => response.json())
+  .then(jsonData => {
+    const availableRooms = jsonData;  // array of room objects (name, players, capacity)
+    availableRooms.forEach((room: any) => {
+      const newRoomCell = document.createElement("label");
+      newRoomCell.className = "labl";
+      newRoomCell.innerHTML = `<input type="radio" name="radioname" value="${room.name}" />
+                               <div class="room-cell">
+                               <p>${room.name}</p>
+                               <p>${room.playerCount} / ${room.capacity} players</p>
+                               </div>`;
+      const roomsNode = $(".rooms");
+      if (roomsNode && newRoomCell) {
+        roomsNode.appendChild(newRoomCell);
+      }
+    });
+
+    // attach listeners
+   // second, set up event listeners for each room option
+    const rooms = $(".rooms") as HTMLDivElement;
+    rooms.childNodes.forEach((roomCell: ChildNode) => {
+      if (roomCell instanceof HTMLLabelElement) {
+        const roomCellLabel = roomCell as HTMLLabelElement;
+        const roomCellInput = roomCellLabel.children.item(0) as HTMLInputElement;
+        const cellRoomName = roomCellInput.value;
+        roomCellInput.addEventListener("click", (e) => {
+          roomName = roomCellInput.value;
+        });
+      }
+    }); 
+    return;
+  })
+  .catch((error: any) => console.log(error));
+
+  //Play button handling (Same thing as username handling on enter)
   $("#btn_play")?.addEventListener("click", async (e) => {
     username = ($("#username") as HTMLInputElement).value;
     await connectToServer(overlay, username, client, classValue);
@@ -158,13 +206,21 @@ type FieldLocalizations = {
       // Entity exists in our map, must update
       if (entitiesToText.has(clientEntity.id)) {
         const text = entitiesToText.get(clientEntity.id);
-        text.text = clientEntity.gameData.name;
+        const name = clientEntity.gameData.name as string;
+        const killCount = clientEntity.gameData.killCount as string;
+        const displayText = name + " " + killCount;
+
+        text.text = displayText;
         text.x = clientEntity.sprite.x + xOffset;
         text.y = clientEntity.sprite.y - yOffset;
-      } else {
+      } else if (clientEntity.gameData.isAlive) {
         // Entity not in our map but in NerveClient's, must create
+        // Only add player entities
         const name = clientEntity.gameData.name as string;
-        const text = new PIXI.Text(name, { fontFamily: "Arial", fontSize: 24, fill: "black" });
+        const killCount = clientEntity.gameData.killCount as string;
+        const displayText = name + " " + killCount;
+        const text = new PIXI.Text(displayText, { fontFamily: "Arial", fontSize: 24, fill: "black" });
+
         text.anchor.set(0.5, 0.5);
         entitiesToText.set(clientEntity.id, text);
         client.viewport.addChild(text);
@@ -210,7 +266,7 @@ type FieldLocalizations = {
   // Hides the overlay and starts
   async function connectToServer(overlay: HTMLDivElement, username: string, client: NerveClient, classValue: number) {
     // Connect to server
-    await client.attachToServer();
+    await client.attachToServer(roomName);
 
     client.server?.onMessage("requestUsername", (message: number) => {
       client.clientId = message;

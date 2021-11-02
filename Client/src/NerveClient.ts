@@ -37,6 +37,8 @@ export class NerveClient {
   #syncTimes: number[]
 
   clientId: number
+  /** name and player count of game room that client is currently connected to */
+  roomInfo: string
   debugInfo: DebugInfo
 
   /** If true, do not send anything returned from input handlers to server */
@@ -80,6 +82,7 @@ export class NerveClient {
     });
 
     this.clientId = 0;
+    this.roomInfo = "";
     this.#cull = new Simple();
     this.disableInput = false;
     this.entities = new Map<number, ClientEntity>();
@@ -109,13 +112,17 @@ export class NerveClient {
   /**
    * Attempt to connect this client to the game server. If successful, then the client will
    * begin syncing to the server and will set {@link NerveClient.clientId} to the id returned by the server.
+   * @param room the name of the game room/lobby to join
    */
-  async attachToServer(): Promise<void> {
+  async attachToServer(room: string): Promise<void> {
     this.server = new NerveServerCommon();
-    await this.server.connect("ws://localhost:2567");
+    await this.server.connect("ws://localhost:2567", room);
     this.server.onStateChange((state: GameState) => this.#syncServerState(state));
     this.server.onMessage("getPlayerId", (message: number) => {
       this.clientId = message;
+    });
+    this.server.onMessage("updateRoomInfo", (message: string) => {
+        this.roomInfo = message;
     });
   }
 

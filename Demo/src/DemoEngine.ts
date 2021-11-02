@@ -6,13 +6,13 @@ import Player from "./actors/Player";
 import Blackhole from "./actors/Blackhole";
 import BotPlayer from "./actors/BotPlayer";
 
-const numBlackholes = 10;
+const numBlackholes = 5;
 
 export default class DemoEngine extends Engine {
     blackholes: Blackhole[];
     bots: BotPlayer[];
     playerBotOwners: Map<number, number[]>;  // tracks which bots were added for each player that joined 
-    numBotsPerPlayer = 10;  // can be whatever we want
+    numBotsPerPlayer = NerveConfig.engine.numBotsPerPlayer;  
 
     constructor() {
         super((l: GameLogic) => new DemoInputHandler(l));
@@ -120,6 +120,19 @@ export default class DemoEngine extends Engine {
             botsToRemove?.forEach(botId => super.removeActor(botId));
             this.playerBotOwners.delete(playerId);
         }
+    }
+
+    /**
+     * returns the number of human players and bots entities currently in game
+     */
+    getPlayerCount(): number {
+        let count = 0;
+        this.gameLogic.actors.forEach((actor) => {
+            if (actor instanceof Player || actor instanceof BotPlayer) {
+                count++;
+            }
+        });
+        return count;
     }
 
     /**

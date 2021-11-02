@@ -12,6 +12,7 @@ export class ServerRoomImpl {
     private colyseusRoom: Room<GameState>;
     private PATCH_RATE = 1;
     private socketEngineIdMap;
+    private roomName: string;
 
     constructor(@inject("Engine") engine: IEngine, 
                 @inject(delay(() => ColyseusRoom)) colyseusRoom: ColyseusRoom, 
@@ -23,6 +24,7 @@ export class ServerRoomImpl {
         } else {
             this.socketEngineIdMap = new Map<string, number>();
         }
+        this.roomName = "";  // room name will be updated later
     }
 
     public async onCreate(colyseusRoom: Room<GameState>): Promise<void> {
@@ -55,6 +57,7 @@ export class ServerRoomImpl {
         client.send("requestUsername", id);
         this.socketEngineIdMap.set(client.id, id);
         console.log(`[${new Date().toLocaleTimeString()}] Player joined with id ${id}`);
+        this.updateRoomInfo();
     }
 
     public async onLeave(client: Client): Promise<void> {
@@ -62,10 +65,25 @@ export class ServerRoomImpl {
         if(!id) { return; }
         this.engine.removeActor(id);
         console.log(`[${new Date().toLocaleTimeString()}] Player left with id ${id}`);
+        this.updateRoomInfo();
     }
 
     public update(deltaTime: number): void {
         this.engine.update(deltaTime);
         this.colyseusRoom.state.text = JSON.stringify(this.engine.getWorldState());
+    }
+
+    public getPlayerCount(): number {
+        return this.engine.getPlayerCount();
+    }
+
+    public setRoomName(name: string): void {
+        this.roomName = name;
+    }
+
+    public updateRoomInfo(): void {
+        const roomInfo = `${this.roomName} (${this.getPlayerCount()}/100 players)`;
+        // update all connected clients so debug info is accurate
+        this.colyseusRoom.broadcast("updateRoomInfo", roomInfo);
     }
 }

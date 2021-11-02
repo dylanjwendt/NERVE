@@ -1,11 +1,16 @@
 import { Bodies, Body, Vector } from "matter-js";
 import { Actor, Engine } from "nerve-engine";
-const MAXHEALTH = 255;
+import { NerveConfig } from "nerve-common";
+const DEF_MAXHEALTH = 255;
+const CL0_MAXHEALTH = 205;
+const CL2_MAXHEALTH = 305;
 
 export default class Player extends Actor {
     private health: number;
+    private killCount: number;
     private defaultTint: number;
     private classValue: number;
+    private MAXHEALTH = DEF_MAXHEALTH;
     protected maxSpeed: number;
     protected movemask: number;
     public gameData: PlayerState;
@@ -22,7 +27,8 @@ export default class Player extends Actor {
         this.setScale([1.5, 1.5]);
         this.setWidth(48);
         this.setHeight(48);
-        this.health = MAXHEALTH;
+        this.MAXHEALTH = DEF_MAXHEALTH;
+        this.health = this.MAXHEALTH;
         this.classValue = 0;
         this.defaultTint = this.getTint();
         this.texture = "circle.png";
@@ -30,9 +36,11 @@ export default class Player extends Actor {
         this.body.collisionFilter.category = 0b1<<3;
         this.body.frictionAir = 0.01;
         this.movemask = 0b0000;
+        this.killCount = 0;
         Body.setMass(this.body, 100000);
         this.gameData = {
             hp: this.health,
+            killCount: this.killCount,
             isAlive: true,
             name: name
         };
@@ -42,9 +50,20 @@ export default class Player extends Actor {
      * Reset player into a living state
      */
     respawn(): void {
-        this.health = MAXHEALTH;
-        this.body.position = {x: 100, y: 100};
+        this.health = this.MAXHEALTH;
+        const { worldWidth, worldHeight } = NerveConfig.engine;
+        Body.setPosition(this.body, Vector.create(Math.floor(Math.random() * worldWidth), Math.floor(Math.random() * worldHeight)));
+        this.killCount = 0;
         this.body.collisionFilter.mask = 0b1<<3; 
+        this.updateGameData();
+    }
+    
+    /**
+     * Update hp and killCount in the game data
+     */
+    updateGameData() : void {
+        this.gameData.hp = this.health;
+        this.gameData.killCount = this.killCount;
     }
 
     /**
@@ -65,23 +84,44 @@ export default class Player extends Actor {
         this.classValue = classValue;
 
         switch (this.classValue) {
-        case 0:
+        case 0: // Faster movement, but lower overall health
             this.maxSpeed = 4;
             this.texture = "player_typeA.png";
+            this.MAXHEALTH = CL0_MAXHEALTH;
             break;
-        case 1:
+        case 1: // Regenerates more after each kill
             this.maxSpeed = 2;
             this.texture = "player_typeB.png";
+            this.MAXHEALTH = DEF_MAXHEALTH;
             break;
-        case 2:
+        case 2: // Has far more max health and bullet deal slightly damage
             this.maxSpeed = 1;
             this.texture = "player_typeC.png";
+            this.MAXHEALTH = CL2_MAXHEALTH;
             break;
         default:
             this.maxSpeed = 3;
             this.texture = "circle.png";
+            this.MAXHEALTH = DEF_MAXHEALTH;
             break;
         }
+
+        this.health = this.MAXHEALTH;
+    }
+
+    /**
+     * Increase the players killCount
+     */
+    incKillCount(): void {
+        this.killCount += 1;
+        this.gameData.killCount = this.killCount;
+    }
+
+    /**
+     * Gets the player's killCount
+     */
+    getKillCount(): number {
+        return this.killCount;
     }
 
     /**
@@ -101,15 +141,51 @@ export default class Player extends Actor {
     /**
      * Deal damage to player, and set dead state if necessary.
      * @param dmg Amount of damage to deal
+     * @param other The actor who dealt damage to the player
      */
-    decHealth(dmg: number): void {
+    decHealth(dmg: number, other: Player | null): void {
         this.health -= dmg;
         if (this.health <= 0) {
-            this.health = MAXHEALTH;
+            //Respawn the player and reset kill count
+            this.kill();
+
+            //Increase the killCount of the actor who killed the player if they are also a player
+            //Also health the attacker
+            if (other != null){
+                other.incKillCount();
+                other.incHealth(20);
+            }
         }
 
+        this.updateTint();
+        this.gameData.hp = this.health;
+    }
+
+    /**
+     * Increases a players overall health by the amount upto their max.
+     * @param amount Health increase amount
+     */
+    incHealth(amount: number): void {
+        if (this.classValue == 1) {
+            amount += 10;
+        }
+        const newHealth = amount + this.health;
+        if (newHealth < this.MAXHEALTH) {
+            this.health = newHealth;
+        } else {
+            this.health = this.MAXHEALTH;
+        }
+
+        this.updateTint();
+        this.gameData.hp = this.health;
+    }
+
+    /**
+     * Updates the players tint
+     */
+    updateTint(): void {
         let tint = this.defaultTint;
-        const ratio = ((MAXHEALTH - this.health)/MAXHEALTH);
+        const ratio = ((this.MAXHEALTH - this.health)/this.MAXHEALTH);
         tint += 0xFF0000 * ratio;
         tint -= this.defaultTint * ratio;
         this.setTint(tint);
@@ -164,14 +240,17 @@ export default class Player extends Actor {
      * Set player in dead state, and remove from play area
      */
     kill(): void {
-        this.body.position = {x: -5000, y: -5000};
-        this.body.collisionFilter.mask = 0;
-        this.gameData.isAlive = false;
+        //just respawn for now
+        this.respawn();
+        //this.body.position = {x: -5000, y: -5000};
+        //this.body.collisionFilter.mask = 0;
+        //this.gameData.isAlive = false;
     }
 }
 
 interface PlayerState {
     isAlive: boolean,
+    killCount: number,
     hp: number,
     name: string
 }
