@@ -138,7 +138,7 @@ export default class BotPlayer extends Player {
      */
     private continueShooting(): void {
         // do modulo division to check if it's been x many updates since the last time we shot
-        if (this.shootingStepsTaken % this.SHOOTING_INTERVAL == 0) {
+        if (this.shootingStepsTaken % this.SHOOTING_INTERVAL === 0) {
             this.engine.inputHandler.handleMouseDownInput(this.getID(), this.mousePos);
         }
         this.shootingStepsTaken++;
@@ -175,7 +175,7 @@ export default class BotPlayer extends Player {
         if (Math.random() < this.SECONDARY_MOVEMENT_FREQ && this.movementInput != this.NO_MOVEMENT) {  
             this.secondMovementInput = this.chooseRandomKeyPress();
             // if it's the same direction just cancel
-            if (this.secondMovementInput == this.movementInput) {
+            if (this.secondMovementInput === this.movementInput) {
                 this.secondMovementInput = "";
             }
         }

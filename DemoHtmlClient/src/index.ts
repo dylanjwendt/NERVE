@@ -231,7 +231,7 @@ type FieldLocalizations = {
         const parentId = clientEntity.gameData.parentId;
 
         // Play souds based on who shot the bullet
-        if (parentId == client.clientId) {
+        if (parentId === client.clientId) {
           PIXIAUDIO.sound.play("playerShoot", {
             volume: 0.5
           });
