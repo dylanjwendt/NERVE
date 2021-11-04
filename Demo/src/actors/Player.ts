@@ -166,7 +166,7 @@ export default class Player extends Actor {
      * @param amount Health increase amount
      */
     incHealth(amount: number): void {
-        if (this.classValue == 1) {
+        if (this.classValue === 1) {
             amount += 10;
         }
         const newHealth = amount + this.health;

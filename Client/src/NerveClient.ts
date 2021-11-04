@@ -253,7 +253,7 @@ export class NerveClient {
       }
 
       // Update viewport to follow player
-      if(e.id == this.clientId) {
+      if(e.id === this.clientId) {
         const player = this.entities.get(e.id);
         if(player) {
           this.viewport.follow(player.sprite, {
