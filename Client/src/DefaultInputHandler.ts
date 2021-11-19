@@ -73,6 +73,7 @@ export class DefaultInputHandler extends InputHandler {
    * @returns The last recorded mouse position.
    */
   mouseup(e: MouseEvent): InputHandlerReturnType {
+    this.mousemove(e); //Gets the mouses current position
     return { mousePos: this.mousePos };
   }
 
@@ -83,6 +84,7 @@ export class DefaultInputHandler extends InputHandler {
    * @returns The last recorded mouse position.
    */
   mousedown(e: MouseEvent): InputHandlerReturnType {
+    this.mousemove(e); //Gets the mouses current position
     return { mousePos: this.mousePos };
   }
 }
