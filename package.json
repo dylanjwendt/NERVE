@@ -12,7 +12,9 @@
     "lint:fix": "npm run -s lint:fix --workspaces",
     "prod": "npm run build && npm run start",
     "dev": "cross-env NODE_ENV=development concurrently \"npm run -s dev --workspace=DemoHtmlClient\" \"nodemon ./Server/src/index.ts\" \"npm run -s build:watch --workspace=Client\"",
-    "doc": "typedoc"
+    "doc": "typedoc",
+    "cbs": "npm run -s clean && npm run -s build && npm run -s start",
+    "cb": "npm run -s clean && npm run -s build"
   },
   "repository": {
     "type": "git",
