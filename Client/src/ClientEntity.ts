@@ -5,9 +5,8 @@ import { NerveConfig } from "nerve-common";
 const smoothing = NerveConfig.client.smoothing;
 
 /**
- * Represents a simple entity given an id, position, sprite, and gameData.
- * Useful for storing information about an entity.
- * Very helpful for client-side prediction.
+ * Represents a simple entity given an id, position, sprite, and gameData and 
+ * is used for client-side prediction.
  */
 export class ClientEntity {
   /** Id of the entity */
