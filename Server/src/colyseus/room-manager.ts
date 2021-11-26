@@ -4,11 +4,19 @@ import { ColyseusRoom } from "./colyseus-room";
 import { GameState } from "./game-state";
 import { ServerRoomImpl } from "./server-room-impl";
 
+/**
+ * Manages the lobbies/rooms of the server.
+ */
 export class RoomManager {
     private colyseusServer: Server;
     private colyseusClient: Client;
     private rooms: any[];
 
+    /**
+     * Creates a new RoomManager
+     * @param colyseusServer The host of the rooms
+     * @param colyseusClient The user of the rooms
+     */
     constructor(colyseusServer: Server, colyseusClient: Client) {
         this.colyseusServer = colyseusServer;
         this.colyseusClient = colyseusClient;
@@ -20,12 +28,18 @@ export class RoomManager {
         ];
     }
 
-    public initRooms() {
+    /**
+     * Setups each room in the room manger
+     */
+    public initRooms() : void {
         this.rooms.forEach(room => {
             this.colyseusServer.define(room.name, ColyseusRoom);
         });
     }
 
+    /**
+     * Update the player count for each room in the server.
+     */
     private async updateRoomPlayerCounts() {
         this.rooms.forEach(async (room) => {
             // join the room so we can get a look at the player count
@@ -40,6 +54,10 @@ export class RoomManager {
         });
     }
 
+    /**
+     * 
+     * @returns Returns a list of all the rooms after checking for updated player count
+     */
     public async listRooms(): Promise<any[]> {
         await this.updateRoomPlayerCounts();
         return this.rooms;
