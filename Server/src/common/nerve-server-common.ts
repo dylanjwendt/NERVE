@@ -1,6 +1,9 @@
 import { Client, Room } from "colyseus.js";
 import { GameState } from "../colyseus/game-state";
 
+/**
+ * Common code that both the nerve server and client can use
+ */
 export class NerveServerCommon {
     private room?: Room;
     private colyseusClient?: Client;
