@@ -310,6 +310,12 @@ type FieldLocalizations = {
     return false;
   }
 
+  /**
+   * Creates the background of the game
+   * @param viewport The view port in which the game is render through
+   * @param starSize The size of each star
+   * @param border The border fo the game world
+   */
   function stars(viewport: Viewport, starSize: number, border: number) {
     const stars = (viewport.worldWidth * viewport.worldHeight) / Math.pow(starSize, 2) * 0.1;
     for (let i = 0; i < stars; i++) {
@@ -328,14 +334,31 @@ type FieldLocalizations = {
     }
   }
 
+  /**
+   * Generate a random int from 0 to n
+   * @param n The max int value
+   * @returns A random number from 0 to n
+   */
   function randomInt(n: number) {
     return Math.floor(Math.random() * n);
   }
 
+  /**
+   * Generate a random float from 0 to n
+   * @param n The max float value
+   * @returns A random number from 0 to n
+   */
   function randomFloat(n: number) {
     return Math.random() * n;
   }
 
+  /**
+   * Generates a random number inbetween the start and the end
+   * @param start The starting number
+   * @param end The ending number
+   * @param useFloat Returns a float value instead of int if true, false by defualt
+   * @returns A random number between the start and the end values
+   */
   function range(start: number, end: number, useFloat = false) {
     // case where there is no range
     if (end === start) {
