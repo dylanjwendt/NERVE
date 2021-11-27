@@ -2,20 +2,35 @@ import { Bodies } from "matter-js";
 import * as postal from "postal";
 import { Engine } from ".";
 
+/**
+ * Respresents an actor, a object, in the world.
+ */
 export default class Actor {
+    /** Name of the actor */
     #name: string;
+    /** The id of the actor */
     #id: number;
+    /** The interactions of the actor */
     #interactions: ActorInteraction[];
+    /** The scale size of the actor, which affects sprite and collision box size */
     #scale: [number, number];
+    /** The sprite tint of the actor */
     #tint: number;
+    /** The width dimensions of the actor */
     #width: number;
+    /** The height dimensions of the actor */
     #height: number;
+    /** The sprite of the actor */
     public texture: string;
+    /** The physics body of the actor */
     public body: Matter.Body;
+    /** The game engine the actor is refrencing */
     public engine: Engine;
+    /** Any other data the actor needs stored in here */
     public gameData: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     /**
+     * Creates a new actor
      * 
      * @param id Numeric ID Value of Actor. Only use the getValidID() function of engine to get values for this.
      * @param name Name of Actor to Display

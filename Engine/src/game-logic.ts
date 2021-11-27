@@ -3,12 +3,15 @@ import Actor from "./actor";
 import { Engine } from ".";
 import { Common } from "matter-js";
 
+/**
+ * Respresents the game logic of the engine
+ */
 export default class GameLogic extends System {
   public actors: Map<number, Actor>;
   private engine: Engine;
 
   /**
-   * 
+   * Creates a new GameLogic
    * @param engine Reference to parent Engine
    */
   constructor(engine: Engine) {
@@ -19,7 +22,7 @@ export default class GameLogic extends System {
   }
 
   /**
-   * 
+   * Adds a new actor to the game engine
    * @param id Numberic ID of actor to add. Only use the getValidID() function of engine to get values for this.
    * @param actor Reference to Actor to add
    */
@@ -31,7 +34,7 @@ export default class GameLogic extends System {
   }
 
   /**
-   * 
+   * Removes an actor from the game engine
    * @param id ID of actor to remove
    */
   removeActor(id: number): void {
