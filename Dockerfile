@@ -1,8 +1,10 @@
-FROM node:17
+FROM node:16
 
 WORKDIR /images
 
-ENV PORT 80
+ENV PORT 3000
+
+ENV PORT 2567
 
 COPY package.json /images/package.json
 
@@ -12,8 +14,6 @@ COPY . /images
 
 RUN npm install --legacy-peer-deps --include=dev
 
-RUN npm run -s clean
-
 RUN npm run -s build
 
-CMD "npm run -s start"
+CMD ["npm", "run", "-s", "start"]
