@@ -11,7 +11,7 @@ export const NerveConfig = {
   },
   // For the colyseus server (handles the game server connections)
   server: {
-    hostName: "localhost",
+    hostName: "0.0.0.0",
     port: 2567
   },
   engine: {

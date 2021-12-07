@@ -116,7 +116,7 @@ export class NerveClient {
    */
   async attachToServer(room: string): Promise<void> {
     this.server = new NerveServerCommon();
-    await this.server.connect("ws://localhost:2567", room);
+    await this.server.connect(`ws://${window.location.hostname}:${NerveConfig.server.port}`, room);
     this.server.onStateChange((state: GameState) => this.#syncServerState(state));
     this.server.onMessage("getPlayerId", (message: number) => {
       this.clientId = message;
