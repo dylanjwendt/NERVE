@@ -146,7 +146,7 @@ export class NerveClient {
   onDebugUpdate(callback: () => void): void {
     this.#debugCallback = callback;
   }
-
+  
   #addEventListener(target: Document | Element | Window, type: InputHandlerFunction): void {
     target.addEventListener(type, (e) => {
       if (this.disableInput) { return; }

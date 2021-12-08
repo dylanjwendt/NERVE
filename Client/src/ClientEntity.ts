@@ -1,21 +1,38 @@
 import { Sprite } from "pixi.js";
 import { NerveConfig } from "nerve-common";
 
+/** Smoothing for the client side prediction */
 const smoothing = NerveConfig.client.smoothing;
 
 /**
- * Simple entity data class for client-side prediction
+ * Represents a simple entity given an id, position, sprite, and gameData and 
+ * is used for client-side prediction.
  */
 export class ClientEntity {
+  /** Id of the entity */
   id: number;
+  /** Visual x position of the entity */
   vx: number;
+  /** Visual y position of the entity */
   vy: number;
+  /** Sprite of the entity */
   sprite: Sprite;
+  /** If the entity has a texture or not */
   hasTexture: boolean;
 
-  // Holds extra game data
+  /** Holds extra information on the entity */
   gameData: any; // eslint-disable-line
 
+  /**
+   * Creates a new Client Entity.
+   * 
+   * @param id - Id of the entity
+   * @param vx - Visual x position of the entity
+   * @param vy - Visual y position of the entity
+   * @param sprite - Sprite of the entity
+   * @param gameData - Extra information on the entity
+   * @param hasTexture - If the entity has a texture or not, false by default.
+   */
   // eslint-disable-next-line
   constructor(id: number, vx: number, vy: number, sprite: Sprite, gameData: any, hasTexture = false) {
     this.id = id;

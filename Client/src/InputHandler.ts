@@ -1,5 +1,6 @@
 import { Viewport } from "pixi-viewport";
 
+/** What input handlers are accepted by the program. */
 export const AcceptedInputHandlers = ["keyup", "keypress", "keydown", "mouseup", "mousemove", "mousedown"] as const;
 
 /** equivalent to a union type of the strings in AcceptedInputHandlers */
