@@ -53,6 +53,18 @@ restarts you will have to reload the client to reconnect. Furthermore, changing 
 P.S You can run a script on an individual subproject by adding `--workspace=<Client|Server|Engine|Demo>` to the end of
 the `npm run` command. This can be useful if you only want to rebuild one of them!
 
+### Running Docker
+You can create a dockr image using our Dockerfile. All you need is to have docker installed and run the following
+command inside this current directory:
+
+```docker build --tag image_name .```
+
+After docker finishes building the image, simple type the follow command to run your image:
+
+```docker run -p cp:cp -p sp:sp image_name```
+
+Where cp is the client port (default 3000) and sp is the server port (default 2567)
+
 ## Authors and Acknowledgements
 
 * Luke Ludlow
