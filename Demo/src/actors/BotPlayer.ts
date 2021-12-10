@@ -1,7 +1,7 @@
 import Player from "./Player";
 import { Engine } from "nerve-engine";
 import { NerveConfig } from "nerve-common";
-import { Bodies } from "matter-js";
+import { Body, Vector } from "matter-js";
 
 /**
  * this is a simple prototype version of a bot for our demo engine.
@@ -17,30 +17,30 @@ export default class BotPlayer extends Player {
     // e.g. moving in the same direction across multiple engine updates rather than 
     // choosing a random direction every tick.
 
-    private isMoving: boolean;
-    private movementInput: string;
-    private secondMovementInput: string;
-    private movementStepsTaken: number;
-    private movementStepsCap: number;
-    private MIN_MOVEMENT_STEPS = 10;
-    private MAX_MOVEMENT_STEPS = 150;
-    private SECONDARY_MOVEMENT_FREQ = 0.75;  // 75% chance to have a secondary movement direction
+    protected isMoving: boolean;
+    protected movementInput: string;
+    protected secondMovementInput: string;
+    protected movementStepsTaken: number;
+    protected movementStepsCap: number;
+    protected MIN_MOVEMENT_STEPS = 10;
+    protected MAX_MOVEMENT_STEPS = 150;
+    protected SECONDARY_MOVEMENT_FREQ = 0.75;  // 75% chance to have a secondary movement direction
 
-    private isShooting: boolean;
-    private shootingStepsTaken: number;
-    private shootingStepsCap: number;
-    private mousePos: [number, number];
-    private SHOOTING_INTERVAL = 12;  // number of updates to wait before firing another bullet
-    private MIN_SHOOTING_STEPS = 0;
-    private MAX_SHOOTING_STEPS = 10;
-    private SHOOTING_FREQ = 0.005;  // there's a 0.5% chance the bot will decide to start shooting 
+    protected isShooting: boolean;
+    protected shootingStepsTaken: number;
+    protected shootingStepsCap: number;
+    protected mousePos: [number, number];
+    protected SHOOTING_INTERVAL = 12;  // number of updates to wait before firing another bullet
+    protected MIN_SHOOTING_STEPS = 0;
+    protected MAX_SHOOTING_STEPS = 10;
+    protected SHOOTING_FREQ = 0.005;  // there's a 0.5% chance the bot will decide to start shooting 
 
-    private NO_MOVEMENT = "";
+    protected NO_MOVEMENT = "";
 
     // made up bounds to keep bots within the view of the game, otherwise they will wander away into infinity.
     // this should be changed when the engine has proper world boundaries(?)
-    private WORLD_BOUND_X = [0, NerveConfig.engine.worldWidth];
-    private WORLD_BOUND_Y = [0, NerveConfig.engine.worldHeight];
+    protected WORLD_BOUND_X = [0, NerveConfig.engine.worldWidth];
+    protected WORLD_BOUND_Y = [0, NerveConfig.engine.worldHeight];
 
     /**
      * 
@@ -62,6 +62,10 @@ export default class BotPlayer extends Player {
 
         this.texture = "bot_player.png";
         this.setTint(0xFF0000);
+        Body.setPosition(this.body,
+            Vector.create(
+                Math.floor(Math.random() * NerveConfig.engine.worldWidth),
+                Math.floor(Math.random() * NerveConfig.engine.worldHeight)));
     }
 
     /**
@@ -77,7 +81,7 @@ export default class BotPlayer extends Player {
     /**
      * Spawn Walls on random intervals.
      */
-    private spawnWallRandomly(): void {
+    protected spawnWallRandomly(): void {
         if(this.getRandomIntInclusive(0, 5000) <= 1) {
             this.engine.inputHandler.handleKeyUp(this.getID(), " ");
         }
@@ -87,7 +91,7 @@ export default class BotPlayer extends Player {
      * Randomly move bot in space.
      * @returns No return value
      */
-    private moveRandomly(): void {
+    protected moveRandomly(): void {
         if (this.isShooting) {
             // wait to finish shooting before we move (this makes the bots easier to hit)
             return;
@@ -106,7 +110,7 @@ export default class BotPlayer extends Player {
     /**
      * Shoot in random direction at random intervals.
      */
-    private shootRandomly(): void {
+    protected shootRandomly(): void {
         if (this.isShooting) {
             if (this.shootingStepsTaken > (this.shootingStepsCap * this.SHOOTING_INTERVAL)) {
                 this.stopShooting();
@@ -125,7 +129,7 @@ export default class BotPlayer extends Player {
     /**
      * Stop moving and begin firing in random direction.
      */
-    private startShooting(): void {
+    protected startShooting(): void {
         this.stopMoving();
         this.isShooting = true;
         this.shootingStepsTaken = 0;
@@ -136,7 +140,7 @@ export default class BotPlayer extends Player {
     /**
      * Continue to fire
      */
-    private continueShooting(): void {
+    protected continueShooting(): void {
         // do modulo division to check if it's been x many updates since the last time we shot
         if (this.shootingStepsTaken % this.SHOOTING_INTERVAL === 0) {
             this.engine.inputHandler.handleMouseDownInput(this.getID(), this.mousePos);
@@ -147,7 +151,7 @@ export default class BotPlayer extends Player {
     /**
      * Stop firing actiton
      */
-    private stopShooting(): void {
+    protected stopShooting(): void {
         this.isShooting = false;
     }
 
@@ -155,7 +159,7 @@ export default class BotPlayer extends Player {
      * Determine if thte position of the body is within world bounds.
      * @returns true if in valid world-position, false otherwise.
      */
-    private isWithinBounds(): boolean {
+    protected isWithinBounds(): boolean {
         const isWithinX: boolean = this.body.position.x >= this.WORLD_BOUND_X[0] 
                                 && this.body.position.x <= this.WORLD_BOUND_X[1];
         const isWithinY: boolean = this.body.position.y >= this.WORLD_BOUND_Y[0] 
@@ -166,7 +170,7 @@ export default class BotPlayer extends Player {
     /**
      * Begin move script.
      */
-    private startMoving(): void {
+    protected startMoving(): void {
         this.isMoving = true;
         this.movementStepsCap = this.getRandomIntInclusive(this.MIN_MOVEMENT_STEPS, this.MAX_MOVEMENT_STEPS);
         this.movementStepsTaken = 0;
@@ -186,7 +190,7 @@ export default class BotPlayer extends Player {
     /**
      * Handle movement and constrain to in-bounds.
      */
-    private continueMoving(): void {
+    protected continueMoving(): void {
         if (!this.isWithinBounds()) {
             // move in the opposite direction to try to get back inside bounds
             this.moveAwayFromBoundary();
@@ -197,7 +201,7 @@ export default class BotPlayer extends Player {
     /**
      * Stop moving the bot.
      */
-    private stopMoving(): void {
+    protected stopMoving(): void {
         this.engine.inputHandler.handleKeyUp(this.getID(), this.movementInput);
         this.engine.inputHandler.handleKeyUp(this.getID(), this.secondMovementInput);
         this.isMoving = false;
@@ -212,7 +216,7 @@ export default class BotPlayer extends Player {
      * mimics keyboard inputs, it doesn't do any of its own math calculations,
      * it just defers to Player for that stuff
      */
-    private moveAwayFromBoundary(): void {
+    protected moveAwayFromBoundary(): void {
         // stop moving
         this.engine.inputHandler.handleKeyUp(this.getID(), this.movementInput);
         this.engine.inputHandler.handleKeyUp(this.getID(), this.secondMovementInput);
@@ -235,7 +239,7 @@ export default class BotPlayer extends Player {
      * @param max Maximum possible value
      * @returns Random number between min and max
      */
-    private getRandomIntInclusive(min: number, max: number): number {
+    protected getRandomIntInclusive(min: number, max: number): number {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min + 1) + min); 
@@ -245,7 +249,7 @@ export default class BotPlayer extends Player {
      * Create a random x,y coordinate for mouse position.
      * @returns Random 2d coordinate within the world bounds
      */
-    private chooseRandomMousePos(): [number, number] {
+    protected chooseRandomMousePos(): [number, number] {
         const randomX = this.getRandomIntInclusive(this.WORLD_BOUND_X[0], this.WORLD_BOUND_X[1]);
         const randomY = this.getRandomIntInclusive(this.WORLD_BOUND_Y[0], this.WORLD_BOUND_Y[1]);
         const mousePos: [number, number] = [randomX, randomY];
@@ -256,7 +260,7 @@ export default class BotPlayer extends Player {
      * Choose a random direction to move, or stagnate.
      * @returns w, a, s, or d, or no_movement. Randomly Chosen
      */
-    private chooseRandomKeyPress(): string {
+    protected chooseRandomKeyPress(): string {
         // "" (meaning NO_MOVEMENT) is added twice to the options so that the bots will pause more often
         const keyOptions = ["w", "a", "s", "d", this.NO_MOVEMENT, this.NO_MOVEMENT];
         const randomIndex = Math.floor(Math.random() * keyOptions.length);

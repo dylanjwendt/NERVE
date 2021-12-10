@@ -23,17 +23,22 @@
   "license": "MIT",
   "dependencies": {
     "@pixi/sound": "^4.0.0",
+    "javascript-color-gradient": "^1.3.2",
     "nerve-client": "^0.1.0",
     "nerve-common": "^0.1.0",
     "pixi-cull": "^2.0.1",
+    "pixi-filters": "^4.1.5",
     "pixi-viewport": "^4.32.0",
-    "pixi.js": "^6.0.0"
+    "pixi.js": "^6.0.0",
+    "sanitize-html": "^2.6.1",
+    "tinygradient": "^1.1.5"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
     "@tsconfig/node14": "^1.0.1",
     "@types/node": "^16.11.6",
+    "@types/sanitize-html": "^2.6.0",
     "@types/webpack-env": "^1.16.2",
     "@typescript-eslint/eslint-plugin": "^4.17.0",
     "babel-loader": "^8.2.2",

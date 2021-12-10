@@ -3,6 +3,7 @@ import { Sprite, Texture } from "pixi.js";
 import { Application } from "@pixi/app";
 import { Viewport } from "pixi-viewport";
 import { Simple } from "pixi-cull";
+import { BevelFilter, OutlineFilter, GlowFilter, MotionBlurFilter } from "pixi-filters";
 import { GameState, NerveServerCommon } from "nerve-server";
 import { IEntity, NerveConfig } from "nerve-common";
 import { ClientEntity } from "./ClientEntity";
@@ -244,6 +245,17 @@ export class NerveClient {
         }
 
         const newSprite = new Sprite(Texture.from("../res/" + e.texture));
+        if (e.gameData.isBullet) {
+          newSprite.filters = [
+            new GlowFilter({ distance: 15, outerStrength: 2, color: e.tint }),
+            new MotionBlurFilter([e.vx, e.vy], 5)
+          ];
+        } else {
+          newSprite.filters = [
+            new OutlineFilter(4)
+          ];
+        }
+
         newSprite.scale.set(e.scale[0], e.scale[1]);
         newSprite.tint = e.tint;
         newSprite.x = e.x - e.width / 2;

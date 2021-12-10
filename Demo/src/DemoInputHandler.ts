@@ -1,4 +1,5 @@
 import { Body, Vector} from "matter-js";
+import { NerveConfig } from "nerve-common";
 import { InputHandler, GameLogic, Actor } from "nerve-engine";
 import { DemoEngine } from ".";
 import Bullet from "./actors/Bullet";
@@ -82,13 +83,19 @@ export default class DemoInputHandler extends InputHandler {
      * @returns No return value.
      */
     handleMouseDownInput(actorId: number, pos: [number, number]): void {
-        const id = this.logic.getValidID();
         const player = this.logic.actors.get(actorId);
         if (!player) return;
-        const pcoords = player.body.position;
+        const pcoords = [player.body.position.x, player.body.position.y] as [number, number];
         const playerActor = player as Player;
-        const bullet = new Bullet(id, playerActor, [pcoords.x, pcoords.y], pos, this.engine!.engine, this.logic, this.engine!);
-        this.logic.addActor(id, bullet);
+        const playerClass = playerActor.getClass();
+        if (playerClass === 0) {
+            this.engine?.bulletCreator.singleDirect(playerActor, pcoords, pos);
+        } else if (playerClass === 1) {
+            const offset = Math.atan((pcoords[1] - pos[1]) / (pcoords[0] - pos[0]));
+            this.engine?.bulletCreator.coneOfN(playerActor, NerveConfig.demo.explodingBotBulletCount, pos, 360, offset);
+        } else {
+            this.engine?.bulletCreator.coneOfN(playerActor, 5, pos, 30);
+        }
     }
 
     handleMouseUpInput(actorId: number, pos: [number, number]): void {
@@ -106,15 +113,15 @@ export default class DemoInputHandler extends InputHandler {
      */
     spawnWall(parent: Actor): void {
         if(this.engine === null) return;
-        const numEnt = 15;
-        const dist = 100;
+        const numEnt = 12;
+        const dist = 150;
         for(let i = 0; i < numEnt; i++) {
             const theta = ((360/numEnt)*i)*Math.PI/180;
             const pos = [parent.body.position.x + (Math.cos(theta)*dist), parent.body.position.y + (Math.sin(theta)*dist)] as [number, number];
-            const piece = new WallPiece(this.logic.getValidID(), "", this.engine);
+            const piece = new WallPiece(this.engine.gameLogic.getValidID(), "", this.engine);
             Body.setPosition(piece.body, Vector.create(pos[0], pos[1]));
             piece.setTint(0xa1a1a1);
-            this.logic.addActor(piece.getID(), piece);
+            this.engine.addActor(piece.body.id, piece);
         }
     }
 }

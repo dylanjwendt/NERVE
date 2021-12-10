@@ -1,6 +1,6 @@
 import { Body, Bodies, Events } from "matter-js";
 import { Actor } from "nerve-engine";
-import { DemoEngine } from "..";
+import DemoEngine from "../DemoEngine";
 
 const maxAge = 6000;
 

@@ -1,9 +1,9 @@
 import { Bodies, Body, Vector } from "matter-js";
 import { Actor, Engine } from "nerve-engine";
 import { NerveConfig } from "nerve-common";
-const DEF_MAXHEALTH = 255;
-const CL0_MAXHEALTH = 205;
-const CL2_MAXHEALTH = 305;
+const DEF_MAXHEALTH = NerveConfig.demo.maxHealth;
+const CL0_MAXHEALTH = NerveConfig.demo.maxHealth;
+const CL2_MAXHEALTH = NerveConfig.demo.maxHealth;
 
 export default class Player extends Actor {
     private health: number;
@@ -44,6 +44,10 @@ export default class Player extends Actor {
             isAlive: true,
             name: name
         };
+        Body.setPosition(this.body,
+            Vector.create(
+                Math.floor(Math.random() * NerveConfig.engine.worldWidth),
+                Math.floor(Math.random() * NerveConfig.engine.worldHeight)));
     }
 
     /**
@@ -85,22 +89,22 @@ export default class Player extends Actor {
 
         switch (this.classValue) {
         case 0: // Faster movement, but lower overall health
-            this.maxSpeed = 4;
+            this.maxSpeed = 6;
             this.texture = "player_typeA.png";
             this.MAXHEALTH = CL0_MAXHEALTH;
             break;
         case 1: // Regenerates more after each kill
-            this.maxSpeed = 2;
+            this.maxSpeed = 6;
             this.texture = "player_typeB.png";
             this.MAXHEALTH = DEF_MAXHEALTH;
             break;
         case 2: // Has far more max health and bullet deal slightly damage
-            this.maxSpeed = 1;
+            this.maxSpeed = 6;
             this.texture = "player_typeC.png";
             this.MAXHEALTH = CL2_MAXHEALTH;
             break;
         default:
-            this.maxSpeed = 3;
+            this.maxSpeed = 6;
             this.texture = "circle.png";
             this.MAXHEALTH = DEF_MAXHEALTH;
             break;

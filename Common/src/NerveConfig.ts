@@ -9,7 +9,7 @@
  * 
  * server - The port and host domain the colyseus server (handles the game server connections)
  * 
- * engine - The game engine paramters such as world size, bots, and other world/gane customizations.
+ * engine - The game engine paramters such as world size, bots, and other world/game customizations.
  * 
  */
 export const NerveConfig = {
@@ -29,7 +29,13 @@ export const NerveConfig = {
   engine: {
     worldWidth: 5000,
     worldHeight: 5000,
-    numBotsPerPlayer: 5,
-    numBlackHoles: 10
+    numBotsPerPlayer: 5
+  },
+  demo: {
+    explodingBotsCount: 4,
+    explodingBotBulletCount: 12,
+    shotgunBotsCount: 4,
+    shotgunBotBulletCount: 4,
+    maxHealth: 750
   }
 };

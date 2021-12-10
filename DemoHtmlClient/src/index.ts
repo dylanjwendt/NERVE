@@ -1,9 +1,12 @@
 import "./index.less";
 import * as PIXI from "pixi.js";
 import * as PIXIAUDIO from "@pixi/sound";
+import tinygradient from "tinygradient";
+import sanitizeHtml from "sanitize-html";
 import { NerveClient, getTemplateLocalizer } from "nerve-client";
 import { DemoClientInputHandler } from "./DemoClientInputHandler";
-import { Viewport } from "pixi-viewport";
+import { NerveConfig } from "nerve-common";
+import { AsciiFilter, BulgePinchFilter, CRTFilter, RGBSplitFilter, SimpleLightmapFilter } from "pixi-filters";
 
 // A way to translate the keys of the debug object to human readable text
 type FieldLocalizations = {
@@ -13,11 +16,18 @@ type FieldLocalizations = {
 // Async IIFE wraps all demo code to prevent it from polluting the global scope
 (async function start() {
   let tl = await getTemplateLocalizer("en_US");
+  const maxHealthColor = 0xFFFFFF;
+  const hpGradient = tinygradient([
+    "#FF1818",
+    "#FFFFFF"
+  ]);
+  const hpLightmap = PIXI.Texture.from("../res/lightmap.png");
+  const hpFilter = new SimpleLightmapFilter(hpLightmap, maxHealthColor, 1);
 
   // All The sounds used for the game add the the sound library
   PIXIAUDIO.sound.add({
     music: "../res/test_music.ogg",
-    playerShoot: "./res/SFX_shot11.wav",
+    playerShoot: "../res/SFX_shot11.wav",
     enemyShoot: "../res/SFX_shot7.wav",
   });
 
@@ -41,8 +51,48 @@ type FieldLocalizations = {
   client.pixi.view.style.height = "100vh";
   client.pixi.view.style.zIndex = "-5";
 
-  // Draw background squares
-  stars(client.viewport, 30, 10);
+  // Draw tiling background
+  const bgtile = PIXI.TilingSprite.from("../res/grid_white.jpg", {
+    width: NerveConfig.engine.worldWidth * 1.2,
+    height: NerveConfig.engine.worldHeight * 1.2
+  });
+  bgtile.filters = [hpFilter];
+  client.viewport.addChildAt(bgtile, 0);
+
+  // Non-euclidean rendering virtual easter egg = NERVEE
+  let nervEE = false;
+  let useCRT = false;
+  let useASCII = false;
+  document.addEventListener("keyup", (e: KeyboardEvent) => {
+    if (e.key == "1") {
+      nervEE = !nervEE;
+      if (nervEE) {
+        bgtile.filters = [
+          hpFilter,
+          new BulgePinchFilter({
+            radius: 2100,
+            strength: 1.1
+          })
+        ];
+      } else {
+        bgtile.filters = [hpFilter];
+      }
+    } else if (e.key == "2") {
+      useCRT = !useCRT;
+      if (useCRT) {
+        client.viewport.filters = [new CRTFilter(), new RGBSplitFilter()];
+      } else {
+        client.viewport.filters = [];
+      }
+    } else if (e.key == "3") {
+      useASCII = !useASCII;
+      if (useASCII) {
+        client.viewport.filters = [new AsciiFilter()];
+      } else {
+        client.viewport.filters = [];
+      }
+    }
+  });
 
   // Actually add client canvas to the HTML document
   document.body.appendChild(client.view);
@@ -133,8 +183,8 @@ type FieldLocalizations = {
       }
     });
 
-    // attach listeners
-   // second, set up event listeners for each room option
+  // attach listeners
+  // second, set up event listeners for each room option
     const rooms = $(".rooms") as HTMLDivElement;
     rooms.childNodes.forEach((roomCell: ChildNode) => {
       if (roomCell instanceof HTMLLabelElement) {
@@ -150,7 +200,7 @@ type FieldLocalizations = {
   })
   .catch((error: any) => console.log(error));
 
-  //Play button handling (Same thing as username handling on enter)
+  // Play button handling (Same thing as username handling on enter)
   $("#btn_play")?.addEventListener("click", async (e) => {
     username = ($("#username") as HTMLInputElement).value;
     await connectToServer(overlay, username, client, classValue);
@@ -193,8 +243,8 @@ type FieldLocalizations = {
 
   // Maps names to text
   // Outside of ticker to keep track of deleted entities
-  const entitiesToText: Map<number, any> = new Map();
-
+  const entitiesToMetadata: Map<number, any> = new Map();
+  
   client.pixi.ticker.add(() => {
     // Maps names to text
     const xOffset = 20;
@@ -204,25 +254,28 @@ type FieldLocalizations = {
       if (!clientEntity.gameData) { return; }
 
       // Entity exists in our map, must update
-      if (entitiesToText.has(clientEntity.id)) {
-        const text = entitiesToText.get(clientEntity.id);
+      if (entitiesToMetadata.has(clientEntity.id)) {
+        const text = entitiesToMetadata.get(clientEntity.id).text;
         const name = clientEntity.gameData.name as string;
-        const killCount = clientEntity.gameData.killCount as string;
-        const displayText = name + " " + killCount;
 
-        text.text = displayText;
+        text.text = name;
         text.x = clientEntity.sprite.x + xOffset;
         text.y = clientEntity.sprite.y - yOffset;
+        if (clientEntity.id == client.clientId) {
+          const percent = clientEntity.gameData.hp / NerveConfig.demo.maxHealth;
+          const color = hpGradient.rgbAt(percent).toHexString();
+          hpFilter.color = Number(`0x${color.slice(1)}`);
+        }
+        entitiesToMetadata.get(clientEntity.id).kills = clientEntity.gameData.killCount;
       } else if (clientEntity.gameData.isAlive) {
         // Entity not in our map but in NerveClient's, must create
         // Only add player entities
         const name = clientEntity.gameData.name as string;
         const killCount = clientEntity.gameData.killCount as string;
-        const displayText = name + " " + killCount;
-        const text = new PIXI.Text(displayText, { fontFamily: "Arial", fontSize: 24, fill: "black" });
+        const text = new PIXI.Text(name, { fontFamily: "Arial", fontSize: 24, fill: "white" });
 
         text.anchor.set(0.5, 0.5);
-        entitiesToText.set(clientEntity.id, text);
+        entitiesToMetadata.set(clientEntity.id, { text, kills: killCount });
         client.viewport.addChild(text);
       }
 
@@ -246,21 +299,39 @@ type FieldLocalizations = {
       }
     });
 
-    entitiesToText.forEach((text, id) => {
+    entitiesToMetadata.forEach(({text}, id) => {
       // Entity not in NerveClient's map, must delete ours
       if (!client.entities.has(id)) {
         client.viewport.removeChild(text);
         text.destroy();
-        entitiesToText.delete(id);
+        entitiesToMetadata.delete(id);
       }
     });
 
-    // Remove bullets and there souunds.
+    // Remove bullets and their souunds.
     bullets.forEach((id) =>{
       if (!client.entities.has(id)) {
         bullets.delete(id);
       }
     });
+
+    // Update scoreboard
+    $("#scoreboard")!.innerHTML = "";
+    let scoreboardHtml = "";
+    let scoreboard: [string, number][] = [];
+    entitiesToMetadata.forEach(x => scoreboard.push([x.text.text, x.kills]));
+    scoreboard = scoreboard.sort((a, b) => b[1] - a[1]).slice(0,5);
+    for (const [name, kills] of scoreboard) {
+      if (kills) {
+        const cleanName = sanitizeHtml(name, {
+          allowedTags: [],
+          allowedAttributes: {}
+        });
+        scoreboardHtml += `<p>${cleanName} - ${kills}</p>`;
+      }
+    }
+    $("#scoreboard")!.innerHTML = scoreboardHtml;
+
   });
 
   // Hides the overlay and starts
@@ -292,97 +363,6 @@ type FieldLocalizations = {
     newBtn.disabled = true;
 
     return newBtn;
-  }
-  
-  // === END Nerve Demo
-  // Stars function taken from pixi-viewport demo
-  // https:// davidfig.github.io/pixi-viewport/
-  function overlap(x: number, y: number, viewport: Viewport, starSize = 30) {
-    const size = starSize;
-    for (const child of viewport.children) {
-      if (x < child.x + size &&
-        x + size > child.x &&
-        y < child.y + size &&
-        y + size > child.y) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * Creates the background of the game
-   * @param viewport The view port in which the game is render through
-   * @param starSize The size of each star
-   * @param border The border fo the game world
-   */
-  function stars(viewport: Viewport, starSize: number, border: number) {
-    const stars = (viewport.worldWidth * viewport.worldHeight) / Math.pow(starSize, 2) * 0.1;
-    for (let i = 0; i < stars; i++) {
-      const star = new PIXI.Sprite(PIXI.Texture.WHITE);
-      star.anchor.set(0.5);
-      star.tint = randomInt(0xffffff);
-      star.width = star.height = starSize;
-      star.alpha = range(0.05, 0.35, true);
-      let x, y;
-      do {
-        x = range(starSize / 2 + border, viewport.worldWidth - starSize - border);
-        y = range(border, viewport.worldHeight - border - starSize);
-      } while (overlap(x, y, viewport, starSize));
-      star.position.set(x, y);
-      viewport.addChild(star);
-    }
-  }
-
-  /**
-   * Generate a random int from 0 to n
-   * @param n The max int value
-   * @returns A random number from 0 to n
-   */
-  function randomInt(n: number) {
-    return Math.floor(Math.random() * n);
-  }
-
-  /**
-   * Generate a random float from 0 to n
-   * @param n The max float value
-   * @returns A random number from 0 to n
-   */
-  function randomFloat(n: number) {
-    return Math.random() * n;
-  }
-
-  /**
-   * Generates a random number inbetween the start and the end
-   * @param start The starting number
-   * @param end The ending number
-   * @param useFloat Returns a float value instead of int if true, false by defualt
-   * @returns A random number between the start and the end values
-   */
-  function range(start: number, end: number, useFloat = false) {
-    // case where there is no range
-    if (end === start) {
-      return end;
-    }
-
-    if (useFloat) {
-      return randomFloat(end - start) + start;
-    } else {
-      let range;
-      if (start < 0 && end > 0) {
-        range = -start + end + 1;
-      } else if (start === 0 && end > 0) {
-        range = end + 1;
-      } else if (start < 0 && end === 0) {
-        range = start - 1;
-        start = 1;
-      } else if (start < 0 && end < 0) {
-        range = end - start - 1;
-      } else {
-        range = end - start + 1;
-      }
-      return randomInt(range) + start;
-    }
   }
 
 }());

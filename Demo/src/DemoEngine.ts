@@ -3,36 +3,23 @@ import { Engine, GameLogic} from "nerve-engine";
 import { NerveConfig } from "nerve-common";
 import DemoInputHandler from "./DemoInputHandler";
 import Player from "./actors/Player";
-import Blackhole from "./actors/Blackhole";
 import BotPlayer from "./actors/BotPlayer";
-
-const numBlackholes = NerveConfig.engine.numBlackHoles;
+import { BulletCreator } from "./BulletCreator";
+import ExplodingBot from "./actors/ExplodingBot";
+import ShotgunBot from "./actors/ShotgunBot";
 
 export default class DemoEngine extends Engine {
-    blackholes: Blackhole[];
     bots: BotPlayer[];
     playerBotOwners: Map<number, number[]>;  // tracks which bots were added for each player that joined 
-    numBotsPerPlayer = NerveConfig.engine.numBotsPerPlayer;  
+    numBotsPerPlayer = NerveConfig.engine.numBotsPerPlayer;
+    bulletCreator: BulletCreator;
 
     constructor() {
         super((l: GameLogic) => new DemoInputHandler(l));
-        this.blackholes = [];
-
-        for(let i = 0; i < numBlackholes; i++) {
-            const x = Math.floor(Math.random() * 1000);
-            const y = Math.floor(Math.random() * 1000);
-            const vx = Math.floor(Math.random() * 1000);
-            const vy = Math.floor(Math.random() * 1000);
-            const bh = new Blackhole(this.gameLogic.getValidID(), `bh${i}`, this);
-            bh.setOrigin([x, y]);
-            Body.setPosition(bh.body, Vector.create(vx, vy));
-            this.addActor(bh.getID(), bh);
-            this.blackholes[i] = bh;
-        }
-
         (this.inputHandler as DemoInputHandler).setEngine(this);
         this.bots = new Array<BotPlayer>();
         this.playerBotOwners = new Map<number, number[]>();
+        this.bulletCreator = new BulletCreator(this, this.gameLogic);
 
         // Create world border walls
         const { worldWidth, worldHeight } = NerveConfig.engine;
@@ -44,12 +31,27 @@ export default class DemoEngine extends Engine {
                 category: -1
             }
         };
+
         Composite.add(this.engine.world, [
             Bodies.rectangle(worldWidth / 2, -wallThickness/2, worldWidth, wallThickness, wallOpts),
             Bodies.rectangle(worldWidth / 2, worldHeight + wallThickness/2, worldWidth, wallThickness, wallOpts),
             Bodies.rectangle(-wallThickness/2, worldHeight / 2, wallThickness, worldHeight, wallOpts),
             Bodies.rectangle(worldHeight + wallThickness/2, worldHeight / 2, wallThickness, worldHeight, wallOpts)
         ]);
+
+        for (let i = 0; i < NerveConfig.demo.explodingBotsCount; i++) {
+            const id = this.gameLogic.getValidID();
+            const bot = new ExplodingBot(id, this, `explode${i}`);
+            super.addActor(id, bot);
+            this.bots.push(bot);
+        }
+
+        for (let i = 0; i < NerveConfig.demo.shotgunBotsCount; i++) {
+            const id = this.gameLogic.getValidID();
+            const bot = new ShotgunBot(id, this, `shotgun${i}`);
+            super.addActor(id, bot);
+            this.bots.push(bot);
+        }
     }
 
     /**
@@ -57,7 +59,6 @@ export default class DemoEngine extends Engine {
      * @param millisec Duration since last update
      */
     update(millisec: number): void {
-        this.blackholes.forEach(bh => bh.wander(millisec));
         this.bots.forEach(bot => bot.update());
         super.update(millisec);
     }
@@ -80,8 +81,6 @@ export default class DemoEngine extends Engine {
         for (let i = 0; i < this.numBotsPerPlayer; i++) {
             const botId = this.getValidId();
             const bot = new BotPlayer(botId, this, "bot" + botId);
-            const { worldWidth, worldHeight } = NerveConfig.engine;
-            Body.setPosition(bot.body, Vector.create(Math.floor(Math.random() * worldWidth), Math.floor(Math.random() * worldHeight)));
             this.bots.push(bot);
             botsForPlayer.push(botId);
             super.addActor(botId, bot);
@@ -144,8 +143,8 @@ export default class DemoEngine extends Engine {
     }
 
     culling(): void {
-        //When culling is implemented, do not cull players.
-        //Bind them to real world
-        // if dead, do not bind. Let them be.
+        // When culling is implemented, do not cull players.
+        // Bind them to real world
+        // If dead, do not bind. Let them be.
     }
 }

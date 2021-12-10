@@ -94,14 +94,13 @@ button {
   justify-content: right;
   float: right;
   right: 0;
-  width: 10vmax;
-  height: 48vmax;
   background-color: white;
   /* top | right | bottom | left */
   margin: 2em 1em 2em auto;
   display: flex;
   flex-direction: column;
   box-shadow: 0em 0em 3em rgb(0, 0, 0);
+  overflow-y: scroll;
 }
 
 .label .room-cell {
@@ -119,6 +118,7 @@ button {
 .labl {
   display: block;
   width: 9em;
+  padding: 0 1em;
 }
 .labl > input{ /* HIDE RADIO */
   visibility: hidden; /* Makes input not-clickable */
@@ -140,9 +140,20 @@ button {
   left: 0;
   padding: 0.3em;
   user-select: none;
+  color: white;
   background-color: rgba(0, 0, 0, 0.2);
 }
 
 #debug-screen p {
   margin: 0.3em 0.5em;
+}
+
+#scoreboard {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.3em 1em;
+  user-select: none;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.2);
 }

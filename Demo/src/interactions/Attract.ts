@@ -1,5 +1,4 @@
 import { Actor, ActorInteraction } from "nerve-engine";
-import Blackhole from "../actors/Blackhole";
 import Bullet from "../actors/Bullet";
 import {Events, Body, Bodies, Vector, Composite} from "matter-js";
 

@@ -21,10 +21,17 @@ export class RoomManager {
         this.colyseusServer = colyseusServer;
         this.colyseusClient = colyseusClient;
         this.rooms = [
-            {name: "utah", playerCount: 0, capacity: 100},
-            {name: "nevada", playerCount: 0, capacity: 100},
-            {name: "colorado", playerCount: 0, capacity: 100},
-            {name: "washington", playerCount: 0, capacity: 100}
+            {name: "us-west-1", playerCount: 0, capacity: 100},
+            {name: "us-west-2", playerCount: 0, capacity: 100},
+            {name: "us-east-1", playerCount: 0, capacity: 100},
+            {name: "us-east-2", playerCount: 0, capacity: 100},
+            {name: "ca-central-1", playerCount: 0, capacity: 100},
+            {name: "eu-west-1", playerCount: 0, capacity: 100},
+            {name: "eu-central-1", playerCount: 0, capacity: 100},
+            {name: "eu-east-1", playerCount: 0, capacity: 100},
+            {name: "moon", playerCount: 0, capacity: 100},
+            {name: "ap-northeast-1", playerCount: 0, capacity: 100},
+            {name: "sa-east-1", playerCount: 0, capacity: 100},
         ];
     }
 

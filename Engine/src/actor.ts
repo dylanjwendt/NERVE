@@ -46,6 +46,7 @@ export default class Actor {
         this.#width = 16;
         this.#height = 16;
         this.texture = texture;
+        this.gameData = {};
 
         // Default as circle at x = 0, y = 0, radius 5.
         if(!body) {
