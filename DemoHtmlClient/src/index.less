@@ -87,13 +87,12 @@ button {
 }
 
 .overlay-right {
+  position: absolute;
+  right: 0;
   border: 1em solid white;
   border-radius: 3%;
-  position: absolute;
-  align-items: right;
-  justify-content: right;
-  float: right;
-  right: 0;
+  align-items: center;
+  justify-content: center;
   background-color: white;
   /* top | right | bottom | left */
   margin: 2em 1em 2em auto;
@@ -101,6 +100,7 @@ button {
   flex-direction: column;
   box-shadow: 0em 0em 3em rgb(0, 0, 0);
   overflow-y: scroll;
+  max-height: 90vh;
 }
 
 .label .room-cell {

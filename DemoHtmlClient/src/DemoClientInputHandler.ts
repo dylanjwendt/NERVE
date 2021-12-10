@@ -8,6 +8,9 @@ import type { InputHandlerReturnType } from "nerve-client";
  * essentially autoclicking.
  */
 export class DemoClientInputHandler extends DefaultInputHandler {
+  private LASER_STEP = 0;
+  private LASER_INTERVAL = 12;
+
   keydown(e: KeyboardEvent): InputHandlerReturnType {
     // Keep the debouncing behavior that DefaultInputHandler has
     // for keys like w,a,s,d
@@ -20,6 +23,12 @@ export class DemoClientInputHandler extends DefaultInputHandler {
     // This amounts to autoclicking
     if (e.key === "t") {
       return ["mousedown", { mousePos: this.mousePos }];
+    } else if (e.key === "e") {
+      this.LASER_STEP++;
+      if (this.LASER_STEP % this.LASER_INTERVAL === 0) {
+        this.LASER_STEP = 0;
+        return ["mousedown", { mousePos: this.mousePos }];
+      }
     }
 
     // Otherwise don't send data back to the server

@@ -247,7 +247,7 @@ export class NerveClient {
         const newSprite = new Sprite(Texture.from("../res/" + e.texture));
         if (e.gameData.isBullet) {
           newSprite.filters = [
-            new GlowFilter({ distance: 15, outerStrength: 2, color: e.tint }),
+            new GlowFilter({ distance: 15, innerStrength: 1, outerStrength: 3, color: e.tint, quality: 0.2 }),
             new MotionBlurFilter([e.vx, e.vy], 5)
           ];
         } else {
